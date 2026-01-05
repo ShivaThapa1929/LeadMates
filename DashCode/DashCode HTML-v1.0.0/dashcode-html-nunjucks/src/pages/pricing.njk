@@ -1,0 +1,165 @@
+{% extends "layout/layout.njk" %}
+{% block content %}
+  {% set pageTitle = "Pricing" %}
+  {% set menuCategory = "Utility" %}
+  {% include '../templates/components/breadcrumb.njk' %}
+  {% set tables = [
+        {
+          title: "Advanced",
+          price_Yearly: "$96",
+          price_Monthly: "$26",
+          button: "Buy now",
+          bg: "bg-warning-500",
+         img:"assets/images/all-img/big-shap1.png"
+        },
+        {
+          title: "Business",
+          price_Yearly: "$196",
+          price_Monthly: "$20",
+          button: "Buy now",
+          bg: "bg-info-500",
+          ribon: "Most popular",
+         img:"assets/images/all-img/big-shap2.png"
+        },
+        {
+          title: "Basic",
+          price_Yearly: "$26",
+          price_Monthly: "$16",
+          button: "Try it free",
+          bg: "bg-success-500",
+         img:"assets/images/all-img/big-shap3.png"
+        },
+        {
+          title: "Got a large team?",
+          price_Yearly: "$126",
+          price_Monthly: "$16",
+          button: "Request a quote",
+          bg: "bg-primary-500",
+         img:"assets/images/all-img/big-shap4.png"
+        }
+      ] %}
+  {% set   tables2= [
+        {
+          title: "Advanced",
+          price_Yearly: "$96",
+          price_Monthly: "$26",
+          button: "Buy now",
+          bg: "bg-white"
+        },
+        {
+          title: "Business",
+          price_Yearly: "$196",
+          price_Monthly: "$20",
+          button: "Buy now",
+          bg: "bg-slate-900",
+          hasdark: true,
+          ribon: "Most popular"
+        },
+        {
+          title: "Basic",
+          price_Yearly: "$26",
+          price_Monthly: "$16",
+          button: "Try it free",
+          bg: "bg-white"
+        },
+        {
+          title: "Got a large team?",
+          price_Yearly: "$126",
+          price_Monthly: "$16",
+          button: "Request a quote",
+          bg: "bg-white"
+        }
+      ] %}
+  <div class=" space-y-5">
+    <div class="card">
+      <header class="card-header">
+        <div class="card-title">Packages</div>
+      </header>
+      <div class="card-body p-6">
+        <div class="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5">
+          {% for item in tables %}
+            <div class="price-table bg-opacity-[0.16] dark:bg-opacity-[0.36] rounded-[6px] p-6 text-slate-900 dark:text-white relative
+                overflow-hidden z-[1] {{ item.bg }}">
+              <div class="overlay absolute right-0 top-0 w-full h-full z-[-1]">
+                <img src="{{ item.img }}" alt="" class="ml-auto block">
+              </div>
+              {% if item.ribon %}
+                <div class="text-sm font-medium bg-slate-900 dark:bg-slate-900 text-white py-2 text-center absolute ltr:-right-[43px]
+                    rtl:-left-[43px] top-6 px-10 transform ltr:rotate-[45deg] rtl:-rotate-45">
+                  {{ item.ribon }}
+                </div>
+              {% endif %}
+              <header class="mb-6">
+                <h4 class="text-xl mb-5">{{ item.title }}</h4>
+                <div class="space-x-4 relative flex items-center mb-5 rtl:space-x-reverse">
+                  <span class="text-[32px] leading-10 font-medium">
+                    {{ item.price_Yearly }}
+                  </span>
+                  <span class="text-xs text-warning-500 font-medium px-3 py-1 rounded-full inline-block bg-white uppercase h-auto">Save
+                    20%</span>
+                </div>
+                <p class="text-slate-500 dark:text-slate-300 text-sm">
+                  per user/month, annually
+                </p>
+              </header>
+              <div class="price-body space-y-8">
+                <p class="text-sm leading-5 text-slate-600 dark:text-slate-300">
+                  Designed for teams who need to manage complex workflows with more automation and integration.
+                </p>
+                <div>
+                  <button class="btn-outline-dark dark:border-slate-400 w-full btn">
+                    {{ item.button }}</button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5">
+      {% for item in tables2 %}
+        <div class="price-table rounded-[6px] shadow-base dark:bg-slate-800 p-6 text-slate-900 dark:text-white relative
+            overflow-hidden z-[1] {{ item.bg }}">
+          <div class="overlay absolute right-0 top-0 w-full h-full z-[-1]">
+            <img src="{{ item.img }}" alt="" class="ml-auto block">
+          </div>
+          {% if item.ribon %}
+            <div class="text-sm font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-300 py-2 text-center absolute
+                ltr:-right-[43px] rtl:-left-[43px] top-6 px-10 transform ltr:rotate-[45deg] rtl:-rotate-45">
+              {{ item.ribon }}
+            </div>
+          {% endif %}
+          <header class="mb-6">
+            <h4 class="text-xl mb-5 {% if item.hasdark %} text-slate-100 {% else %} text-slate-900 dark:text-slate-300 {% endif %} ">
+              {{ item.title }}
+            </h4>
+            <div class="space-x-4 relative flex items-center mb-5 rtl:space-x-reverse {% if item.hasdark %} text-slate-100 {% else %}
+                text-slate-900 dark:text-slate-300 {% endif %} ">
+              <span class="text-[32px] leading-10 font-medium">
+                {{ item.price_Yearly }}
+              </span>
+              <span class="text-xs bg-warning-50 text-warning-500 font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase
+                  h-auto">
+                Save 20%</span>
+            </div>
+            <p class="text-sm" :class=" item.bg === 'bg-slate-900' ? 'text-slate-100' : 'text-slate-500 dark:text-slate-300' ">
+              per user/month, annually
+            </p>
+          </header>
+          <div class="price-body space-y-8">
+            <p class=" text-sm leading-5 {% if item.hasdark %} text-slate-100 {% else %} text-slate-600 dark:text-slate-300 {% endif %}
+                ">
+              Designed for teams who need to manage complex workflows with more automation and integration.
+            </p>
+            <div>
+              <button class="w-full btn {% if item.hasdark %} text-slate-100 border-slate-300 border {% else %} btn-outline-dark
+                  dark:border-slate-400 {% endif %}">
+                {{ item.button }}
+              </button>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

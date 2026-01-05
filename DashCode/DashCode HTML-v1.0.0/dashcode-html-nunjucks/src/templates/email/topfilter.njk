@@ -1,0 +1,60 @@
+
+<!-- BEGIN: Top Filter -->
+{% set lists = [
+
+  {
+    name: "Stared",
+    value: "stared",
+    icon: "heroicons:star"
+  },
+  {
+    name: "Sent",
+    value: "sent",
+    icon: "heroicons-outline:paper-airplane"
+  },
+
+  {
+    name: "Drafts",
+    value: "drafts",
+    icon: "heroicons-outline:pencil-alt"
+  },
+  {
+    name: "Spam",
+    value: "spam",
+    icon: "heroicons:information-circle"
+  },
+  {
+    name: "Trash",
+    value: "trash",
+    icon: "heroicons:trash"
+  }
+  ] %}
+      <li class="active email-categorie-list" data-status="all">
+        <label>
+            <span class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                <span class="text-xl leading-[1]">
+                    <iconify-icon icon="uil:image-v"></iconify-icon>
+                </span>
+                <span class="capitalize text-sm">
+                  Inbox
+                </span>
+            </span>
+           
+        </label>
+    </li>
+{% for item in lists %}
+    <li class="email-categorie-list" data-status="{{item.value}}" >
+        <label>
+            <span class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                <span class="text-xl">
+                    <iconify-icon icon={{ item.icon }}></iconify-icon>
+                </span>
+                <span class="capitalize text-sm">
+                    {{ item.name }}
+                </span>
+            </span>
+           
+        </label>
+    </li>
+{% endfor %}
+<!-- END: Top Filter -->

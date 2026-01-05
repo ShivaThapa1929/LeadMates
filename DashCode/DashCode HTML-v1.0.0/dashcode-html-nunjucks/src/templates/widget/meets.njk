@@ -1,0 +1,65 @@
+
+<!-- BEGIN: Meets -->
+{% set meets = [
+  {
+    img: "assets/images/svg/sk.svg",
+    title: "Meeting with client",
+    date: "01 Nov 2021",
+    meet: "Zoom meeting"
+  },
+  {
+    img: "assets/images/svg/path.svg",
+    title: "Design meeting (team)",
+    date: "01 Nov 2021",
+    meet: "Skyp meeting"
+  },
+  {
+    img: "assets/images/svg/dc.svg",
+    title: "Background research",
+    date: "01 Nov 2021",
+    meet: "Google meeting"
+  },
+  {
+    img: "assets/images/svg/sk.svg",
+    title: "Meeting with client",
+    date: "01 Nov 2021",
+    meet: "Zoom meeting"
+  }
+] %}
+
+ <ul class="divide-y divide-slate-100 dark:divide-slate-700">
+                        {% for item in meets %}
+                        
+                        <li  class="block py-[10px]">
+                            <div class="flex space-x-2 rtl:space-x-reverse">
+                                <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-none">
+                                        <div class="h-8 w-8">
+                                            <img
+                                                src={{item.img}}
+                                                alt=""
+                                                class="block w-full h-full object-cover rounded-full border hover:border-white border-transparent">
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <span class="block text-slate-600 text-sm dark:text-slate-300 mb-1 font-medium">
+                                            {{item.title}}
+                                        </span>
+                                        <span class="flex font-normal text-xs dark:text-slate-400 text-slate-500">
+                                            <span class="text-base inline-block mr-1">
+                                                <iconify-icon icon="heroicons-outline:video-camera"></iconify-icon>
+                                            </span>
+                                            {{item.meet}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-none">
+                                    <span class="block text-xs text-slate-600 dark:text-slate-400">
+                                        {{item.date}}
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                      {% endfor %}
+                    </ul>
+<!-- END: Meets -->

@@ -1,0 +1,184 @@
+
+<!-- BEGIN: Todos -->
+{% set todos = [
+        {
+       
+        image: [
+          {
+            image: "assets/images/avatar/av-1.svg",
+            label: "Mahedi Amin",
+            value: "mahedi"
+          },
+          {
+            image: "assets/images/avatar/av-2.svg",
+            label: "Sovo Haldar",
+            value: "sovo"
+          },
+          {
+            image: "assets/images/avatar/av-3.svg",
+            label: "Rakibul Islam",
+            value: "rakibul"
+          }
+        ],
+        title:
+          "laboriosam mollitia et enim quasi adipisci quia provident illum",
+        isDone: false,
+        isfav: false,
+        isTrash: false,
+        status: "team",
+        category: [
+          {
+            value: "team",
+            label: "team"
+          }
+        ]
+      },
+      {
+       
+        image: [
+          {
+            image: "assets/images/avatar/av-2.svg",
+            label: "Rakibul Islam",
+            value: "rakibul"
+          }
+        ],
+        title:
+          "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.",
+        isDone: false,
+        isfav: true,
+        isTrash: false,
+         status: "stared,low",
+        category: [
+          {
+            value: "low",
+            label: "low"
+          }
+        ]
+      },
+      {
+       
+        image: [
+          {
+            image: "assets/images/avatar/av-1.svg",
+            label: "Sovo Haldar",
+            value: "sovo"
+          },
+          {
+            image: "assets/images/avatar/av-2.svg",
+            label: "Rakibul Islam",
+            value: "rakibul"
+          }
+        ],
+        title:
+          "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.",
+        isDone: true,
+        isfav: true,
+        isTrash: false,
+        status: "done,stared,medium,low",
+        category: [
+          {
+            value: "medium",
+            label: "medium"
+          },
+          {
+            value: "low",
+            label: "low"
+          }
+        ]
+      },
+      {
+       
+        image: [
+          {
+            image: "assets/images/avatar/av-3.svg",
+            label: "Mahedi Amin",
+            value: "mahedi"
+          },
+          {
+            image: "assets/images/avatar/av-4.svg",
+            label: "Sovo Haldar",
+            value: "sovo"
+          },
+          {
+            image: "assets/images/avatar/av-1.svg",
+            label: "Rakibul Islam",
+            value: "rakibul"
+          }
+        ],
+        title: "illo expedita consequatur quia in",
+        isDone: false,
+        isfav: false,
+        isTrash: false,
+        status: "high,low",
+        category: [
+          {
+            value: "high",
+            label: "high"
+          },
+          {
+            value: "low",
+            label: "low"
+          }
+        ]
+      },
+      {
+       
+        image: [
+          {
+            image: "assets/images/avatar/av-4.svg",
+            label: "Rakibul Islam",
+            value: "rakibul"
+          }
+        ],
+        title: "illo expedita consequatur quia in",
+        isDone: false,
+        isfav: false,
+        isTrash: false,
+         status: "update",
+        category: [
+          {
+            value: "update",
+            label: "update"
+          }
+        ]
+      }
+      ] %}
+{% for item in todos %}
+  <li data-status="{{ item.status }}" data-stared="{{ item.isfav }}" data-complete="{{ item.isDone }}" class="flex items-center px-6 space-x-4 py-6 hover:-translate-y-1 hover:shadow-todo transition-all duration-200 rtl:space-x-reverse">
+    <input type="checkbox" class="table-checkbox" name="todo-checkbox">
+      <div class="todo-fav">
+        <iconify-icon icon="heroicons:star" class="text-xl leading-[1] relative "></iconify-icon>
+      </div>
+      <span class="flex-1 text-sm text-slate-600 dark:text-slate-300 truncate bar-active transition-all duration-150">
+        {{ item.title }}
+      </span>
+      <div class="flex">
+        <span class="flex-none space-x-2 text-base text-secondary-500 flex rtl:space-x-reverse">
+          <div class="flex justify-start -space-x-1.5 min-w-[60px] rtl:space-x-reverse">
+            {% for img in item.image %}
+              <div class=" h-6 w-6 rounded-full ring-1 ring-secondary-500 img-active transition-all duration-150">
+                <img src={{ img.image }} alt={{ img.label }} class="w-full h-full rounded-full">
+              </div>
+            {% endfor %}
+          </div>
+          {% for cta in item.category %}
+            <div>
+              <span class=" bg-opacity-20 capitalize font-normal text-xs leading-4 px-[10px] py-[2px] rounded-full inline-block {% if
+                  cta.value === 'team' %} bg-danger-500 text-danger-500 {% elif cta.value === 'low' %} bg-success-500 text-success-500 {%
+                  elif cta.value === 'medium' %} bg-warning-500 text-warning-500 {% elif cta.value === 'high' %} bg-primary-500
+                  text-primary-500 {% elif cta.value === 'update' %} bg-info-500 text-info-500 {% endif %} ">
+                {{ cta.label }}
+              </span>
+            </div>
+          {% endfor %}
+          <button type="button" class="text-slate-400" data-bs-toggle="modal" data-bs-target="#editTodoModal">
+            <iconify-icon icon="heroicons-outline:pencil-alt"></iconify-icon>
+          </button>
+          <button type="button" class="transition duration-150 hover:text-danger-500 text-slate-400  delete-button">
+            <iconify-icon icon="heroicons-outline:trash"></iconify-icon>
+          </button>
+        </span>
+      </div>
+    </li>
+  {% endfor %}
+  <!-- END: Todos -->

@@ -1,0 +1,245 @@
+const gulp = require("gulp");
+const { src, dest, watch, series, parallel } = require("gulp");
+const uglify = require("gulp-uglify");
+const concat = require("gulp-concat");
+const minifyCss = require("gulp-clean-css");
+const plumberNotifier = require("gulp-plumber-notifier");
+const sourcemaps = require("gulp-sourcemaps");
+const sass = require("gulp-sass")(require("sass"));
+//const sass = require("gulp-dart-sass");
+const del = require("del");
+//const imagemin = require('gulp-imagemin');
+//const imageminPngQuant = require('imagemin-pngquant');
+//const imageminjpegCrompress = require('imagemin-jpeg-recompress');
+const babel = require("gulp-babel");
+const rename = require("gulp-rename");
+const postcss = require("gulp-postcss");
+
+const browserSync = require("browser-sync").create();
+const prettyHtml = require("gulp-pretty-html");
+const nunjucksRender = require("gulp-nunjucks-render");
+const cssbeautify = require("gulp-cssbeautify");
+const tailwindcss = require("tailwindcss");
+const cssnano = require("cssnano");
+
+//path
+const files = {
+  output: "dist",
+  templates: "src/templates",
+  layout: "src/layout",
+  pages: "src/pages",
+  sass_path: "src/sass/**/*.scss",
+  css_path: "src/css/**/*.css",
+  plugins_path: "src/js/plugins/**/*.js",
+  settings_js_path: "src/js/settings.js",
+  main_js_path: "src/js/main.js",
+  fonts_path: "src/fonts/**/*",
+  jquery_js_path: "src/js/jquery-3.6.0.min.js",
+  image_path: "src/images/**/*",
+  buildOutput: "build",
+};
+
+function serve(done) {
+  browserSync.init({
+    server: {
+      baseDir: files.output,
+    },
+  });
+  done();
+}
+function build() {
+  return src(["dist/**/*"]).pipe(dest("./build"));
+}
+
+function nunjucks(done) {
+  console.log("Rendering nunjucks files..");
+  return src(files.pages + "/**/*.+(html|nunjucks|njk)")
+    .pipe(
+      nunjucksRender({
+        path: [files.templates],
+        watch: true,
+      })
+    )
+    .pipe(plumberNotifier())
+    .pipe(
+      prettyHtml({
+        indent_size: 2,
+        indent_char: " ",
+        unformatted: ["code", "pre", "em", "strong", "span", "i", "b", "br"],
+        extra_liners: ["head", "body"],
+      })
+    )
+    .pipe(dest(files.output))
+    .pipe(browserSync.stream());
+  done();
+}
+
+function scriptsTask() {
+  return src([
+    "src/js/plugins/chart.umd.js",
+    "src/js/plugins/flatpickr.js",
+    "src/js/plugins/leaflet.js",
+    "src/js/plugins/fullcalendar.js",
+
+    files.plugins_path,
+  ])
+    .pipe(plumberNotifier())
+    .pipe(sourcemaps.init())
+    .pipe(uglify())
+    .pipe(concat("rt-plugins.js"))
+    .pipe(sourcemaps.write("."))
+    .pipe(dest(files.output + "/" + "assets/js"))
+    .pipe(browserSync.stream());
+}
+
+function settingsJstask() {
+  return src(files.settings_js_path)
+    .pipe(
+      babel({
+        presets: ["@babel/env"],
+      })
+    )
+    .pipe(plumberNotifier())
+    .pipe(sourcemaps.init())
+    .pipe(concat("settings.js"))
+    .pipe(dest(files.output + "/" + "assets/js"))
+    .pipe(uglify())
+    .pipe(rename({ suffix: ".min" }))
+    .pipe(dest(files.output + "/" + "assets/js"))
+    .pipe(browserSync.stream());
+}
+
+
+function appJstask() {
+  return src(files.main_js_path)
+    .pipe(
+      babel({
+        presets: ["@babel/env"],
+      })
+    )
+    .pipe(plumberNotifier())
+    .pipe(sourcemaps.init())
+    .pipe(concat("app.js"))
+    .pipe(dest(files.output + "/" + "assets/js"))
+    .pipe(uglify())
+    .pipe(rename({ suffix: ".min" }))
+    .pipe(dest(files.output + "/" + "assets/js"))
+    .pipe(browserSync.stream());
+}
+
+function csspluginTask() {
+  console.log("css plugin task start");
+  return src(files.css_path)
+    .pipe(plumberNotifier())
+    .pipe(concat("rt-plugins.css"))
+    .pipe(minifyCss())
+    .pipe(sourcemaps.write("."))
+    .pipe(dest(files.output + "/" + "assets/css"))
+    .pipe(browserSync.stream());
+}
+
+function imagetask() {
+  return (
+    src(files.image_path)
+      .pipe(dest(files.output + "/" + "assets/images"))
+      .pipe(browserSync.stream())
+  );
+}
+function tailWind() {
+  return src(files.sass_path)
+    .pipe(sass())
+    .pipe(postcss([tailwindcss("./tailwind.config.js")]))
+    .pipe(cssbeautify())
+    .pipe(dest(files.output + "/" + "assets/css"))
+    .pipe(browserSync.stream());
+}
+
+function copyfonts() {
+  return src(files.fonts_path)
+    .pipe(dest(files.output + "/" + "assets/fonts"))
+    .pipe(browserSync.stream());
+}
+
+function copycss() {
+  return src(files.css_path)
+    .pipe(dest(files.output + "/" + "assets/css"))
+    .pipe(browserSync.stream());
+}
+
+function copyjs() {
+  return src(files.plugins_path)
+    .pipe(dest(files.output + "/" + "assets/js"))
+    .pipe(browserSync.stream());
+}
+
+function copyjs2() {
+  return src(files.jquery_js_path)
+    .pipe(dest(files.output + "/" + "assets/js"))
+    .pipe(browserSync.stream());
+}
+
+function copysass() {
+  return src(files.sass_path)
+    .pipe(dest(files.output + "/" + "assets/sass"))
+    .pipe(browserSync.stream());
+}
+
+function dlt_dist() {
+  return del.sync([files.output]);
+}
+
+function reload(done) {
+  browserSync.reload();
+  done();
+}
+
+function watchfiles() {
+  watch([files.css_path], series(csspluginTask, reload));
+  watch([files.settings_js_path], series(settingsJstask, reload));
+  watch([files.main_js_path], series(appJstask, reload));
+  watch([files.plugins_path], series(scriptsTask, reload));
+  watch([files.image_path], series(imagetask, reload));
+  watch([files.fonts_path], series(copyfonts, reload));
+  watch([files.sass_path], series(tailWind, reload));
+  watch(
+    [
+      "src/templates/**/*.+(html|nunjucks|njk)",
+      "src/pages/**/*.+(html|nunjucks|njk)",
+    ],
+    series(nunjucks, tailWind, reload)
+  );
+  watch(files.output + "/*").on("change", browserSync.reload);
+  // watch(files.output + "/" + "assets/app.css").on("change", browserSync.reload);
+}
+
+exports.default = parallel(
+  dlt_dist,
+  nunjucks,
+  csspluginTask,
+  imagetask,
+  copyjs2,
+  copyjs,
+  copycss,
+  copyfonts,
+  scriptsTask,
+  reload,
+  serve,
+  tailWind,
+  settingsJstask,
+  appJstask,
+  watchfiles
+);
+exports.build = parallel(
+  nunjucks,
+  csspluginTask,
+  imagetask,
+  copyjs2,
+  copyjs,
+  copycss,
+  copyfonts,
+  scriptsTask,
+  tailWind,
+  settingsJstask,
+  appJstask,
+  build
+);

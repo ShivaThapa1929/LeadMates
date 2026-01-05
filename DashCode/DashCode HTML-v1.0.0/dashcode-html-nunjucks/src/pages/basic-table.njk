@@ -1,0 +1,321 @@
+
+<!-- BEGIN: Table Content -->
+{% extends "layout/layout.njk" %}
+{% block content %}
+    {% set pageTitle = "Basic-Table" %}
+    {% set menuCategory = "Table" %}
+    {% include '../templates/components/breadcrumb.njk' %}
+    {% set tableData = [
+            {
+                label: "Age",
+                field: "age"
+            },
+            {
+                label: "First Name",
+                field: "first_name"
+            },
+
+            {
+                label: "Email",
+                field: "email"
+            }
+
+            ] %}
+    {% set  rows = [
+           {
+    id: 1,
+    age: 82,
+    first_name: "Dorelle",
+    last_name: "Harling",
+    email: "dharling0@rediff.com",
+    gender: "Female",
+    phone: "232(152)707-0110",
+    ccupation: "Financial Advisor"
+    
+  },
+  {
+    id: 2,
+    age: 89,
+    first_name: "Bendicty",
+    last_name: "Llewellin",
+    email: "bllewellin1@example.com",
+    gender: "Male",
+    phone: "420(169)218-1769",
+    ccupation: "Marketing Assistant"
+  },
+  {
+    id: 3,
+    age: 28,
+    first_name: "Remy",
+    last_name: "Carbry",
+    email: "rcarbry2@prlog.org",
+    gender: "Polygender",
+    phone: "86(958)204-4491",
+    ccupation: "Mechanical Systems Engineer"
+  },
+  {
+    id: 4,
+    age: 20,
+    first_name: "Bernardo",
+    last_name: "Hacun",
+    email: "bhacun3@xinhuanet.com",
+    gender: "Male",
+    phone: "86(974)709-5254",
+    ccupation: "Research Assistant IV"
+  },
+  {
+    id: 5,
+    age: 2,
+    first_name: "Emelia",
+    last_name: "Garstang",
+    email: "egarstang4@miitbeian.gov.cn",
+    gender: "Female",
+    phone: "55(644)175-6748",
+    ccupation: "Business Systems Development Analyst"
+  },
+  {
+    id: 6,
+    age: 98,
+    first_name: "Dian",
+    last_name: "Dopson",
+    email: "ddopson5@examiner.com",
+    gender: "Female",
+    phone: "51(186)560-8480",
+    ccupation: "Cost Accountant"
+  },
+  {
+    id: 7,
+    age: 17,
+    first_name: "Coretta",
+    last_name: "Ponter",
+    email: "cponter6@loc.gov",
+    gender: "Female",
+    phone: "1(941)734-6255",
+    ccupation: "Budget/Accounting Analyst II"
+  }
+            ] %}
+    <div class="grid xl:grid-cols-2 grid-cols-1 gap-5">
+        <!-- BEGIN: Basic Table -->
+        <div class="card">
+            <header class=" card-header noborder">
+                <h4 class="card-title">Basic Table
+                </h4>
+            </header>
+            <div class="card-body px-6 pb-6">
+                <div class="overflow-x-auto -mx-6">
+                    <div class="inline-block min-w-full align-middle">
+                        <div class="overflow-hidden ">
+                            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                <thead class=" border-t border-slate-100 dark:border-slate-800">
+                                    <tr>
+                                        {% for item in tableData %}
+                                            <th scope="col" class=" table-th ">
+                                                {{ item.label }}
+                                            </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    {% for row in rows %}
+                                        <tr>
+                                            <td class="table-td">{{ row.age }}</td>
+                                            <td class="table-td">{{ row.first_name }}</td>
+                                            <td class="table-td ">{{ row.email }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Basic Table -->
+
+        <!-- BEGIN: Table Header -->
+        <div class="card">
+            <header class=" card-header noborder">
+                <h4 class="card-title">Table Head
+                </h4>
+            </header>
+            <div class="card-body px-6 pb-6">
+                <div class="overflow-x-auto -mx-6">
+                    <div class="inline-block min-w-full align-middle">
+                        <div class="overflow-hidden ">
+                            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                <thead class="bg-slate-200 dark:bg-slate-700">
+                                    <tr>
+                                        {% for item in tableData %}
+                                            <th scope="col" class=" table-th ">
+                                                {{ item.label }}
+                                            </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    {% for row in rows %}
+                                        <tr>
+                                            <td class="table-td">{{ row.age }}</td>
+                                            <td class="table-td">{{ row.first_name }}</td>
+                                            <td class="table-td ">{{ row.email }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Table Header -->
+
+        <!-- BEGIN: Bordered Table -->
+        <div class="card">
+            <header class=" card-header noborder">
+                <h4 class="card-title">Bordered Table
+                </h4>
+            </header>
+            <div class="card-body px-6 pb-6">
+                <div class="overflow-x-auto ">
+                    <div class="inline-block min-w-full align-middle">
+                        <div class="overflow-hidden ">
+                            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                <thead class="">
+                                    <tr>
+                                        {% for item in tableData %}
+                                            <th scope="col" class=" table-th border border-slate-100 dark:bg-slate-800 dark:border-slate-700 ">
+                                                {{ item.label }}
+                                            </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    {% for row in rows %}
+                                        <tr>
+                                            <td class="table-td border border-slate-100 dark:bg-slate-800 dark:border-slate-700">{{ row.age }}</td>
+                                            <td class="table-td border border-slate-100 dark:bg-slate-800 dark:border-slate-700">{{ row.first_name }}</td>
+                                            <td class="table-td border border-slate-100 dark:bg-slate-800 dark:border-slate-700 ">{{ row.email }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Bordered Table -->
+
+        <!-- BEGIN: Borderless Table -->
+        <div class="card">
+            <header class=" card-header noborder">
+                <h4 class="card-title">Borderless Table
+                </h4>
+            </header>
+            <div class="card-body px-6 pb-6">
+                <div class="overflow-x-auto ">
+                    <div class="inline-block min-w-full align-middle">
+                        <div class="overflow-hidden ">
+                            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                <thead class="">
+                                    <tr>
+                                        {% for item in tableData %}
+                                            <th scope="col" class=" table-th ">
+                                                {{ item.label }}
+                                            </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-slate-800 ">
+                                    {% for row in rows %}
+                                        <tr>
+                                            <td class="table-td ">{{ row.age }}</td>
+                                            <td class="table-td ">{{ row.first_name }}</td>
+                                            <td class="table-td  ">{{ row.email }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Borderless Table -->
+
+        <!-- BEGIN: Striped Tables -->
+        <div class="card">
+            <header class=" card-header noborder">
+                <h4 class="card-title">Striped Rows
+                </h4>
+            </header>
+            <div class="card-body px-6 pb-6">
+                <div class="overflow-x-auto -mx-6">
+                    <div class="inline-block min-w-full align-middle">
+                        <div class="overflow-hidden ">
+                            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                <thead class="bg-slate-200 dark:bg-slate-700">
+                                    <tr>
+                                        {% for item in tableData %}
+                                            <th scope="col" class=" table-th ">
+                                                {{ item.label }}
+                                            </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    {% for row in rows %}
+                                        <tr class="even:bg-slate-50 dark:even:bg-slate-700">
+                                            <td class="table-td">{{ row.age }}</td>
+                                            <td class="table-td">{{ row.first_name }}</td>
+                                            <td class="table-td ">{{ row.email }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Striped Tables -->
+
+        <!-- BEGIN: Hover Tables -->
+        <div class="card">
+            <header class=" card-header noborder">
+                <h4 class="card-title">Hover Table
+                </h4>
+            </header>
+            <div class="card-body px-6 pb-6">
+                <div class="overflow-x-auto -mx-6">
+                    <div class="inline-block min-w-full align-middle">
+                        <div class="overflow-hidden ">
+                            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                <thead class="bg-slate-200 dark:bg-slate-700">
+                                    <tr>
+                                        {% for item in tableData %}
+                                            <th scope="col" class=" table-th ">
+                                                {{ item.label }}
+                                            </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    {% for row in rows %}
+                                        <tr class="hover:bg-slate-200 dark:hover:bg-slate-700">
+                                            <td class="table-td">{{ row.age }}</td>
+                                            <td class="table-td">{{ row.first_name }}</td>
+                                            <td class="table-td ">{{ row.email }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Hover Tables -->
+    </div>
+{% endblock %}
+<!-- END: Table Content -->

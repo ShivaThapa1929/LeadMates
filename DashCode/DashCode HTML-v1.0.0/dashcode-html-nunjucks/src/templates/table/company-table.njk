@@ -1,0 +1,135 @@
+
+<!-- BEGIN: Company Table -->
+{% set tableData = [
+            {
+                label: "Company",
+                field: "company"
+            },
+            {
+                label: "Category",
+                field: "Category"
+            },
+
+            {
+                label: "Sales",
+                field: "sales"
+            },
+
+            {
+                label: "Views",
+                field: "views"
+            },
+
+            {
+                label: "revenue",
+                field: "revenue"
+            }
+
+            ] %}
+{% set  rows = [
+         {
+    company: "assets/images/users/user-1.jpg",
+    category: "Ornamental Railings",
+    views: 343,
+    revenue: "$231.26",
+    sales: 95,
+    up: false
+  },
+  {
+    company: "assets/images/users/user-2.jpg",
+    category: "Asphalt Paving",
+    views: 315,
+    revenue: "$432.81",
+    sales: 197,
+    up: false
+  },
+  {
+    company: "assets/images/users/user-3.jpg",
+    category: "Framing (Steel)",
+    views: 329,
+    revenue: "$437.65",
+    sales: 137,
+    up: true
+  },
+  {
+    company: "assets/images/users/user-4.jpg",
+    category: "Structural and Misc Steel (Fabrication)",
+    views: 336,
+    revenue: "$387.55",
+    sales: 101,
+    up: true
+  },
+  {
+    company: "assets/images/users/user-5.jpg",
+    category: "Wall Protection",
+    views: 375,
+    revenue: "$489.80",
+    sales: 99,
+    up: false
+  },
+  {
+    company: "assets/images/users/user-6.jpg",
+    category: "Marlite Panels (FED)",
+    views: 490,
+    revenue: "$421.45",
+    sales: 101,
+    up: true
+  }
+            ] %}
+<div class="overflow-x-auto -mx-6">
+    <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden ">
+            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                <thead class="  bg-slate-200 dark:bg-slate-700">
+                    <tr>
+                        {% for item in tableData %}
+                            <th scope="col" class=" table-th ">
+                                {{ item.label }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                    {% for row in rows %}
+                        <tr>
+                            <td class="table-td">
+                                <div class="flex items-center">
+                                    <div class="flex-none">
+                                        <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                            <img src={{ row.company }} alt="" class="w-full h-full rounded-[100%] object-cover">
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 text-start">
+                                        <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                            Biffco Enterprises Ltd.
+                                        </h4>
+                                        <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                            Biffco@example.com
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="table-td">Technology</td>
+                            <td class="table-td ">
+                                <div class="flex space-x-6 items-center rtl:space-x-reverse">
+                                    <span>
+                                        {{ row.sales + "%" }}</span>
+                                    <span class=" text-xl {% if row.sales > 100 %} text-success-500 {% else %} text-danger-500 {% endif %}">
+                                        {% if  row.sales > 100 %}
+                                            <iconify-icon icon="heroicons-outline:trending-up"></iconify-icon>
+                                        {% else %}
+                                            <iconify-icon icon="heroicons-outline:trending-down"></iconify-icon>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="table-td ">{{ row.views }}</td>
+                            <td class="table-td ">{{ row.revenue }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- END: Company Table -->

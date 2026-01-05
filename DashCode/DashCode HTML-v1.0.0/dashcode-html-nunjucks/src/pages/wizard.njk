@@ -1,0 +1,10 @@
+{% extends "layout/layout.njk" %}
+{% block content %}
+    {% set pageTitle = "Wizard" %}
+    {% set menuCategory = "Forms" %}
+    {% include '../templates/components/breadcrumb.njk' %}
+    <div class="space-y-6">
+        {% include "../templates/partials/forms/step-1.njk"%}
+        {% include "../templates/partials/forms/step-2.njk"%}
+    </div>
+{% endblock %}

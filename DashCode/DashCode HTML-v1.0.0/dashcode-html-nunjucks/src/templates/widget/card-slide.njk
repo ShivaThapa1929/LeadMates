@@ -1,0 +1,47 @@
+
+<!-- BEGIN: Card Slide -->
+{% set cardLists = [
+ {
+    bg: "from-[#1EABEC] to-primary-500 ",
+    cardNo: "****  ****  **** 3945"
+  },
+  {
+    bg: "from-[#4C33F7] to-[#801FE0] ",
+    cardNo: "****  ****  **** 3945"
+  },
+  {
+    bg: "from-[#FF9838] to-[#008773]",
+    cardNo: "****  ****  **** 3945"
+  }
+] %}
+
+
+<div class="swiper card-slider">
+    <div class="swiper-wrapper">
+        {% for item in cardLists %}
+      
+        <div class="swiper-slide">
+              <div
+              class="{{item.bg}} h-[200px] bg-gradient-to-r relative rounded-md z-[1] p-4 text-white"
+            >
+              <div class="overlay absolute left-0 top-0 h-full w-full -z-[1]">
+                <img
+                  src="assets/images/all-img/visa-card-bg.png"
+                  alt=""
+                  class="h-full w-full object-cover"
+                >
+              </div>
+              <img src="assets/images/logo/visa.svg" alt="" >
+              <div class="mt-[18px] font-semibold text-lg mb-[17px]">
+                {{item.cardNo}}
+              </div>
+              <div class="text-xs text-opacity-75 mb-[2px]">
+                Card balance
+              </div>
+              <div class="text-2xl font-semibold">$10,975</div>
+            </div>
+        </div>
+          {% endfor %}
+    </div>
+</div>
+<!-- END: Card Slider -->

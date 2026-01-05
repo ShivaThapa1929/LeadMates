@@ -1,0 +1,62 @@
+
+<!-- BEGIN: Files Card -->
+{% set files = [
+  {
+    img: "assets/images/icon/file-1.svg",
+    title: "Dashboard.fig",
+    date: "06 June 2021 / 155MB"
+  },
+  {
+    img: "assets/images/icon/pdf-1.svg",
+    title: "Ecommerce.pdf",
+    date: "06 June 2021 / 155MB"
+  },
+  {
+    img: "assets/images/icon/zip-1.svg",
+    title: "Job portal_app.zip",
+    date: "06 June 2021 / 155MB"
+  },
+  {
+    img: "assets/images/icon/pdf-2.svg",
+    title: "Ecommerce.pdf",
+    date: "06 June 2021 / 155MB"
+  },
+  {
+    img: "assets/images/icon/scr-1.svg",
+    title: "Screenshot.jpg",
+    date: "06 June 2021 / 155MB"
+  }
+] %}
+
+<ul class="divide-y divide-slate-100 dark:divide-slate-700">
+    {% for item in files %}
+    <li  class="block py-[8px]">
+        <div class="flex space-x-2 rtl:space-x-reverse">
+            <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                <div class="flex-none">
+                    <div class="h-8 w-8">
+                        <img
+                            src={{item.img}}
+                            alt=""
+                            class="block w-full h-full object-cover rounded-full border hover:border-white border-transparent">
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <span class="block text-slate-600 text-sm dark:text-slate-300">
+                        {{item.title}}
+                    </span>
+                    <span class="block font-normal text-xs text-slate-500 mt-1">
+                        {{item.date}}
+                    </span>
+                </div>
+            </div>
+            <div class="flex-none">
+                <button type="button" class="text-xs text-slate-900 dark:text-white">
+                    Download
+                </button>
+            </div>
+        </div>
+    </li>
+     {% endfor %}
+</ul>
+<!-- END: FIles Card -->

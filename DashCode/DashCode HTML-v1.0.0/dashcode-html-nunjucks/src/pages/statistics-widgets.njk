@@ -1,0 +1,166 @@
+{% extends "layout/layout.njk" %}
+{% block content %}
+    {% set pageTitle = "Statistics" %}
+    {% set menuCategory = "Widget" %}
+    {% include '../templates/components/breadcrumb.njk' %}
+    <div class="space-y-5">
+        <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+            {% include '../templates/widget/group-chart-1.njk' %}
+        </div>
+        <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+            {% include '../templates/widget/group-chart-2.njk' %}
+        </div>
+        <div class="card p-6">
+            <div class="grid xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5 place-content-center">
+                <div class="flex space-x-4 h-full items-center rtl:space-x-reverse">
+                    <div class="flex-none">
+                        <div class="h-20 w-20 rounded-full">
+                            <img src="assets/images/all-img/main-user.png" alt="" class="w-full h-full">
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-medium mb-2">
+                            <span class="block font-light">Good evening,</span>
+                            <span class="block">Mr. Jone Doe</span>
+                        </h4>
+                        <p class="text-sm dark:text-slate-300">Welcome to Dashcode</p>
+                    </div>
+                </div>
+                {% include '../templates/widget/group-chart-3.njk' %}
+            </div>
+        </div>
+        <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">
+            {% include '../templates/widget/group-chart-4.njk' %}
+        </div>
+        <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">
+            {% include '../templates/widget/group-chart-5.njk' %}
+        </div>
+        <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">
+            <div class="card p-6">
+                <span class="block text-slate-500 dark:text-slate-300 text-sm font-medium">
+                    Progress
+                </span>
+                <div class="donut-chart" height="200" colors="#0CE7FA,#E2F6FD"></div>
+            </div>
+            <div class="card p-6">
+                <span class="block text-slate-500 dark:text-slate-300 text-sm font-medium">
+                    Progress
+                </span>
+                <div class="donut-chart" height="200" colors="#50C793,#E5F3E5"></div>
+            </div>
+            <div class="card p-6">
+                <span class="block text-slate-500 dark:text-slate-300 text-sm font-medium">
+                    Progress
+                </span>
+                <div class="donut-chart" height="200" colors="#FA916B,#fcc8b5"></div>
+            </div>
+            <div class="card p-6">
+                <span class="block text-slate-500 dark:text-slate-300 text-sm font-medium">
+                    Progress
+                </span>
+                <div class="donut-chart" height="200" colors="#F1595C,#F9E1E5"></div>
+            </div>
+        </div>
+        <div class="grid xl:grid-cols-6 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+            <div class="bg-white dark:bg-slate-800 rounded p-4">
+                <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
+                    Orders
+                </div>
+                <div class="text-lg text-slate-900 dark:text-white font-medium mb-[6px]">
+                    123k
+                </div>
+                <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                    <span class="text-warning-500">-60%
+                    </span>
+                    From last Week
+                </div>
+                <div class="mt-4">
+                    <div class="bar-chart" colors="#FA916B" height="44"></div>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded p-4">
+                <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
+                    Orders
+                </div>
+                <div class="text-lg text-slate-900 dark:text-white font-medium mb-[6px]">
+                    123k
+                </div>
+                <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                    <span class="text-warning-500">-60%
+                    </span>
+                    From last Week
+                </div>
+                <div class="mt-4">
+                    <div class="bar-chart" colors="#50C793" height="44"></div>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded p-4">
+                <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
+                    Orders
+                </div>
+                <div class="text-lg text-slate-900 dark:text-white font-medium mb-[6px]">
+                    123k
+                </div>
+                <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                    <span class="text-warning-500">-60%
+                    </span>
+                    From last Week
+                </div>
+                <div class="mt-4">
+                    <div class="bar-chart" colors="#F1595C" height="44"></div>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded p-4">
+                <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
+                    Profit
+                </div>
+                <div class="text-lg text-slate-900 dark:text-white font-medium mb-[6px]">
+                    654k
+                </div>
+                <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                    <span class="text-primary-500">+02%
+                    </span>
+                    From last Week
+                </div>
+                <div class="mt-4">
+                    <div class="line-chart" colors="#FA916B" height="44"></div>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded p-4">
+                <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
+                    Profit
+                </div>
+                <div class="text-lg text-slate-900 dark:text-white font-medium mb-[6px]">
+                    654k
+                </div>
+                <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                    <span class="text-primary-500">+02%
+                    </span>
+                    From last Week
+                </div>
+                <div class="mt-4">
+                    <div class="line-chart" colors="#F1595C" height="44"></div>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded p-4">
+                <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
+                    Profit
+                </div>
+                <div class="text-lg text-slate-900 dark:text-white font-medium mb-[6px]">
+                    654k
+                </div>
+                <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                    <span class="text-primary-500">+02%
+                    </span>
+                    From last Week
+                </div>
+                <div class="mt-4">
+                    <div class="line-chart" colors="#50C793" height="44"></div>
+                </div>
+            </div>
+        </div>
+        <div class="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-4">
+            {% include '../templates/widget/earning-chart.njk' %}
+        </div>
+    </div>
+{% endblock %}

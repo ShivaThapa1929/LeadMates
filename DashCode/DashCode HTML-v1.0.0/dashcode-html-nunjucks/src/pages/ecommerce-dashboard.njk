@@ -1,0 +1,191 @@
+{% extends "layout/layout.njk" %}
+{% block content %}
+    <div>
+        <div class="flex justify-between flex-wrap items-center mb-6">
+            <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">Ecommerce</h4>
+            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <button class="btn inline-flex justify-center bg-white text-slate-700 dark:bg-slate-700 !font-normal dark:text-white ">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:calendar"></iconify-icon>
+                        <span>Weekly</span>
+                    </span>
+                </button>
+                <button class="btn inline-flex justify-center bg-white text-slate-700 dark:bg-slate-700 !font-normal dark:text-white ">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:filter"></iconify-icon>
+                        <span>Select Date</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="grid grid-cols-12 gap-5 mb-5">
+            <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
+                <div
+                    class="bg-no-repeat bg-cover bg-center p-5 rounded-[6px] relative"
+                    style="background-image: url(assets/images/all-img/widget-bg-2.png)">
+                    <div class="max-w-[180px]">
+                        <h4 class="text-xl font-medium text-white mb-2">
+                            <span class="block font-normal">Good evening,</span>
+                            <span class="block">Mr. Dianne Russell</span>
+                        </h4>
+                        <p class="text-sm text-white font-normal">
+                            Welcome to Dashcode
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
+                <div class="grid md:grid-cols-3 grid-cols-1 gap-4">
+                    {% include '../templates/widget/group-chart-1.njk' %}
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-12 gap-5">
+            <div class="2xl:col-span-8 lg:col-span-7 col-span-12">
+                <div class="card">
+                    <div class="card-body p-6">
+                        <div class="legend-ring">
+                            <div id="revenue-barchart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="2xl:col-span-4 lg:col-span-5 col-span-12">
+                <div class="card">
+                    <header class="card-header">
+                        <h4 class="card-title">Statistic</h4>
+                        <div>{% include "../templates/dropdown.njk" %}</div>
+                    </header>
+                    <div class="card-body p-6">
+                        <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
+                            <div class="bg-slate-50 dark:bg-slate-900 rounded pt-3 px-4">
+                                <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
+                                    Orders
+                                </div>
+                                <div class="text-lg text-slate-900 dark:text-white font-medium mb-[6px]">
+                                    123k
+                                </div>
+                                <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                                    <span class="text-warning-500">-60%
+                                    </span>
+                                    From last Week
+                                </div>
+                                <div class="mt-4">
+                                    <div class="bar-chart" colors="#FA916B" height="44"></div>
+                                </div>
+                            </div>
+                            <!-- end single -->
+                            <div class="bg-slate-50 dark:bg-slate-900 rounded pt-3 px-4">
+                                <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
+                                    Profit
+                                </div>
+                                <div class="text-lg text-slate-900 dark:text-white font-medium mb-[6px]">
+                                    654k
+                                </div>
+                                <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                                    <span class="text-primary-500">+02%
+                                    </span>
+                                    From last Week
+                                </div>
+                                <div class="mt-4">
+                                    <div class="line-chart" colors="#4669fa" height="44"></div>
+                                </div>
+                            </div>
+                            <!-- end single -->
+                            <div class="md:col-span-2">
+                                <div class="bg-slate-50 dark:bg-slate-900 rounded pt-3 px-4">
+                                    <div class="flex items-center">
+                                        <div class="flex-none">
+                                            <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
+                                                Earnings
+                                            </div>
+                                            <div class="text-lg text-slate-900 dark:text-white font-medium mb-[6px]">
+                                                $12,335.00
+                                            </div>
+                                            <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
+                                                <span class="text-primary-500">+08%</span>
+                                                From last Week
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="legend-ring2">
+                                                <div class="donut-chart" height="180" colors="#F1595C,#0CE7FA" hidelabel="hideLabel" size="65%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="xl:col-span-6 col-span-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Customer</h4>
+                        <div>{% include "../templates/dropdown.njk" %}</div>
+                    </div>
+                    <div class="card-body p-6">
+                        {% include "../templates/widget/customer.njk"%}
+                    </div>
+                </div>
+            </div>
+            <div class="xl:col-span-6 col-span-12">
+                <div class="card">
+                    <div class="card-header noborder">
+                        <h4 class="card-title">Recent Orders
+                        </h4>
+                        <div>{% include "../templates/dropdown.njk" %}</div>
+                    </div>
+                    <div class="card-body p-6">
+                        {% include "../templates/table/order-table.njk"%}
+                    </div>
+                </div>
+            </div>
+            <div class="xl:col-span-8 lg:col-span-7 col-span-12">
+                <div class="card">
+                    <header class=" card-header">
+                        <h4 class="card-title">Visitors Report
+                        </h4>
+                    </header>
+                    <div class="card-body px-6 pb-6">
+                        <div id="areaChart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="xl:col-span-4 lg:col-span-5 col-span-12">
+                <div class="card">
+                    <header class=" card-header">
+                        <h4 class="card-title">Visitors By Gender
+                        </h4>
+                    </header>
+                    <div class="card-body px-6 pb-6">
+                        <div id="visitor-chart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="xl:col-span-6 col-span-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Most Sales</h4>
+                        <div>{% include "../templates/dropdown.njk" %}</div>
+                    </div>
+                    <div class="card-body p-6">
+                        {% include "../templates/widget/most-sale2.njk"%}
+                    </div>
+                </div>
+            </div>
+            <div class="xl:col-span-6 col-span-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Best Selling Products</h4>
+                        <div>{% include "../templates/dropdown.njk" %}</div>
+                    </div>
+                    <div class="card-body p-6">
+                        {% include "../templates/widget/product.njk"%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

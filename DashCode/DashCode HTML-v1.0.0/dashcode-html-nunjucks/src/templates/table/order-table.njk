@@ -1,0 +1,163 @@
+
+<!-- BEGIN: Order table -->
+{% set tableData = [
+            {
+                label: "User",
+                field: "User"
+            },
+            {
+                label: "Invoice",
+                field: "Invoice"
+            },
+
+            {
+                label: "Price",
+                field: "price"
+            },
+
+            {
+                label: "Status",
+                field: "Status"
+            }
+
+            ] %}
+{% set  rows = [
+         {
+    user: {
+      name: "Esther Howard",
+      image: "assets/images/users/user-1.jpg"
+    },
+    product: "Headphone",
+    invoice: "#324567",
+    price: "$90.99",
+    status: "paid"
+  },
+  {
+    user: {
+      name: "Guy Hawkins",
+      image: "assets/images/users/user-2.jpg"
+    },
+    product: "Headphone",
+    invoice: "#4224",
+    price: "$78.65",
+    status: "due"
+  },
+  {
+    user: {
+      name: "Bessie Cooper",
+      image: "assets/images/users/user-3.jpg"
+    },
+    product: "Headphone",
+    invoice: "#4224",
+    price: "$78.65",
+    status: "pending"
+  },
+  {
+    user: {
+      name: "Kathryn Murphy",
+      image: "assets/images/users/user-4.jpg"
+    },
+    product: "Headphone",
+    invoice: "#4224",
+    price: "$38.65",
+    status: "cancled"
+  },
+  {
+    user: {
+      name: "Darrell Steward",
+      image: "assets/images/users/user-5.jpg"
+    },
+    product: "Headphone",
+    invoice: "#4224",
+    price: "$178.65",
+    status: "shipped"
+  },
+  {
+    user: {
+      name: "Darrell Steward",
+      image: "assets/images/users/user-6.jpg"
+    },
+    product: "Headphone",
+    invoice: "#4224",
+    price: "$74.65",
+    status: "cancled"
+  },
+  {
+    user: {
+      name: "Esther Howard",
+      image: "assets/images/users/user-1.jpg"
+    },
+    product: "Headphone",
+    invoice: "#324567",
+    price: "$90.99",
+    status: "paid"
+  }
+            ] %}
+<div class="overflow-x-auto -mx-6">
+    <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden ">
+            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                <thead class=" bg-slate-200 dark:bg-slate-700">
+                    <tr>
+                        {% for item in tableData %}
+                            <th scope="col" class=" table-th ">
+                                {{ item.label }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                    {% for row in rows %}
+                        <tr>
+                            <td class="table-td">
+                                <div class="flex items-center">
+                                    <div class="flex-none">
+                                        <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                            <img src={{ row.user.image }} alt="" class="w-full h-full rounded-[100%] object-cover">
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 text-start">
+                                        <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                            {{ row.user.name }}
+                                        </h4>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="table-td">{{ row.invoice }}</td>
+                            <td class="table-td">{{ row.price }}</td>
+                            <td class="table-td ">
+                                {% if row.status === "paid" %}
+                                    <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-success-500
+                                            bg-success-500">
+                                        {{ row.status }}
+                                    </div>
+                                {% elif row.status === "due" %}
+                                    <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-warning-500
+                                            bg-warning-500">
+                                        {{ row.status }}
+                                    </div>
+                                {% elif row.status === "cancled" %}
+                                    <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-danger-500
+                                            bg-danger-500">
+                                        {{ row.status }}
+                                    </div>
+                                {% elif row.status === "pending" %}
+                                    <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-warning-500
+                                            bg-warning-500">
+                                        {{ row.status }}
+                                    </div>
+                                {% elif row.status === "shipped" %}
+                                    <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-primary-500
+                                            bg-primary-500">
+                                        {{ row.status }}
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- END: Order Table -->

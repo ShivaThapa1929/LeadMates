@@ -1,0 +1,270 @@
+{% extends "layout/layout.njk" %}
+{% block content %}
+    {% set pageTitle = "Alert" %}
+    {% set menuCategory = "Components" %}
+    {% include '../templates/components/breadcrumb.njk' %}
+    <div
+        class="grid xl:grid-cols-2 grid-cols-1 gap-6">
+        <!-- Theme Color Alerts -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Theme Color Alerts</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="space-y-5">
+                        <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-900 text-white dark:bg-slate-900
+                                dark:text-slate-300">
+                            <div class="flex items-start space-x-3 rtl:space-x-reverse">
+                                <div class="flex-1">
+                                    This is an alert—check it out!
+                                </div>
+                            </div>
+                        </div>
+                        {% set basicAlert = ["primary","secondary","info","success","warning","danger"] %}
+                        {% for item in basicAlert %}
+                            <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-{{ item }}-500 text-white dark:bg-{{ item }}-500
+                                    dark:text-slate-300">
+                                <div class="flex items-start space-x-3 rtl:space-x-reverse">
+                                    <div class="flex-1">
+                                        This is an alert—check it out!
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Light Color Alerts -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Light Color Alerts</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="space-y-5">
+                        <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800
+                                dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-300">
+                            <div class="flex items-start space-x-3 rtl:space-x-reverse">
+                                <div class="flex-1">
+                                    This is an alert—check it out!
+                                </div>
+                            </div>
+                        </div>
+                        {% set basicAlert = ["primary","secondary","info","success","warning","danger"] %}
+                        {% for item in basicAlert %}
+                            <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-{{ item }}-500 bg-opacity-[14%] text-{{ item }}-500">
+                                <div class="flex items-start space-x-3 rtl:space-x-reverse">
+                                    <div class="flex-1">
+                                        This is an alert—check it out!
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Linked Color Alerts -->
+        <div class="xl:col-span-2 col-span-1">
+            <div class="card">
+                <div class="card-body flex flex-col p-6">
+                    <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                        <div class="flex-1">
+                            <div class="card-title text-slate-900 dark:text-white">Link Colors</div>
+                        </div>
+                    </header>
+                    <div class="card-text h-full ">
+                        <div class="space-y-5">
+                            <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800
+                                    dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-300">
+                                <div class="flex items-start space-x-3 rtl:space-x-reverse">
+                                    <div class="flex-1">
+                                        This is an alert with
+                                        <a
+                                            aria-current="page"
+                                            href="/app/alert#"
+                                            class="router-link-active router-link-exact-active underline text-slate-900 dark:text-slate-300 text-sm font-medium">an
+                                            example link</a>. Check it out!
+                                    </div>
+                                </div>
+                            </div>
+                            {% set basicAlert = ["primary","secondary","info","success","warning","danger"] %}
+                            {% for item in basicAlert %}
+                                <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-{{ item }}-500 bg-opacity-[14%] text-{{ item }}-500">
+                                    <div class="flex items-start space-x-3 rtl:space-x-reverse">
+                                        <div class="flex-1">
+                                            This is an alert with
+                                            <a
+                                                aria-current="page"
+                                                href="/app/alert#"
+                                                class="router-link-active router-link-exact-active underline text-{{ item }}-900 dark:text-slate-300 text-sm font-medium">
+                                            an example link</a>. Check it out!
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dismissible Theme Color Alerts With Icon -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Dismissible Theme Color Alerts With Icon</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="space-y-5">
+                        <div class="py-[18px] px-6 font-normal text-sm rounded-md bg-slate-800 text-white dark:bg-slate-900 dark:text-slate-300">
+                            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                                <iconify-icon class="text-2xl flex-0" icon="system-uicons:target"></iconify-icon>
+                                <p class="flex-1 font-Inter">
+                                    This is an alert—check it out!
+                                </p>
+                                <div class="flex-0 text-xl cursor-pointer">
+                                    <iconify-icon icon="line-md:close"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                        {% set basicAlert = ["primary","secondary","info","success","warning","danger"] %}
+                        {% for item in basicAlert %}
+                            <div class="py-[18px] px-6 font-normal text-sm rounded-md bg-{{ item }}-500 text-white">
+                                <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                                    <iconify-icon class="text-2xl flex-0" icon="system-uicons:target"></iconify-icon>
+                                    <p class="flex-1 font-Inter">
+                                        This is an alert—check it out!
+                                    </p>
+                                    <div class="flex-0 text-xl cursor-pointer">
+                                        <iconify-icon icon="line-md:close"></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dismissible Light Color Alerts With Icon -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Dismissible Light Color Alerts With Icon</div>
+                    </div>
+                </header>
+                <div class="card-text h-full">
+                    <div class="space-y-5">
+                        <div class="py-[18px] px-6 font-normal text-sm rounded-md bg-slate-800 text-white dark:bg-slate-900 dark:text-slate-300">
+                            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                                <iconify-icon class="text-2xl flex-0" icon="system-uicons:target"></iconify-icon>
+                                <p class="flex-1 font-Inter">
+                                    This is an alert—check it out!
+                                </p>
+                                <div class="flex-0 text-xl cursor-pointer">
+                                    <iconify-icon icon="line-md:close"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                        {% set basicAlert = ["primary","secondary","info","success","warning","danger"] %}
+                        {% for item in basicAlert %}
+                            <div class="py-[18px] px-6 font-normal text-sm rounded-md bg-{{ item }}-500 bg-opacity-[14%]  text-white">
+                                <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                                    <iconify-icon class="text-2xl flex-0 text-{{ item }}-500" icon="system-uicons:target"></iconify-icon>
+                                    <p class="flex-1 text-{{ item }}-500 font-Inter">
+                                        This is an alert—check it out!
+                                    </p>
+                                    <div class="flex-0 text-xl cursor-pointer text-{{ item }}-500">
+                                        <iconify-icon icon="line-md:close"></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Outline Theme Color Alerts -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Outline Theme Color Alerts</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="space-y-5">
+                        <div class="py-[18px] px-6 font-normal text-sm rounded-md bg-white text-slate-800 dark:text-slate-300 border border-slate-800
+                                dark:border-slate-600 dark:bg-slate-800">
+                            <div class="flex items-start space-x-3 rtl:space-x-reverse">
+                                <div class="flex-1 font-Inter">
+                                    This is an alert—check it out!
+                                </div>
+                            </div>
+                        </div>
+                        {% set basicAlert = ["primary","secondary","info","success","warning","danger"] %}
+                        {% for item in basicAlert %}
+                            <div class="py-[18px] px-6 font-normal text-sm rounded-md bg-white text-{{ item }}-500 border border-{{ item }}-500
+                                    dark:bg-slate-800">
+                                <div class="flex items-start space-x-3 rtl:space-x-reverse">
+                                    <div class="flex-1 font-Inter">
+                                        This is an alert—check it out!
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Outline Light Color Alerts With Icon -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Outline Light Color Alerts With Icon</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="space-y-5">
+                        <div class="py-[18px] px-6 font-normal text-sm rounded-md bg-white text-slate-800 dark:text-slate-300 border border-slate-800
+                                dark:border-slate-600 dark:bg-slate-800">
+                            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                                <iconify-icon class="text-2xl flex-0" icon="system-uicons:target"></iconify-icon>
+                                <p class="flex-1 font-Inter">
+                                    This is an alert—check it out!
+                                </p>
+                                <div class="flex-0 text-xl cursor-pointer">
+                                    <iconify-icon icon="line-md:close"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                        {% set basicAlert = ["primary","secondary","info","success","warning","danger"] %}
+                        {% for item in basicAlert %}
+                            <div class="py-[18px] px-6 font-normal text-sm rounded-md bg-white text-{{ item }}-500 border border-{{ item }}-500
+                                    dark:bg-slate-800">
+                                <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                                    <iconify-icon class="text-2xl flex-0" icon="system-uicons:target"></iconify-icon>
+                                    <p class="flex-1 font-Inter">
+                                        This is an alert—check it out!
+                                    </p>
+                                    <div class="flex-0 text-xl cursor-pointer">
+                                        <iconify-icon icon="line-md:close"></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

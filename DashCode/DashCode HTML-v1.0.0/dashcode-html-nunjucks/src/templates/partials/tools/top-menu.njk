@@ -1,0 +1,440 @@
+{% set topMenu = [
+
+  {
+    title: "Dashboard",
+    icon: "heroicons-outline:home",
+    link: "/app/home",
+    child: [
+      {
+        childtitle: "Analytics Dashboard",
+        childlink: "index.html",
+        childicon: "heroicons:presentation-chart-line"
+      },
+      {
+        childtitle: "Ecommerce Dashboard",
+        childlink: "ecommerce-dashboard.html",
+        childicon: "heroicons:shopping-cart"
+      },
+      {
+        childtitle: "Project Dashboard",
+        childlink: "project-dashboard.html",
+        childicon: "heroicons:briefcase"
+      },
+      {
+        childtitle: "CRM Dashboard",
+        childlink: "crm-dashboard.html",
+        childicon: "ri:customer-service-2-fill"
+      },
+      {
+        childtitle: "Banking Dashboard",
+        childlink: "banking-dashboard.html",
+        childicon: "heroicons:wrench-screwdriver"
+      }
+    ]
+  },
+  {
+    title: "App",
+    icon: "heroicons-outline:chip",
+    link: "/app/home",
+    child: [
+      {
+        childtitle: "Chat",
+        childlink: "chat.html",
+        childicon: "heroicons-outline:chat"
+      },
+      {
+        childtitle: "Email",
+        childlink: "email.html",
+        childicon: "heroicons-outline:mail"
+      },
+      {
+        childtitle: "Calendar",
+        childlink: "calender",
+        childicon: "heroicons-outline:calendar"
+      },
+      {
+        childtitle: "Kanban",
+        childlink: "kanban",
+        childicon: "heroicons-outline:view-boards"
+      },
+      {
+        childtitle: "Todo",
+        childlink: "todo",
+        childicon: "heroicons-outline:clipboard-check"
+      },
+      {
+        childtitle: "Projects",
+        childlink: "projects",
+        childicon: "heroicons-outline:document"
+      }
+    ]
+  },
+  {
+    title: "Pages",
+    icon: "heroicons-outline:view-boards",
+    link: "/app/home",
+    megamenu: [
+      {
+        megamenutitle: "Authentication",
+        megamenuicon: "heroicons-outline:user",
+        singleMegamenu: [
+          {
+            m_childtitle: "Signin One",
+            m_childlink: "signin-one.html"
+          },
+          {
+            m_childtitle: "Signin Two",
+            m_childlink: "signin-two.html"
+          },
+          {
+            m_childtitle: "Signin Three",
+            m_childlink: "signin-three.html"
+          },
+          {
+            m_childtitle: "Signup One",
+            m_childlink: "signup-one.html"
+          },
+          {
+            m_childtitle: "Signup Two",
+            m_childlink: "signup-two.html"
+          },
+          {
+            m_childtitle: "Signup Three",
+            m_childlink: "signup-three.html"
+          },
+          {
+            m_childtitle: "Forget Password One",
+            m_childlink: "forget-password-one.html"
+          },
+          {
+            m_childtitle: "Forget Password Two",
+            m_childlink: "forget-password-two.html"
+          },
+          {
+            m_childtitle: "Forget Password Three",
+            m_childlink: "forget-password-three.html"
+          },
+          {
+            m_childtitle: "Lock Screen One",
+            m_childlink: "lock-screen-one.html"
+          },
+          {
+            m_childtitle: "Lock Screen Two",
+            m_childlink: "lock-screen-two.html"
+          },
+          {
+            m_childtitle: "Lock Screen Three",
+            m_childlink: "lock-screen-three.html"
+          }
+        ]
+      },
+
+      {
+        megamenutitle: "Components",
+        megamenuicon: "heroicons-outline:user",
+        singleMegamenu: [
+          {
+            m_childtitle: "typography",
+            m_childlink: "typography.html"
+          },
+          {
+            m_childtitle: "colors",
+            m_childlink: "colors.html"
+          },
+          {
+            m_childtitle: "alert",
+            m_childlink: "alert.html"
+          },
+          {
+            m_childtitle: "button",
+            m_childlink: "button.html"
+          },
+          {
+            m_childtitle: "card",
+            m_childlink: "card.html"
+          },
+          {
+            m_childtitle: "carousel",
+            m_childlink: "carousel.html"
+          },
+          {
+            m_childtitle: "dropdown",
+            m_childlink: "dropdown.html"
+          },
+          {
+            m_childtitle: "image",
+            m_childlink: "image.html"
+          },
+          {
+            m_childtitle: "modal",
+            m_childlink: "modal.html"
+          },
+          {
+            m_childtitle: "Progress bar",
+            m_childlink: "progress-bar.html"
+          },
+          {
+            m_childtitle: "Placeholder",
+            m_childlink: "placeholder.html"
+          },
+
+          {
+            m_childtitle: "Tab & Accordion",
+            m_childlink: "tab-accordion.html"
+          }
+        ]
+      },
+      {
+        megamenutitle: "Forms",
+        megamenuicon: "heroicons-outline:user",
+        singleMegamenu: [
+          {
+            m_childtitle: "Input",
+            m_childlink: "input.html"
+          },
+          {
+            m_childtitle: "Input group",
+            m_childlink: "input-group.html"
+          },
+          {
+            m_childtitle: "Input layout",
+            m_childlink: "input-layout.html"
+          },
+          {
+            m_childtitle: "Form validation",
+            m_childlink: "form-validation.html"
+          },
+          {
+            m_childtitle: "Wizard",
+            m_childlink: "form-wizard.html"
+          },
+          {
+            m_childtitle: "Input mask",
+            m_childlink: "input-mask.html"
+          },
+          {
+            m_childtitle: "File input",
+            m_childlink: "file-input"
+          },
+          {
+            m_childtitle: "Form repeater",
+            m_childlink: "form-repeater.html"
+          },
+          {
+            m_childtitle: "Textarea",
+            m_childlink: "textarea.html"
+          },
+          {
+            m_childtitle: "Checkbox",
+            m_childlink: "checkbox.html"
+          },
+          {
+            m_childtitle: "Radio button",
+            m_childlink: "radio-button.html"
+          },
+          {
+            m_childtitle: "Switch",
+            m_childlink: "switch.html"
+          }
+        ]
+      },
+      {
+        megamenutitle: "Utility",
+        megamenuicon: "heroicons-outline:user",
+        singleMegamenu: [
+          {
+            m_childtitle: "Invoice",
+            m_childlink: "invoice.html"
+          },
+          {
+            m_childtitle: "Pricing",
+            m_childlink: "pricing.html"
+          },
+
+          
+          {
+            m_childtitle: "FAQ",
+            m_childlink: "faq.html"
+          },
+          {
+            m_childtitle: "Blank page",
+            m_childlink: "blank-page.html"
+          },
+          {
+            m_childtitle: "Blog",
+            m_childlink: "blog.html"
+          },
+          {
+            m_childtitle: "404 page",
+            m_childlink: "404.html"
+          },
+          {
+            m_childtitle: "Coming Soon",
+            m_childlink: "comming-soon.html"
+          },
+          {
+            m_childtitle: "Under Maintanance page",
+            m_childlink: "under-maintanance.html"
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    title: "Widgets",
+    icon: "heroicons-outline:view-grid-add",
+    link: "form-elements",
+    child: [
+      {
+        childtitle: "Basic",
+        childlink: "basic-widgets.html",
+        childicon: "heroicons-outline:document-text"
+      },
+      {
+        childtitle: "Statistic",
+        childlink: "statistics-widgets.html",
+        childicon: "heroicons-outline:document-text"
+      }
+    ]
+  },
+
+  {
+    title: "Extra",
+    icon: "heroicons-outline:template",
+
+    child: [
+      {
+        childtitle: "Basic Table",
+        childlink: "basic-table.html",
+        childicon: "heroicons-outline:table"
+      },
+      {
+        childtitle: "Advanced table",
+        childlink: "advance-table.html",
+        childicon: "heroicons-outline:table"
+      },
+      {
+        childtitle: "Apex chart",
+        childlink: "apex-chart.html",
+        childicon: "heroicons-outline:chart-bar"
+      },
+      {
+        childtitle: "Chart js",
+        childlink: "chartjs.html",
+        childicon: "heroicons-outline:chart-bar"
+      },
+      {
+        childtitle: "Map",
+        childlink: "map.html",
+        childicon: "heroicons-outline:map"
+      }
+    ]
+  }
+] %}
+
+
+<div class="main-menu">
+   <ul>
+    {% for item in topMenu %}
+     <li
+          
+            class="
+            {% if item.child%} menu-item-has-children 
+              {%  elif item.megamenu %}  menu-item-has-children has-megamenu
+            {%endif%}"
+             >
+        <!--  Single menu -->
+            {% if not item.child and not item.megamenu  %}
+              <a href={{item.link}}>
+                <div class="flex flex-1 items-center space-x-[6px] rtl:space-x-reverse">
+                  <span class="icon-box">
+                    <iconify-icon icon={{item.icon}} > </iconify-icon>
+                  </span>
+                  <div class="text-box">{{item.title}}</div>
+                </div>
+              </a>
+             {% endif %}
+          <!-- has dropdown -->
+           
+            {% if item.child or item.megamenu %}
+            
+              <a href="javascript:void()">
+                <div class="flex flex-1 items-center space-x-[6px] rtl:space-x-reverse">
+                  <span class="icon-box">
+                    <iconify-icon icon={{item.icon}} > </iconify-icon>
+                  </span>
+                  <div class="text-box">{{item.title}}</div>
+                </div>
+                <div class="flex-none text-sm ltr:ml-3 rtl:mr-3 leading-[1] relative top-1">
+                  <iconify-icon icon="heroicons-outline:chevron-down" > </iconify-icon>
+                </div>
+              </a>
+            {% endif %}
+            <!-- Dropdown menu -->
+           
+            {% if item.child %}
+        
+              <ul class="sub-menu">
+                {% for childitem in item.child %}
+              
+                
+                  <li >
+                    <a href={{childitem.childlink}}>
+                      <div class="flex space-x-2 items-start rtl:space-x-reverse">
+                        <iconify-icon
+                          icon={{childitem.childicon}}
+                          class="leading-[1] text-base"
+                        > </iconify-icon>
+                        <span class="leading-[1]">
+                          {{childitem.childtitle}}
+                        </span>
+                      </div>
+                    </a>
+                  </li>
+                  {% endfor %}
+              </ul>
+                {% endif %}
+          <!-- Megamenu -->
+            
+            {% if item.megamenu %}
+           
+              <div class="rt-mega-menu">
+                <div class="flex flex-wrap space-x-8 justify-between rtl:space-x-reverse">
+                  {% for m_item in item.megamenu %}
+                  
+             
+                    <div >
+                      <!-- mega menu title -->
+                      <div class="text-sm font-medium text-slate-900 dark:text-white mb-2 flex space-x-1 items-center">
+                       
+                        <span> {{m_item.megamenutitle}}</span>
+                      </div>
+                   <!-- single menu item* -->
+                   {% for ms_item in m_item.singleMegamenu %}
+                   
+                      
+                        <a href={{ms_item.m_childlink}}>
+                         
+                            <div class="flex items-center space-x-2 text-[15px] leading-6 rtl:space-x-reverse">
+                              <span
+                                class="h-[6px] w-[6px] rounded-full border border-slate-600 dark:border-white inline-block flex-none"
+                              ></span>
+                              <span
+                                class="capitalize text-slate-600 dark:text-slate-300"
+                              >
+                                {{ms_item.m_childtitle}}
+                              </span>
+                            </div>
+                          
+                        </a>
+                      {% endfor %}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+             {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+</div>

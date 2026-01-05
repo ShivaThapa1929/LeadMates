@@ -1,0 +1,130 @@
+
+<!-- BEGIN: Email List -->
+{% set emails = [
+      {
+        id: "ss",
+        image: "assets/images/avatar/av-1.svg",
+        title: "Pay bills & win up to 600$ Cashback! ",
+        desc: " - Congratulations on your iRun Coach subscription. You made no space for excuses and you decided on a healthier and happier life...",
+        isfav: false,
+        sent: false,
+        draft: true,
+        spam: false,
+        trash: false,
+        personal: false,
+        social: true,
+        promotions: true,
+        lastime: "12:20 pm",
+        business: true,
+        is_checked: false,
+        isread: false,
+        isspam: true,
+        status:"sent,spam,personal,business",
+        isdelate: false
+      },
+      {
+        id: "ss",
+        image: "assets/images/avatar/av-2.svg",
+        title: "Pay bills & win up to 600$ Cashback! ",
+        desc: " - Congratulations on your iRun Coach subscription. You made no space for excuses and you decided on a healthier and happier life...",
+        isfav: true,
+        sent: false,
+        draft: false,
+        spam: false,
+        trash: false,
+        personal: false,
+        social: false,
+        promotions: false,
+        lastime: "12:20 pm",
+        is_checked: false,
+        business: false,
+        isread: false,
+        isspam: true,
+        status:"drafts,business,promotions,stared",
+        isdelate: false
+      },
+      {
+        id: "ss",
+        image: "assets/images/avatar/av-3.svg",
+        title: "1-Pay bills & win up to 600$ Cashback! ",
+        desc: " - Congratulations on your iRun Coach subscription. You made no space for excuses and you decided on a healthier and happier life...",
+        isfav: true,
+        sent: false,
+        draft: true,
+        spam: false,
+        trash: false,
+        personal: true,
+        social: false,
+        promotions: false,
+        lastime: "12:20 pm",
+        is_checked: false,
+        business: false,
+        isread: false,
+        isspam: false,
+        status:"stared,promotions,social",
+        isdelate: false
+      },
+      {
+        id: "ss",
+        image: "assets/images/avatar/av-4.svg",
+        title: "1-Pay bills & win up to 600$ Cashback! ",
+        desc: " - Congratulations on your iRun Coach subscription. You made no space for excuses and you decided on a healthier and happier life...",
+        isfav: true,
+        sent: true,
+        draft: false,
+        spam: false,
+        trash: false,
+        personal: true,
+        social: false,
+        promotions: false,
+        lastime: "12:20 pm",
+        is_checked: false,
+        business: false,
+        isread: false,
+        isspam: false,
+          status:"spam,social,stared",
+        isdelate: false
+      }
+      ] %}
+{% for item in emails %}
+    <li data-status="{{ item.status }}" data-stared="{{ item.isfav }}" class="flex px-7 space-x-6 group md:py-6 py-3 relative cursor-pointer hover:bg-slate-50 dark:hover:bg-transparent group
+                                                                                                                                                                                    items-center rtl:space-x-reverse">
+        <div>
+            <input type="checkbox" class="table-checkbox" name="email-checkbox"></div>
+            <div class="email-fav">
+                <iconify-icon icon="heroicons:star" class="text-xl leading-[1] relative "></iconify-icon>
+            </div>
+            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                <div class="flex-none">
+                    <div class="h-8 w-8 rounded-full text-white">
+                        <img src="{{ item.image }}" alt="" class="block w-full h-full object-cover">
+                    </div>
+                </div>
+                <div class="read-unread-name flex-1 text-sm min-w-max">
+                    Esther Howard
+                </div>
+            </div>
+            <p class="truncate">
+                <span class="read-unread-name text-sm">
+                    {{ item.title.slice(0, 18) }}
+                </span>
+                <span class="text-sm text-slate-600 dark:text-slate-300 font-normal">
+                    {{ item.desc }}
+                </span>
+            </p>
+            <div class="grow"></div>
+            <span>
+                <span class="flex-1 flex space-x-4 items-center rtl:space-x-reverse">
+                    <span class="flex-none space-x-2 text-xs text-slate-900 dark:text-slate-300 rtl:space-x-reverse">
+                        <span>{{ item.lastime }}</span>
+                    </span>
+                </span>
+                <span class="absolute ltr:right-0 rtl:left-0 top-1/2 -translate-y-1/2 dark:text-slate-300 group-hover:bg-slate-100
+                        dark:group-hover:bg-slate-800 bg-white h-full w-[100px] flex flex-col items-center justify-center opacity-0 invisible
+                        delete-button group-hover:opacity-100 group-hover:visible">
+                    <iconify-icon icon="heroicons-outline:trash" class="transition duration-150 hover:text-danger-500"></iconify-icon>
+                </span>
+            </span>
+        </li>
+    {% endfor %}
+    <!-- END: Email List -->

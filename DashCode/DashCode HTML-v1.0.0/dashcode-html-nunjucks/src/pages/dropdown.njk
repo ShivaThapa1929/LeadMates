@@ -1,0 +1,802 @@
+{% extends "layout/layout.njk" %}
+{% block content %}
+    {% set pageTitle = "Dropdown" %}
+    {% set menuCategory = "Components" %}
+    {% include '../templates/components/breadcrumb.njk' %}
+    <div
+        class="grid xl:grid-cols-2 grid-cols-1 gap-6">
+        <!-- BEGIN: Basic Dropdown -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Basic Dropdowns</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="btn-group-example btn-group">
+                        {% set basicType = [ "primary", "secondary", "info","success","warning","danger","dark","light"] %}
+                        {% for item in basicType %}
+                            <div class="dropdown relative">
+                                <button
+                                    class="btn inline-flex justify-center btn-{{ item }} items-center"
+                                    type="button"
+                                    id="{{item}}DropdownMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    {{ item }}
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                                </button>
+                                <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                        z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Another Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Something else here</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                        Sign out</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Basic Dropdown -->
+
+        <!-- BEGIN: Outline Dropdown -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Outline Dropdowns</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="btn-group-example btn-group">
+                        {% set basicType = [ "primary", "secondary", "info","success","warning","danger","dark","light"] %}
+                        {% for item in basicType %}
+                            <div class="dropdown relative">
+                                <button
+                                    class="btn inline-flex justify-center btn-outline-{{ item }} items-center"
+                                    type="button"
+                                    id="{{item}}OutlineDropdownMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    {{ item }}
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                                </button>
+                                <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                        z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Another Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Something else here</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                        Sign out</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Outline Dropdown -->
+
+        <!-- BEGIN: Flat Dropdown -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Flat Dropdowns</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="btn-group-example btn-group">
+                        {% set basicType = [ "primary", "secondary", "info","success","warning","danger","dark","light"] %}
+                        {% for item in basicType %}
+                            <div class="dropdown relative">
+                                <button
+                                    class="btn inline-flex justify-center text-{{ item }}-500 items-center"
+                                    type="button"
+                                    id="{{item}}FlatDropdownMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    {{ item }}
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                                </button>
+                                <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                        z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Another Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Something else here</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                        Sign out</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Flat Dropdown -->
+
+        <!-- BEGIN: Split Dropdown -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Split Dropdowns</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="btn-group-example btn-group">
+                        {% set basicType = [ "primary", "secondary", "info","success","warning","danger","dark","light"] %}
+                        {% for item in basicType %}
+                            <div class="dropdown relative ">
+                                <button
+                                    class="btn inline-flex justify-center btn-{{ item }} items-center cursor-default relative !pr-14"
+                                    type="button"
+                                    id="{{item}}splitDropdownMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    {{ item }}
+                                    <span class="cursor-pointer absolute ltr:border-l rtl:border-r border-slate-100 h-full ltr:right-0 rtl:left-0 px-2 flex
+                                            items-center justify-center leading-none">
+                                        <iconify-icon class="leading-none text-xl" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                                    </span>
+                                </button>
+                                <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                        z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Another Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Something else here</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                        Sign out</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Split Dropdown -->
+
+        <!-- BEGIN: Split Outline Dropdown -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Split Outline Dropdowns</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="btn-group-example btn-group">
+                        {% set basicType = [ "primary", "secondary", "info","success","warning","danger","dark","light"] %}
+                        {% for item in basicType %}
+                            <div class="dropdown relative ">
+                                <button
+                                    class="btn inline-flex justify-center btn-outline-{{ item }} items-center cursor-default relative !pr-14"
+                                    type="button"
+                                    id="{{item}}splitOutlineDropdownMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    {{ item }}
+                                    <span class="cursor-pointer absolute ltr:border-l rtl:border-r border-{{ item }}-500 h-full ltr:right-0 rtl:left-0 px-2 flex
+                                            items-center justify-center leading-none">
+                                        <iconify-icon class="leading-none text-xl" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                                    </span>
+                                </button>
+                                <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                        z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Another Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Something else here</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                        Sign out</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Split Outline Dropdown -->
+
+        <!-- BEGIN: Directions Dropdown -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Dropdown Directions</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div
+                        class="flex items-center flex-wrap gap-2">
+                        <!-- Dropdown Top -->
+                        <div class="dropdup relative">
+                            <button
+                                class="btn inline-flex justify-center btn-primary items-center"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Drop Top
+                                <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2 rotate-180" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                            </button>
+                            <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                    z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Another Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Something else here</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                    Sign out</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Dropdown Right -->
+                        <div class="dropend relative">
+                            <button
+                                class="btn inline-flex justify-center btn-primary items-center"
+                                type="button"
+                                id="rightDropdownMenuButton"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Drop Right
+                                <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2 -rotate-90" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                            </button>
+                            <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                    z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Another Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Something else here</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                    Sign out</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Dropdown Bottom -->
+                        <div class="dropdown relative">
+                            <button
+                                class="btn inline-flex justify-center btn-primary items-center"
+                                type="button"
+                                id="bottomDropdownMenuButton"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Drop Down
+                                <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                            </button>
+                            <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                    z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Another Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Something else here</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                    Sign out</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Dropdown Left -->
+                        <div class="dropstart relative">
+                            <button
+                                class="btn inline-flex justify-center btn-primary items-center"
+                                type="button"
+                                id="leftDropdownMenuButton"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <iconify-icon class="text-xl ltr:ml-r rtl:ml-2 rotate-90" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                                Drop Left
+                            </button>
+                            <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                    z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Another Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Something else here</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                    Sign out</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Directions Dropdown -->
+
+        <!-- BEGIN: Dropdown Sizes -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Dropdown Sizes</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="btn-group-example btn-group">
+                        <div class="relative">
+                            <div class="dropdown relative">
+                                <button
+                                    class="btn btn-xl inline-flex justify-center btn-primary items-center"
+                                    type="button"
+                                    id="largeDropdownMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    primary
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                                </button>
+                                <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                        z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Another Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Something else here</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                        Sign out</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <div class="dropdown relative">
+                                <button
+                                    class="btn inline-flex justify-center btn-primary items-center"
+                                    type="button"
+                                    id="defaultsDropdownMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    primary
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                                </button>
+                                <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                        z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Another Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Something else here</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                        Sign out</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <div class="dropdown relative">
+                                <button
+                                    class="btn inline-flex justify-center btn-primary items-center btn-sm"
+                                    type="button"
+                                    id="smallDropdownMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    primary
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                                </button>
+                                <ul class=" dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                        z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Another Action</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white">
+                                        Something else here</a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                        Sign out</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Sizes Dropdown -->
+
+        <!-- BEGIN: Block Dropdown -->
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Block Dropdown</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="space-y-3">
+                        <div class="dropdown relative">
+                            <button
+                                class="btn flex justify-center w-full btn-primary items-center"
+                                type="button"
+                                id="blockDropdownMenuButton1"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                primary
+                                <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                            </button>
+                            <ul class=" dropdown-menu min-w-full absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                    z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Another Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Something else here</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                    Sign out</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="dropdown relative">
+                            <button
+                                class="btn flex justify-center w-full btn-outline-primary items-center"
+                                type="button"
+                                id="blockDropdownMenuButton2"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                primary
+                                <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                            </button>
+                            <ul class=" dropdown-menu min-w-full absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                    z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Another Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Something else here</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                    Sign out</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="dropdown relative">
+                            <button
+                                class="btn inline-flex justify-center btn-primary items-center w-full cursor-default relative pr-14"
+                                type="button"
+                                id="blockDropdownMenuButton3"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                primary
+                                <span class="cursor-pointer absolute ltr:border-l rtl:border-r border-slate-100 h-full ltr:right-0 rtl:left-0 px-2 flex
+                                        items-center justify-center leading-none">
+                                    <iconify-icon class="leading-none text-xl" icon="ic:round-keyboard-arrow-down"></iconify-icon>
+                                </span>
+                            </button>
+                            <ul class=" dropdown-menu min-w-full absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow
+                                    z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Another Action</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white">
+                                    Something else here</a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#"
+                                        class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                            dark:hover:text-white border-t border-slate-100 dark:border-slate-800">
+                                    Sign out</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Block Dropdown -->
+
+    </div>
+{% endblock %}

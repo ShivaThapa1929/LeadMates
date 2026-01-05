@@ -1,0 +1,185 @@
+{% extends "layout/layout.njk" %}
+{% set users = [
+    {
+        name: "Ab"
+    }, {
+        name: "Bc"
+    }, {
+        name: "Cd"
+    }, {
+        name: "Df"
+    }, {
+        name: "Ab"
+    }, {
+        name: "Sd"
+    }, {
+        name: "Sg"
+    }
+] %}
+{% block content %}
+    <div class="space-y-5">
+
+        <!-- BEGIN: BreadCrumb -->
+        <div class="flex justify-between flex-wrap items-center mb-6">
+            <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">Banking</h4>
+            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <button class="btn inline-flex justify-center bg-white text-slate-700 dark:bg-slate-700 !font-normal dark:text-white ">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:calendar"></iconify-icon>
+                        <span>Weekly</span>
+                    </span>
+                </button>
+                <button class="btn inline-flex justify-center bg-white text-slate-700 dark:bg-slate-700 !font-normal dark:text-white ">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:filter"></iconify-icon>
+                        <span>Select Date</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <!-- END: Breadcrumb  -->
+
+        <div class="card p-6">
+            <div class="grid xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5 place-content-center">
+                <div class="flex space-x-4 h-full items-center rtl:space-x-reverse">
+                    <div class="flex-none">
+                        <div class="h-20 w-20 rounded-full">
+                            <img src="assets/images/all-img/main-user.png" alt="" class="w-full h-full">
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-xl font-medium mb-2">
+                            <span class="block font-light">Good evening,</span>
+                            <span class="block">Mr. Jone Doe</span>
+                        </h4>
+                        <p class="text-sm dark:text-slate-300">Welcome to Dashcode</p>
+                    </div>
+                </div>
+                {% include '../templates/widget/group-chart-3.njk' %}
+            </div>
+        </div>
+        <div class="grid grid-cols-12 gap-5">
+            <div class="lg:col-span-4 col-span-12 space-y-5">
+                <div class="card">
+                    <header class="card-header">
+                        <h4 class="card-title">My card</h4>
+                    </header>
+                    <div class="card-body p-6">
+                        <div class="max-w-[90%] mx-auto mt-2">
+                            {% include "../templates/widget/card-slide.njk" %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <header class="card-header">
+                        <h4 class="card-title">Quick transfer</h4>
+                    </header>
+                    <div class="card-body p-6">
+                        <div class="space-y-6">
+                            <div class="bg-slate-50 dark:bg-slate-900 rounded-md p-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-lg text-slate-900 dark:text-white">
+                                        Contacts
+                                    </span>
+                                    <a href="#" class="font-medium text-slate-900 dark:text-white underline text-sm">
+                                        View all
+                                    </a>
+                                </div>
+                                <ul class="flex space-x-6 py-3 px-1  overflow-x-auto">
+                                    {% for item in users %}
+                                        <li class="ring-2 ring-primary-500 ring-offset-2 h-[42px] w-[42px] cursor-pointer text-xl font-medium capitalize flex-none
+                                                    rounded-full bg-primary-500 text-white flex flex-col items-center justify-center ">
+                                            {{ item.name }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="bg-slate-100 dark:bg-slate-900 rounded-md p-4">
+                                <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1 cursor-pointer font-normal" for="cdp">Amount</label>
+                                <div class="fromGroup">
+                                    <div class="relative">
+                                        <input class="form-control py-2 !bg-transparent border-none focus:ring-0 focus:border-none p-0 text-slate-900 dark:text-white
+                                                text-sm placeholder:text-slate-400 placeholder:font-medium h-auto font-medium" placeholder="$6547" id="cdp" value="">
+                                        <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2 space-x-1 rtl:space-x-reverse"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-100 dark:bg-slate-900 rounded-md p-4">
+                                <label class="text-xs text-slate-500 dark:text-slate-400 block cursor-pointer mb-1" for="cd">Recipient account number</label>
+                                <div class="fromGroup">
+                                    <div class="relative">
+                                        <input type="text" placeholder="3458-3548-6548-3244" class="form-control py-2 !bg-transparent border-none focus:ring-0 focus:border-none p-0 text-slate-900 dark:text-white
+                                                text-sm placeholder:text-slate-400 h-auto placeholder:font-medium font-medium" id="cd" value="">
+                                        <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2 space-x-1 rtl:space-x-reverse"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between">
+                                <div>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">
+                                        Total amount
+                                    </span>
+                                    <span class="text-lg font-medium text-slate-900 dark:text-white block">
+                                        $6547
+                                    </span>
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-dark">
+                                        Send money
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:col-span-8 col-span-12">
+                <div class="space-y-5 bank-table">
+                    {% include "../templates/table/transactions.njk" %}
+                    <div class="card">
+                        <header class="card-header">
+                            <h4 class="card-title">
+                                History
+                            </h4>
+                            <div>{% include "../templates/dropdown.njk" %}</div>
+                        </header>
+                        <div class="card-body p-6">
+                            <div class="legend-ring4">
+                                <div id="history-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
+            <div class="card">
+                <header class="card-header">
+                    <h4 class="card-title">
+                        Account Receivable
+                    </h4>
+                    <div>{% include "../templates/dropdown.njk" %}</div>
+                </header>
+                <div class="card-body p-6">
+                    <div class="legend-ring4">
+                        <div id="account-receivable-chart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <header class="card-header">
+                    <h4 class="card-title">
+                        Account Payable
+                    </h4>
+                    <div>{% include "../templates/dropdown.njk" %}</div>
+                </header>
+                <div class="card-body p-6">
+                    <div class="legend-ring4">
+                        <div id="payable-chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

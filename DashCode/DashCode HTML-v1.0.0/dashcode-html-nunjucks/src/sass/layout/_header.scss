@@ -1,0 +1,49 @@
+/* Header Changing area */
+.app-header {
+  @apply py-3 px-[15px] md:py-6 md:px-6;
+}
+#app_header.floating {
+  @apply mx-4 mt-8;
+}
+#app_header.floating .app-header {
+  @apply rounded-lg;
+}
+
+#app_header.sticky {
+  @apply top-0;
+}
+
+// xl device mobile logo
+
+.app-wrapper {
+  &:not(.horizontalMenu) {
+    .vertical-box {
+      @apply flex;
+    }
+    .horizental-box {
+      @apply hidden;
+    }
+    .main-menu {
+      @apply hidden;
+    }
+  }
+  &.horizontalMenu {
+    .vertical-box {
+      @apply hidden;
+    }
+    .horizental-box {
+      @apply flex;
+    }
+    .main-menu {
+      @apply hidden xl:block;
+    }
+    .app-header {
+      @apply py-3 xl:py-0;
+    }
+  }
+}
+
+
+.modal {
+  @apply backdrop-blur-sm
+}

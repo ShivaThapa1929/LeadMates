@@ -1,0 +1,44 @@
+/* Google Font fallback */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0b0b0b;
+  color: #ffffff;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
+}
+
+/* Layout helpers */
+.page {
+  min-height: calc(100vh - 120px); /* navbar + footer space */
+  padding: 2rem;
+}
+
+/* Navbar link style example */
+.nav-link {
+  color: #cfcfcf;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+/* Button example */
+.btn-primary {
+  padding: 12px 24px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff4d4d, #ff0000);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4);
+}

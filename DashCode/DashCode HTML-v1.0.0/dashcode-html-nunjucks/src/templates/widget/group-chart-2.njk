@@ -1,0 +1,39 @@
+
+<!-- BEGIN: Group Chart2 -->
+{% set statistics = [
+  {
+    name: "wline1",
+     title: "Totel revenue",
+    count: "3,564",
+    bg: "bg-[#E5F9FF] dark:bg-slate-900	"
+  },
+  {
+    name: "wline2",
+       title: "Products sold",
+    count: "564",
+    bg: "bg-[#FFEDE5] dark:bg-slate-900	"
+  },
+  {
+    name: "wline3",title: "Growth",
+    count: "+5.0%",
+    bg: "bg-[#EAE5FF] dark:bg-slate-900	"
+  }
+] %}
+{% for item in statistics %}
+    <div class="py-[18px] px-4 rounded-[6px] {{ item.bg }} ">
+        <div class="flex items-center space-x-6 rtl:space-x-reverse">
+            <div class="flex-none">
+                <div id="{{ item.name }}"></div>
+            </div>
+            <div class="flex-1">
+                <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                    {{ item.title }}
+                </div>
+                <div class="text-slate-900 dark:text-white text-lg font-medium">
+                    {{ item.count }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+<!-- END: Group Chart2 -->

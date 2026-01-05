@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zxx" dir="ltr" class="light">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <title>Dashcode - HTML Template</title>
+        <link rel="icon" type="image/png" href="assets/images/logo/favicon.svg">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+        <!-- BEGIN: Theme CSS-->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="assets/css/countrySelect.css">
+        <link rel="stylesheet" href="assets/css/dragula.min.css">
+        <link rel="stylesheet" href="assets/css/dropzone.min.css">
+        <link rel="stylesheet" href="assets/css/flatpickr.min.css">
+        <link rel="stylesheet" href="assets/css/jquery-jvectormap-2.0.5.css">
+        <link rel="stylesheet" href="assets/css/leaflet.css">
+        <link rel="stylesheet" href="assets/css/nice-select.css">
+        <link rel="stylesheet" href="assets/css/owl.carousel.css">
+        <link rel="stylesheet" href="assets/css/plyr.min.css">
+        <link rel="stylesheet" href="assets/css/quill.css">
+        <link rel="stylesheet" href="assets/css/select2.min.css">
+        <link rel="stylesheet" href="assets/css/sidebar-menu.css">
+        <link rel="stylesheet" href="assets/css/SimpleBar.css">
+        <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
+        <link rel="stylesheet" href="assets/css/zabuto_calendar.min.css">
+        <link rel="stylesheet" href="assets/css/app.css">
+        <link rel="stylesheet" href="assets/css/settings.css">
+        <!-- END: Theme CSS-->
+    </head>
+    <body class="{{ body_class }} font-inter dashcode-app" id="body_class">
+
+        <!-- [if IE]> <p class="browserupgrade"> You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security. </p> <![endif] -->
+        <main class="app-wrapper">
+            <!-- BEGIN: Sidebar -->
+            {% include '../partials/sidebar.njk' %}
+            <!-- End: Sidebar -->
+            <!-- BEGIN: Settings -->
+            {% include '../partials/settings.njk' %}
+            <!-- End: Settings -->
+            <div class="flex flex-col justify-between min-h-screen">
+                <div>
+                    <!-- BEGIN: Header -->
+                    {% include '../partials/header.njk' %}
+                    <!-- END: Header -->
+                    <div class="content-wrapper transition-all duration-150 ltr:ml-[248px] rtl:mr-[248px]" id="content_wrapper">
+                        <div class="page-content">
+                            <div class="transition-all duration-150 container-fluid" id="page_layout">
+                                <div id="content_layout">
+                                    {% block content %}{% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include '../partials/footer.njk' %}
+            </div>
+        </main>
+        <!-- scripts -->
+        <!-- Core Js -->
+        <script src="assets/js/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/popper.js"></script>
+        <script src="assets/js/tw-elements-1.0.0-alpha13.min.js"></script>
+        <script src="assets/js/SimpleBar.js"></script>
+        <!-- Jquery Plugins -->
+        <script src="assets/js/chart.umd.js"></script>
+        <script src="assets/js/flatpickr.js"></script>
+        <script src="assets/js/leaflet.js"></script>
+        <script src="assets/js/fullcalendar.js"></script>
+        <script src="assets/js/apexcharts.js"></script>
+        <script src="assets/js/cleave.min.js"></script>
+        <script src="assets/js/countrySelect.js"></script>
+        <script src="assets/js/dragula.js"></script>
+        <script src="assets/js/dropzone.min.js"></script>
+        <script src="assets/js/iconify.js"></script>
+        <script src="assets/js/jquery-jvectormap-2.0.5.min.js"></script>
+        <script src="assets/js/jquery-jvectormap-world-mill-en.js"></script>
+        <script src="assets/js/jquery.dataTables.min.js"></script>
+        <script src="assets/js/jquery.steps.min.js"></script>
+        <script src="assets/js/jquery.validate.min.js"></script>
+        <script src="assets/js/nice-select.min.js"></script>
+        <script src="assets/js/swiper.min.js"></script>
+        <script src="assets/js/owl.carousel.min.js"></script>
+        <script src="assets/js/plyr.min.js"></script>
+        <script src="assets/js/quill.min.js"></script>
+        <script src="assets/js/Select2.min.js"></script>
+        <script src="assets/js/step-progress.js"></script>
+        <script src="assets/js/tippy.js"></script>
+        <script src="assets/js/zabuto_calendar.min.js"></script>
+        <!-- app js -->
+        <script src="assets/js/sidebar-menu.js"></script>
+        <script src="assets/js/app-chat.js"></script>
+        <script src="assets/js/app-email.js"></script>
+        <script src="assets/js/app-todo.js"></script>
+        <script src="assets/js/calander-init.js"></script>
+        <script src="assets/js/chart-active.js"></script>
+        <script src="assets/js/step-form.js"></script>
+        <script src="assets/js/map-active.js"></script>
+        <script src="assets/js/app.js"></script>
+    </body>
+</html>

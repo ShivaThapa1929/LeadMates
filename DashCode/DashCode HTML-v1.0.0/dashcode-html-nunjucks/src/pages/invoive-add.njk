@@ -1,0 +1,169 @@
+{% extends "layout/layout.njk" %}
+{% block content %}
+    {% set pageTitle = "Invoice-Add
+" %}
+    {% set menuCategory = "Utility
+" %}
+    {% include '../templates/components/breadcrumb.njk' %}
+    <div class="card ">
+        <header class="card-header ">
+            <div>
+                <div class="card-title ">Create new invoice</div>
+            </div>
+        </header>
+        <main class="card-body p-6">
+            <h4 class="text-slate-900 dark:text-white text-xl mb-4">#89572935Kh</h4>
+            <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
+                <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
+                    <div class="lg:col-span-2 col-span-1 text-slate-900 dark:text-slate-300 text-base font-medium">Recipient info-500</div>
+                    <div>
+                        <label for="default-picker" class=" form-label">Issued Date</label>
+                        <input class="form-control py-2 flatpickr-input flatpickr" id="default-picker" type="text"></div>
+                        <div class="fromGroup       ">
+                            <label class="block capitalize form-label  ">Name</label>
+                            <div class="relative ">
+                                <input type="text" class="form-control py-2 " placeholder="Add your name">
+                                    <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                </div>
+                            </div>
+                            <div class="fromGroup       ">
+                                <label class="block capitalize form-label  ">Phone</label>
+                                <div class="relative ">
+                                    <input type="text" class="form-control py-2 " placeholder="Add your phone">
+                                        <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                    </div>
+                                </div>
+                                <div class="fromGroup       ">
+                                    <label class="block capitalize form-label  ">Email</label>
+                                    <div class="relative ">
+                                        <input type="email" class="form-control py-2 " placeholder="Add your email">
+                                            <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                        </div>
+                                    </div>
+                                    <div class="lg:col-span-2 col-span-1">
+                                        <div class="fromGroup       ">
+                                            <label class="block capitalize form-label  ">Address</label>
+                                            <div class="relative ">
+                                                <textarea class="  form-control py-2   " placeholder="address" rows="3"></textarea>
+                                                <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
+                                    <div class="lg:col-span-2 col-span-1 text-slate-900 text-base dark:text-slate-300 font-medium">Owner info</div>
+                                    <div class="fromGroup       ">
+                                        <label class="block capitalize form-label  ">Name</label>
+                                        <div class="relative ">
+                                            <input type="text" class="form-control py-2 " placeholder="Add your name">
+                                                <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                            </div>
+                                        </div>
+                                        <div class="fromGroup       ">
+                                            <label class="block capitalize form-label  ">Phone</label>
+                                            <div class="relative ">
+                                                <input type="text" class="form-control py-2 " placeholder="Add your phone">
+                                                    <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                                </div>
+                                            </div>
+                                            <div class="lg:col-span-2 col-span-1">
+                                                <div class="fromGroup       ">
+                                                    <label class="block capitalize form-label  ">Email</label>
+                                                    <div class="relative ">
+                                                        <input type="email" class="form-control py-2 " placeholder="Add your email">
+                                                            <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="lg:col-span-2 col-span-1">
+                                                    <div class="fromGroup       ">
+                                                        <label class="block capitalize form-label  ">Address</label>
+                                                        <div class="relative ">
+                                                            <textarea class="  form-control py-2   " placeholder="address" rows="3"></textarea>
+                                                            <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="my-6">
+                                            <div>
+                                                <div class="bg-slate-50 dark:bg-slate-800 -mx-6 px-6 py-6">
+                                                    <div class="mb-6 text-slate-600 dark:text-slate-300 text-xs font-medium uppercase">Items info-500</div>
+                                                    <div>
+                                                        <form>
+                                                            <div class="lg:grid-cols-3 md:grid-cols-2 grid-cols-1 grid gap-5 mb-5 last:mb-0">
+                                                                <div class="fromGroup       ">
+                                                                    <label for="name0" class="block capitalize form-label  ">First Name</label>
+                                                                    <div class="relative ">
+                                                                        <input type="text" name="test[0].firstName" class="  form-control py-2   " placeholder="First Name" id="name0">
+                                                                            <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="fromGroup       ">
+                                                                        <label for="name20" class="block capitalize form-label  ">last Name</label>
+                                                                        <div class="relative ">
+                                                                            <input type="text" name="test[0].lastName" class="  form-control py-2   " placeholder="Last Name" id="name20">
+                                                                                <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="flex justify-between items-end space-x-5">
+                                                                            <div class="flex-1">
+                                                                                <div class="fromGroup       ">
+                                                                                    <label for="name30" class="block capitalize form-label  ">Phone</label>
+                                                                                    <div class="relative ">
+                                                                                        <input type="text" name="test[0].phone" class="  form-control py-2   " placeholder="Phone" id="name30">
+                                                                                            <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                    <div class="mt-4">
+                                                                        <button type="button" class="btn inline-flex justify-center text-slate-600 p-0 dark:text-slate-300">
+                                                                            <span class="flex items-center">
+                                                                                <span class=" ltr:mr-2 rtl:ml-2 text-[20px] ">
+                                                                                    <svg
+                                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                                        aria-hidden="true"
+                                                                                        role="img"
+                                                                                        class="iconify iconify--heroicons-outline"
+                                                                                        width="1em"
+                                                                                        height="1em"
+                                                                                        viewBox="0 0 24 24">
+                                                                                        <path
+                                                                                            fill="none"
+                                                                                            stroke="currentColor"
+                                                                                            stroke-linecap="round"
+                                                                                            stroke-linejoin="round"
+                                                                                            stroke-width="2"
+                                                                                            d="M12 4v16m8-8H4"></path>
+                                                                                    </svg>
+                                                                                </span>
+                                                                                <span>Add new</span>
+                                                                            </span>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="fromGroup       ">
+                                                        <label class="block capitalize form-label  ">Additional note</label>
+                                                        <div class="relative ">
+                                                            <textarea class="  form-control py-2 lg:w-1/2  " placeholder="Note" rows="3"></textarea>
+                                                            <div class="flex text-xl absolute ltr:right-[14px] rtl:left-[14px] top-1/2 -translate-y-1/2  space-x-1 rtl:space-x-reverse"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ltr:text-right rtl:text-left space-x-3 rtl:space-x-reverse">
+                                                        <button type="button" class=" btn inline-flex justify-center btn-dark">
+                                                            <span class="flex items-center">
+                                                                <span>Save</span>
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </main>
+                                            </div>
+                                        {% endblock %}

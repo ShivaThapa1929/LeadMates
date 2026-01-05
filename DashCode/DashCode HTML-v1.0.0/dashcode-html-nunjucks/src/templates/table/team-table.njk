@@ -1,0 +1,165 @@
+
+<!-- BEGIN: Team Table -->
+{% set tableData = [
+            {
+                label: "ASSIGNEE",
+                field: "ASSIGNEE"
+            },
+            {
+                label: "STATUS",
+                field: "STATUS"
+            },
+
+            {
+                label: "TIME",
+                field: "TIME"
+            },
+
+            {
+                label: "CHART",
+                field: "CHART"
+            },
+
+            {
+                label: "ACTION",
+                field: "ACTION"
+            }
+
+            ] %}
+{% set  rows = [
+         {
+    customer: {
+      name: "Arlene McCoy",
+      image: "assets/images/users/user-1.jpg",
+      deg: "Ux designer"
+    },
+    status: "progress",
+    time: "42.5 hours",
+    chart: null
+  },
+  {
+    customer: {
+      name: "Arlene McCoy",
+      image: "assets/images/users/user-2.jpg",
+      deg: "Ux designer"
+    },
+    status: "complete",
+    time: "42.5 hours",
+    chart: null
+  },
+  {
+    customer: {
+      name: "Arlene McCoy",
+      image: "assets/images/users/user-3.jpg",
+      deg: "Ux designer"
+    },
+    status: "progress",
+    time: "42.5 hours",
+    chart: null
+  },
+  {
+    customer: {
+      name: "Arlene McCoy",
+      image: "assets/images/users/user-4.jpg",
+      deg: "Ux designer"
+    },
+    status: "complete",
+    time: "42.5 hours",
+    chart: null
+  }
+            ] %}
+<div class="overflow-x-auto -mx-6">
+    <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden ">
+            <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                <thead class=" bg-slate-200 dark:bg-slate-700">
+                    <tr>
+                        {% for item in tableData %}
+                            <th scope="col" class=" table-th ">
+                                {{ item.label }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                    {% for row in rows %}
+                        <tr>
+                            <td class="table-td">
+                                <div class="flex items-center">
+                                    <div class="flex-none">
+                                        <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                            <img src={{ row.customer.image }} alt="" class="w-full h-full rounded-[100%] object-cover">
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 text-start">
+                                        <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                            {{ row.customer.name }}
+                                        </h4>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="table-td ">
+                                <span class="block min-w-[140px] text-left">
+                                    <span class="inline-block text-center mx-auto py-1">
+                                        {% if row.status === "progress" %}
+                                            <span class="flex items-center space-x-3 rtl:space-x-reverse">
+                                                <span class="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
+                                                <span>In progress</span>
+                                            </span>
+                                        {% elif row.status === "complete" %}
+                                            <span class="flex items-center space-x-3 rtl:space-x-reverse">
+                                                <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                <span>Complete</span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="table-td">{{ row.time }}</td>
+                            <td class="table-td">{{ row.chart }}</td>
+                            <td class="table-td">
+                                <div class="relative">
+                                    <div class="dropdown relative">
+                                        <button
+                                            class="text-xl text-center block w-full "
+                                            type="button"
+                                            id="teamDropdownMenuButton"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                                        </button>
+                                        <ul class=" dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700
+                                                shadow z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                            <li>
+                                                <a
+                                                    href="#"
+                                                    class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                        dark:hover:text-white">
+                                                    View</a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="#"
+                                                    class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                        dark:hover:text-white">
+                                                    Edit</a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="#"
+                                                    class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                                        dark:hover:text-white">
+                                                    Delete</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- END: Team table -->

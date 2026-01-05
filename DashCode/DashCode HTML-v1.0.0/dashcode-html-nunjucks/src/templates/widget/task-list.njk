@@ -1,0 +1,108 @@
+
+<!-- BEGIN: Task List -->
+{% set lists = [
+{
+      id: 1,
+      image: "assets/images/users/user-1.jpg",
+      title: "Amet minim mollit non deserunt ullam.",
+      isDone: false
+    },
+    {
+      id: 2,
+      image: "assets/images/users/user-2.jpg",
+      title: "Amet minim mollit non deserunt ullam.",
+      isDone: false
+    },
+    {
+      id: 3,
+      image: "assets/images/users/user-3.jpg",
+      title: "Amet minim mollit non deserunt ullam.",
+      isDone: false
+    },
+    {
+      id: 4,
+      image: "assets/images/users/user-4.jpg",
+      title: "Amet minim mollit non deserunt ullam.",
+      isDone: false
+    },
+    {
+      id: 5,
+      image: "assets/images/users/user-5.jpg",
+      title: "Amet minim mollit non deserunt ullam.",
+      isDone: false
+    },
+    {
+      id: 6,
+      image: "assets/images/users/user-6.jpg",
+      title: "Amet minim mollit non deserunt ullam.",
+      isDone: false
+    }
+] %}
+
+
+
+  {# const deleteItem = (id) => {
+    setLists(lists.filter((item) => item.id !== id));
+  }; #}
+
+
+    <div>
+      <ul class="divide-y divide-slate-100 dark:divide-slate-700 -mx-6 -mb-6">
+       {% for item in lists %}
+   
+          <li
+            class="flex items-center px-6 space-x-4 py-4 rtl:space-x-reverse"
+            
+          >
+            <div class="flex-none flex space-x-2 items-center rtl:space-x-reverse">
+       <div class="checkbox-area">
+                            <label class="inline-flex items-center cursor-pointer">
+                              <input type="checkbox" class="hidden" name="tasklist">
+                              <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative
+                                            transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                        <img src="assets/images/icon/ck-white.svg" alt="" class="h-[10px] w-[10px] block m-auto opacity-0"></span>
+
+                            </label>
+                          </div>
+              <div
+                class="img-active
+                    
+                  h-8 w-8 rounded-full text-white"
+              >
+                <img
+                  src={{item.image}}
+                  alt=""
+                  class="block w-full h-full object-cover rounded-full"
+                >
+              </div>
+            </div>
+            <div
+              class="flex-1 flex bar-active"  
+            >
+              <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
+                {{item.title.slice(0, 20) + "..."}}
+              </span>
+              <span class="flex-none space-x-2 text-base text-secondary-500 rtl:space-x-reverse">
+                {% if item.isDone %}
+               
+                
+                  <button type="button">
+                    <iconify-icon icon="heroicons-outline:pencil-alt"></iconify-icon>
+                  </button>
+
+                {% else %}
+                <button
+                  type="button"
+                  
+                  class="transition duration-150 hover:text-danger-500"
+                >
+                  <iconify-icon icon="heroicons-outline:trash"></iconify-icon>
+                </button>
+                 {% endif %}
+              </span>
+            </div>
+          </li>
+          {% endfor %}
+      </ul>
+    </div>
+ <!-- END: Task List -->

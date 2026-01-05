@@ -1,0 +1,120 @@
+{% extends "layout/layout.njk" %}
+{% block content %}
+    <div class="space-y-5">
+        <div class="flex justify-between flex-wrap items-center mb-6">
+            <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">Project</h4>
+            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <button class="btn inline-flex justify-center bg-white text-slate-700 dark:bg-slate-700 !font-normal dark:text-white ">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:calendar"></iconify-icon>
+                        <span>Weekly</span>
+                    </span>
+                </button>
+                <button class="btn inline-flex justify-center bg-white text-slate-700 dark:bg-slate-700 !font-normal dark:text-white ">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:filter"></iconify-icon>
+                        <span>Select Date</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="grid grid-cols-12 gap-5">
+            <div class="lg:col-span-8 col-span-12 space-y-5">
+                <div class="card p-6">
+                    <div class="grid grid-cols-12 gap-5">
+                        <div class="xl:col-span-8 col-span-12">
+                            <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">
+                                {% include "../templates/widget/group-chart-5.njk"%}
+                            </div>
+                        </div>
+                        <div class="xl:col-span-4 col-span-12">
+                            <div class="bg-slate-50 dark:bg-slate-900 rounded-md p-4">
+                                <span class="block dark:text-slate-400 text-sm text-slate-600">
+                                    Progress
+                                </span>
+                                <div class="donut-chart" height="110" colors="#0CE7FA,#E2F6FD"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Deal distribution by stage</h4>
+                    </div>
+                    <div class="card-body p-6">
+                        <div id="areaChart" height="310"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="xl:col-span-4 col-span-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Notes</h4>
+                    </div>
+                    <div class="card-body p-6">
+                        <div class="mb-12">
+                            <div id="dashcode-mini-calendar"></div>
+                        </div>
+                        {% include "../templates/widget/meets.njk"%}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid xl:grid-cols-3 grid-cols-1 gap-5">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Task list</h4>
+                    <div>{% include "../templates/dropdown.njk" %}</div>
+                </div>
+                <div class="card-body p-6">
+                    {% include "../templates/widget/task-list.njk"%}
+                </div>
+            </div>
+            <!-- end task -->
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Messages</h4>
+                    <div>{% include "../templates/dropdown.njk" %}</div>
+                </div>
+                <div class="card-body p-6">
+                    {% include "../templates/widget/message.njk"%}
+                </div>
+            </div>
+            <!-- end message -->
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Activity</h4>
+                    <div>{% include "../templates/dropdown.njk" %}</div>
+                </div>
+                <div class="card-body p-6">
+                    {% include "../templates/widget/activity.njk"%}
+                </div>
+            </div>
+            <!-- end activity -->
+        </div>
+        <div class="grid grid-cols-12 gap-5">
+            <div class="xl:col-span-8 lg:col-span-7 col-span-12">
+                <div class="card">
+                    <div class="card-header noborder">
+                        <h4 class="card-title ">Team members</h4>
+                        <div>{% include "../templates/dropdown.njk" %}</div>
+                    </div>
+                    <div class="card-body p-6">
+                        {% include "../templates/table/team-table.njk"%}
+                    </div>
+                </div>
+            </div>
+            <div class="xl:col-span-4 lg:col-span-5 col-span-12">
+                <div class="card h-full">
+                    <div class="card-header">
+                        <h4 class="card-title">Files</h4>
+                        <div>{% include "../templates/dropdown.njk" %}</div>
+                    </div>
+                    <div class="card-body p-6">
+                        {% include "../templates/widget/files.njk"%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
