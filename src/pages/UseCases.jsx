@@ -4,46 +4,46 @@ import { UserGroupIcon, BriefcaseIcon, MegaphoneIcon, GlobeAltIcon } from "@hero
 
 export default function UseCases() {
   const useCases = [
-    { 
-      title: "Agencies", 
-      desc: "Standardize lead-capture logic across multiple client accounts for predictable execution.", 
-      icon: UserGroupIcon 
+    {
+      title: "Agencies",
+      desc: "Standardize lead-capture logic across multiple client accounts for predictable execution.",
+      icon: UserGroupIcon
     },
-    { 
-      title: "Venture Startups", 
-      desc: "Deploy rapidly and iterate on conversion structures without deep discovery cycles.", 
-      icon: BriefcaseIcon 
+    {
+      title: "Venture Startups",
+      desc: "Deploy rapidly and iterate on conversion structures without deep discovery cycles.",
+      icon: BriefcaseIcon
     },
-    { 
-      title: "Paid Campaigns", 
-      desc: "High-performance infrastructure built to handle and convert cold traffic at scale.", 
-      icon: MegaphoneIcon 
+    {
+      title: "Paid Campaigns",
+      desc: "High-performance infrastructure built to handle and convert cold traffic at scale.",
+      icon: MegaphoneIcon
     },
   ];
 
   return (
-    <main className="relative bg-[#0B0D10] min-h-screen text-white pt-40 pb-40 overflow-hidden">
-      
+    <main className="relative bg-background min-h-screen text-white pt-40 pb-40 overflow-hidden">
+
       {/* ANIMATION SYNC: Pulsing Nebula Background */}
-      <motion.div 
-        animate={{ 
+      <motion.div
+        animate={{
           opacity: [0.05, 0.1, 0.05],
-          scale: [1, 1.2, 1] 
+          scale: [1, 1.2, 1]
         }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-purple-600/10 blur-[160px] pointer-events-none" 
+        className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-purple-600/10 blur-[160px] pointer-events-none"
       />
-      <motion.div 
-        animate={{ 
+      <motion.div
+        animate={{
           opacity: [0.05, 0.15, 0.05],
-          scale: [1.2, 1, 1.2] 
+          scale: [1.2, 1, 1.2]
         }}
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[140px] pointer-events-none" 
+        className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[140px] pointer-events-none"
       />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        
+
         {/* Heading Section */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
@@ -60,7 +60,7 @@ export default function UseCases() {
             Operational <span className="text-blue-500">Utility</span>
           </h2>
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto text-lg md:text-xl font-medium opacity-80 leading-relaxed">
-            LeadMates is designed for high-stakes environments where <br className="hidden md:block" /> 
+            LeadMates is designed for high-stakes environments where <br className="hidden md:block" />
             reliability and conversion are the only metrics that matter.
           </p>
         </motion.section>
@@ -102,10 +102,10 @@ export default function UseCases() {
         </section>
 
         {/* Strategic Footer Buffer */}
-        <motion.div 
-           initial={{ opacity: 0 }}
-           whileInView={{ opacity: 1 }}
-           className="mt-20 pt-20 border-t border-white/5 text-center"
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="mt-20 pt-20 border-t border-white/5 text-center"
         >
           <p className="text-gray-600 text-[10px] font-black uppercase tracking-[0.5em]">
             Optimized for TechMates Technologies ecosystems

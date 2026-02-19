@@ -1,9 +1,9 @@
 // src/sections/PricingPhilosophy.jsx
 import { motion } from "framer-motion";
-import { 
-  CheckBadgeIcon, 
-  ShieldCheckIcon, 
-  ClockIcon 
+import {
+  CheckBadgeIcon,
+  ShieldCheckIcon,
+  ClockIcon
 } from "@heroicons/react/24/outline";
 
 export default function PricingPhilosophy() {
@@ -16,7 +16,7 @@ export default function PricingPhilosophy() {
 
   return (
     <section className="relative py-20 bg-black text-white px-6 overflow-hidden">
-      
+
       {/* Galaxy Background Accents */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/5 blur-[140px] pointer-events-none" />
 
@@ -31,7 +31,7 @@ export default function PricingPhilosophy() {
             Pricing <span className="text-blue-500">Philosophy</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Simple, transparent, infrastructure-based pricing. 
+            Simple, transparent, infrastructure-based pricing.
             Built for teams that value predictable costs.
           </p>
         </motion.div>
@@ -70,7 +70,7 @@ export default function PricingPhilosophy() {
               <ClockIcon className="w-3 h-3 text-blue-500/50" />
               <span>Lifetime usage rights included</span>
             </div>
-            
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -80,7 +80,7 @@ export default function PricingPhilosophy() {
             >
               Get Started
             </motion.button>
-            
+
             <p className="text-[9px] text-gray-600 uppercase tracking-tighter mt-2">
               Optional setup services available
             </p>
@@ -91,7 +91,7 @@ export default function PricingPhilosophy() {
         </motion.div>
 
         {/* Footer Disclaimer */}
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}

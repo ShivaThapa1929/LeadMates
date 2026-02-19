@@ -21,4 +21,11 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+
+# Environment variables
+.env
+.env.*
+
+# Backend dependencies
+backend/node_modules/
+backend/dist/

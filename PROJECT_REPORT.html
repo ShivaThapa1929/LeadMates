@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadMates Project Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --primary: #3b82f6;
+            --foreground: #0f172a;
+            --muted: #64748b;
+            --bg: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--foreground);
+            background: #f8fafc;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg);
+            padding: 60px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
+            letter-spacing: -0.05em;
+        }
+
+        h1 span {
+            color: var(--primary);
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--foreground);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #475569;
+        }
+
+        ul {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #475569;
+        }
+
+        strong {
+            color: var(--foreground);
+            font-weight: 600;
+        }
+
+        code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            background: #f1f5f9;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-size: 0.875em;
+            color: #0f172a;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: 0.85em;
+        }
+
+        .btn-print {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+            transition: transform 0.2s;
+            z-index: 100;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-2px);
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="window.print()" class="no-print btn-print">🖨️ Print to PDF</button>
+
+    <div class="container">
+        <header>
+            <h1>Lead<span>Mates</span> Project Report</h1>
+            <div class="meta">
+                <strong>Date:</strong> 2026-02-12 &nbsp;|&nbsp;
+                <strong>Version:</strong> 1.0.0 &nbsp;|&nbsp;
+                <strong>Status:</strong> Production Ready
+            </div>
+        </header>
+
+        <section>
+            <h2>1. Executive Summary</h2>
+            <p>
+                LeadMates is a comprehensive User & Lead Management System designed to streamline the process of
+                capturing, tracking, and converting leads. Built with a modern tech stack, it features a robust
+                role-based access control (RBAC) system, interactive dashboards, and a suite of tools for managing
+                projects, campaigns, and team members.
+            </p>
+        </section>
+
+        <section>
+            <h2>2. Technology Stack</h2>
+
+            <h3>Frontend Application</h3>
+            <ul>
+                <li><strong>Framework:</strong> React 19 (via Vite)</li>
+                <li><strong>Styling:</strong> TailwindCSS 4, Framer Motion (Animations), Lucide React (Icons)</li>
+                <li><strong>State Management:</strong> Context API (Theme, Auth, Search, Notifications)</li>
+                <li><strong>Routing:</strong> React Router DOM v7</li>
+                <li><strong>HTTP Client:</strong> Axios (with Interceptors for JWT handling)</li>
+                <li><strong>Charts:</strong> Recharts</li>
+            </ul>
+
+            <h3>Backend API</h3>
+            <ul>
+                <li><strong>Runtime:</strong> Node.js</li>
+                <li><strong>Framework:</strong> Express.js 5</li>
+                <li><strong>Database:</strong> MySQL (managed via Knex.js query builder)</li>
+                <li><strong>Authentication:</strong> JWT (Access & Refresh Tokens)</li>
+                <li><strong>Security:</strong> Helmet, CORS, BCrypt (Password Hashing)</li>
+                <li><strong>File Handling:</strong> Multer (for Avatar uploads)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>3. Core Features</h2>
+
+            <h3>3.1 Authentication & Security</h3>
+            <ul>
+                <li><strong>Secure Login/Signup:</strong> JWT-based stateless authentication with automatic token
+                    refreshing.</li>
+                <li><strong>RBAC (Role-Based Access Control):</strong> Granular permissions for Admins, Users, and
+                    custom roles.</li>
+                <li><strong>Session Management:</strong> Secure logout and session invalidation.</li>
+                <li><strong>Profile Security:</strong> Password encryption and secure avatar uploads.</li>
+            </ul>
+
+            <h3>3.2 Dashboard & Analytics</h3>
+            <ul>
+                <li><strong>Interactive Dashboard:</strong> Real-time overview of leads, projects, and active users.
+                </li>
+                <li><strong>Data Visualization:</strong> Charts displaying lead acquisition trends and campaign
+                    performance.</li>
+                <li><strong>Notification System:</strong> Real-time alerts for system events and user actions.</li>
+            </ul>
+
+            <h3>3.3 Lead Management</h3>
+            <ul>
+                <li><strong>Lead Capture:</strong> Forms to capture new leads with custom fields.</li>
+                <li><strong>Lead Tracking:</strong> List view with filtering, searching, and detailed profiles.</li>
+                <li><strong>Status Workflow:</strong> Track leads through different stages (New, Contacted, Qualified,
+                    Closed).</li>
+            </ul>
+
+            <div class="page-break"></div>
+
+            <h3>3.4 Project & Campaign Management</h3>
+            <ul>
+                <li><strong>Projects:</strong> Organize leads and tasks into specific projects.</li>
+                <li><strong>Campaigns:</strong> Manage marketing campaigns and track their effectiveness.</li>
+            </ul>
+
+            <h3>3.5 Administration</h3>
+            <ul>
+                <li><strong>User Management:</strong> Create, update, and manage system users (Operatives).</li>
+                <li><strong>Role Management:</strong> Define custom roles and assign specific permissions.</li>
+                <li><strong>System Logs:</strong> Activity logging for auditing purposes.</li>
+                <li><strong>Trash/Archive:</strong> Soft-delete functionality for recovering accidental deletions.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>4. Project Structure</h2>
+
+            <h3>Frontend (<code>/src</code>)</h3>
+            <ul>
+                <li><code>api/</code>: Centralized API service modules (auth, leads, projects, etc.).</li>
+                <li><code>components/</code>: Reusable UI components (Navbar, Footer, Modals).</li>
+                <li><code>context/</code>: Global state providers (Auth, Theme, Notifications).</li>
+                <li><code>dashboard/</code>: Protected dashboard layout and pages (LeadsPage, ProjectsPage, etc.).</li>
+                <li><code>pages/</code>: Public-facing pages (Home, Login, Pricing).</li>
+            </ul>
+
+            <h3>Backend (<code>/backend/src</code>)</h3>
+            <ul>
+                <li><code>controllers/</code>: Request handling logic.</li>
+                <li><code>models/</code>: Database interaction via Knex.</li>
+                <li><code>routes/</code>: API endpoint definitions.</li>
+                <li><code>middleware/</code>: Auth checks, permission validation, and error handling.</li>
+                <li><code>migrations/</code>: Database schema version control.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>5. Setup & Installation</h2>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Node.js (v18+)</li>
+                <li>MySQL Server</li>
+            </ul>
+
+            <h3>Installation Steps</h3>
+            <p><strong>1. Clone Repository:</strong></p>
+            <pre><code>git clone &lt;repo-url&gt;
+cd LeadMates</code></pre>
+
+            <p><strong>2. Backend Setup:</strong></p>
+            <pre><code>cd backend
+npm install
+cp .env.example .env  # Configure DB credentials
+npm run migrate:latest # Run DB migrations
+npm run dev           # Start server on port 5000</code></pre>
+
+            <p><strong>3. Frontend Setup:</strong></p>
+            <pre><code>cd ..
+npm install
+npm run dev           # Start frontend on port 5173</code></pre>
+        </section>
+
+        <div class="page-break"></div>
+
+        <section>
+            <h2>6. API Overview</h2>
+            <p>The backend exposes a RESTful API at <code>http://localhost:5000/api</code>. Key endpoints include:</p>
+            <ul>
+                <li><code>POST /api/auth/login</code>: Authenticate user.</li>
+                <li><code>GET /api/leads</code>: Fetch all leads (paginated).</li>
+                <li><code>POST /api/leads</code>: Create a new lead.</li>
+                <li><code>GET /api/projects</code>: List active projects.</li>
+                <li><code>GET /api/admin/users</code>: Admin-only user management.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>7. Conclusion</h2>
+            <p>
+                LeadMates is a scalable and secure solution for lead management. The separation of concerns between the
+                frontend and backend ensures maintainability, while the use of modern libraries provides a
+                high-performance user experience. The system is ready for deployment and further feature expansion.
+            </p>
+        </section>
+    </div>
+</body>
+
+</html>

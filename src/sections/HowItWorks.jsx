@@ -48,7 +48,7 @@ export default function HowItWorks() {
         <span className="text-blue-500 font-black text-[10px] uppercase tracking-[0.5em] mb-4 block">
           The Workflow
         </span>
-        <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic">
+        <h2 className="text-4xl md:text-6xl font-black tracking-tighter">
           How It <span className="text-blue-500">Works?</span>
         </h2>
       </motion.div>

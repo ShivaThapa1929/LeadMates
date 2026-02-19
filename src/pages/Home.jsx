@@ -20,13 +20,13 @@ import FinalCTA from "../sections/FinalCTA"; // Section 14 [cite: 71]
 
 // Component Imports
 import AnimatedSection from "../components/AnimatedSection";
-import GalaxyHero from "../components/GalaxyHero"; 
+import GalaxyHero from "../components/GalaxyHero";
 import Contact from "./Contact";
 
 export default function Home() {
   return (
-    <main className="relative bg-[#0B0D10] min-h-screen overflow-x-hidden">
-      
+    <main className="relative bg-background min-h-screen overflow-x-hidden transition-colors duration-300">
+
       {/* 1. BACKGROUND LAYER: Fixed 3D Galaxy background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <GalaxyHero />
@@ -34,7 +34,7 @@ export default function Home() {
 
       {/* 2. CONTENT LAYER: Using perspective for the holographic feel */}
       <div className="relative z-10 perspective-[1500px]">
-        
+
         {/* SECTION 1: HERO - A Reliable System to Turn Website Traffic into Qualified Leads [cite: 7] */}
         <Hero />
 

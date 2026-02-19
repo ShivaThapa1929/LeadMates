@@ -29,7 +29,7 @@ export default function Docs() {
   ];
 
   return (
-    <main className="relative bg-[#0B0D10] min-h-screen text-white pt-40 pb-32 overflow-hidden">
+    <main className="relative bg-background min-h-screen text-white pt-40 pb-32 overflow-hidden">
       
       {/* Background Nebula Glows */}
       <motion.div 

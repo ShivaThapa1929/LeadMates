@@ -5,7 +5,7 @@ import { ArrowRightIcon, SparklesIcon } from "@heroicons/react/24/outline";
 export default function FinalCTA() {
   return (
     <section className="relative py-24 bg-black text-white px-6 overflow-hidden">
-      
+
       {/* THEME LAYER: Intense Galaxy Portal Effect */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-blue-600/10 blur-[180px] rounded-full pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
@@ -34,9 +34,9 @@ export default function FinalCTA() {
           {/* Reduced Button Container */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mt-12">
             <motion.button
-              whileHover={{ 
+              whileHover={{
                 scale: 1.05,
-                boxShadow: "0px 0px 30px rgba(37, 99, 235, 0.4)" 
+                boxShadow: "0px 0px 30px rgba(37, 99, 235, 0.4)"
               }}
               whileTap={{ scale: 0.95 }}
               /* REDUCED SIZE: Changed px-10 py-5 to px-8 py-3, and text-lg to text-sm */
@@ -44,16 +44,16 @@ export default function FinalCTA() {
             >
               <span className="relative z-10">Get Access Now</span>
               <ArrowRightIcon className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-              
+
               {/* Animated Inner Shine */}
-              <motion.div 
+              <motion.div
                 animate={{ x: ['-100%', '200%'] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                 className="absolute top-0 left-0 w-1/2 h-full bg-white/10 skew-x-[45deg] z-0"
               />
             </motion.button>
 
-            <motion.a 
+            <motion.a
               href="/docs"
               whileHover={{ textShadow: "0px 0px 8px rgba(255,255,255,0.5)", color: "#fff" }}
               className="text-gray-500 font-bold tracking-[0.2em] uppercase text-[11px] transition-all"
@@ -63,7 +63,7 @@ export default function FinalCTA() {
           </div>
 
           {/* Final Logic Note */}
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.4 }}

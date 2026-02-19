@@ -1,12 +1,11 @@
 // src/sections/Hero.jsx
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import GalaxyHero from "../components/GalaxyHero"; 
+import GalaxyHero from "../components/GalaxyHero";
 
 export default function Hero() {
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center bg-black overflow-hidden pt-20 px-6">
-      
       {/* 3D GALAXY BACKGROUND */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <GalaxyHero />
@@ -16,7 +15,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black via-transparent to-black opacity-60" />
 
       <div className="max-w-4xl mx-auto text-center z-10 relative">
-        
+
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -38,7 +37,7 @@ export default function Hero() {
           A Reliable System to Turn Website Traffic into <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600">
             Qualified Leads.
-          </span> 
+          </span>
         </motion.h1>
 
         {/* Subheadline */}
@@ -48,12 +47,12 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.1 }}
           className="text-gray-400 text-base md:text-lg leading-relaxed mb-10 max-w-2xl mx-auto"
         >
-          LeadMates is a conversion-focused lead generation system built for 
-          businesses that depend on consistent inquiries—not guesswork. 
+          LeadMates is a conversion-focused lead generation system built for
+          businesses that depend on consistent inquiries—not guesswork.
         </motion.p>
 
         {/* CTA Buttons */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -64,16 +63,16 @@ export default function Hero() {
               to="/get-access"
               className="block w-full px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-bold text-sm transition-all shadow-[0_0_30px_rgba(37,99,235,0.4)] text-center"
             >
-              Get Access to LeadMates 
+              Get Access to LeadMates
             </Link>
           </motion.div>
-          
+
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
             <Link
               to="/get-access"
               className="block w-full px-8 py-4 bg-white/5 border border-white/10 text-white rounded-full font-semibold text-sm transition-all hover:bg-white/10 text-center backdrop-blur-sm"
             >
-              See How It Works 
+              See How It Works
             </Link>
           </motion.div>
         </motion.div>
