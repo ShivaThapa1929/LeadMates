@@ -3,23 +3,31 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function CustomCursor() {
   const [isHovering, setIsHovering] = useState(false);
-  
+
   // 1. Raw Mouse Position
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
-  // 2. SLOW SPEED CONFIGURATION
-  // stiffness: lower = slower follow speed
-  // damping: higher = smoother arrival (less "bounce")
-  // mass: higher = more "weight" or inertia
-  const springConfig = { 
-    damping: 40, 
-    stiffness: 80, 
-    mass: 1.5 
+  // 2. PERFECTED KINETIC CONFIGURATION
+  // Core: Pinpoint accuracy with high-fidelity tracking
+  const coreSpringConfig = {
+    damping: 35,
+    stiffness: 800,
+    mass: 0.1
   };
-  
-  const cursorX = useSpring(mouseX, springConfig);
-  const cursorY = useSpring(mouseY, springConfig);
+
+  // Outer ring: "Buttery" smooth follow for premium aesthetic
+  const outerSpringConfig = {
+    damping: 50,
+    stiffness: 200,
+    mass: 1.2
+  };
+
+  const cursorX = useSpring(mouseX, coreSpringConfig);
+  const cursorY = useSpring(mouseY, coreSpringConfig);
+
+  const outerX = useSpring(mouseX, outerSpringConfig);
+  const outerY = useSpring(mouseY, outerSpringConfig);
 
   useEffect(() => {
     const moveMouse = (e) => {
@@ -27,12 +35,13 @@ export default function CustomCursor() {
       mouseY.set(e.clientY);
 
       const target = e.target;
-      const isClickable = 
-        window.getComputedStyle(target).cursor === "pointer" ||
-        target.tagName === "BUTTON" ||
-        target.tagName === "A";
-      
-      setIsHovering(isClickable);
+      const isClickable =
+        target.closest('button') ||
+        target.closest('a') ||
+        target.closest('[role="button"]') ||
+        window.getComputedStyle(target).cursor === "pointer";
+
+      setIsHovering(!!isClickable);
     };
 
     window.addEventListener("mousemove", moveMouse);
@@ -41,27 +50,27 @@ export default function CustomCursor() {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-4444">
-      {/* GLOWING AURA (Low speed ambient glow) */}
+      {/* GLOWING AURA (Follows smoothly) */}
       <motion.div
         className="w-16 h-16 bg-blue-500/15 rounded-full fixed top-0 left-0 blur-[30px]"
-        style={{ x: cursorX, y: cursorY, translateX: "-50%", translateY: "-50%" }}
-        animate={{ 
+        style={{ x: outerX, y: outerY, translateX: "-50%", translateY: "-50%" }}
+        animate={{
           scale: isHovering ? 2 : 1,
         }}
       />
 
-      {/* NEON CORE (The slow-moving point) */}
+      {/* NEON CORE (Absolute Accuracy - No Latency) */}
       <motion.div
         className="w-2.5 h-2.5 bg-blue-400 rounded-full fixed top-0 left-0 shadow-[0_0_20px_rgba(59,130,246,0.8)]"
-        style={{ x: cursorX, y: cursorY, translateX: "-50%", translateY: "-50%" }}
+        style={{ x: mouseX, y: mouseY, translateX: "-50%", translateY: "-50%" }}
         animate={{ scale: isHovering ? 0.6 : 1 }}
       />
-      
-      {/* OUTER DELAYED RING */}
+
+      {/* OUTER DELAYED RING (Elegant follow) */}
       <motion.div
         className="w-8 h-8 border border-blue-400/40 rounded-full fixed top-0 left-0"
-        style={{ x: cursorX, y: cursorY, translateX: "-50%", translateY: "-50%" }}
-        animate={{ 
+        style={{ x: outerX, y: outerY, translateX: "-50%", translateY: "-50%" }}
+        animate={{
           scale: isHovering ? 1.8 : 1,
           opacity: isHovering ? 0.9 : 0.4
         }}

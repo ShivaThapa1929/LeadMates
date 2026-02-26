@@ -17,7 +17,8 @@ import {
     EyeIcon,
     EyeSlashIcon,
     ChevronDownIcon,
-    SparklesIcon
+    SparklesIcon,
+    BoltIcon
 } from "@heroicons/react/24/outline";
 
 export default function SignupPage() {
@@ -39,11 +40,60 @@ export default function SignupPage() {
         website: "",
         experience: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        role: roleType || "user"
     });
+    const [fieldErrors, setFieldErrors] = useState({});
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        if (fieldErrors[name]) {
+            setFieldErrors({ ...fieldErrors, [name]: "" });
+        }
+    };
+
+    const validateField = (name, value) => {
+        let error = "";
+        switch (name) {
+            case 'name':
+                if (!value.trim()) error = "Full name is required";
+                else if (value.length < 3 || !/^[A-Za-z ]+$/.test(value)) error = "Full name must be at least 3 characters and contain only letters";
+                break;
+            case 'email':
+                if (!value.trim()) error = "Enter a valid email address";
+                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = "Enter a valid email address";
+                break;
+            case 'phone':
+                if (!value.trim()) error = "Enter a valid 10-digit phone number";
+                else if (!/^\d{10}$/.test(value)) error = "Enter a valid 10-digit phone number";
+                break;
+            case 'businessName':
+                if (!value.trim()) error = "Business name is required";
+                break;
+            case 'website':
+                if (!value.trim()) error = "Website is required";
+                else if (!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})/.test(value)) error = "Enter a valid website URL";
+                break;
+            case 'password':
+                const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+                if (!value) error = "Password is required";
+                else if (!regex.test(value)) error = "Password must be 8+ characters with uppercase, lowercase, number and special character";
+                break;
+            case 'confirmPassword':
+                if (!value) error = "Confirm Password is required";
+                else if (value !== formData.password) error = "Passwords do not match";
+                break;
+            default:
+                break;
+        }
+        return error;
+    };
+
+    const handleBlur = (e) => {
+        const { name, value } = e.target;
+        const error = validateField(name, value);
+        setFieldErrors(prev => ({ ...prev, [name]: error }));
     };
 
     const nextStep = () => {
@@ -59,55 +109,38 @@ export default function SignupPage() {
     };
 
     const validateCurrentStep = () => {
+        const errors = {};
+        let isValid = true;
+
         if (step === 1) {
-            if (!formData.name || !formData.email || !formData.phone) {
-                setError("Please fill in all personal details");
-                return false;
-            }
-            if (!formData.email.includes("@")) {
-                setError("Please enter a valid email address");
-                return false;
-            }
-            if (!/^\+?[1-9]\d{1,14}$/.test(formData.phone)) {
-                setError("Please enter a valid phone number (e.g., +15550000000)");
-                return false;
-            }
+            const nameError = validateField('name', formData.name);
+            const emailError = validateField('email', formData.email);
+            const phoneError = validateField('phone', formData.phone);
+            if (nameError) { errors.name = nameError; isValid = false; }
+            if (emailError) { errors.email = emailError; isValid = false; }
+            if (phoneError) { errors.phone = phoneError; isValid = false; }
         } else if (step === 2) {
-            if (!formData.businessName || !formData.website || !formData.experience) {
-                setError("Please fill in all business details and select an industry");
-                return false;
-            }
-            if (!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-])*\/?$/.test(formData.website)) {
-                setError("Please enter a valid website URL");
-                return false;
+            const bizError = validateField('businessName', formData.businessName);
+            const webError = validateField('website', formData.website);
+            if (bizError) { errors.businessName = bizError; isValid = false; }
+            if (webError) { errors.website = webError; isValid = false; }
+            if (!formData.experience) {
+                errors.experience = "Industry sector must be selected";
+                isValid = false;
             }
         } else if (step === 3) {
-            if (formData.password.length < 8) {
-                setError("Password must be at least 8 characters");
-                return false;
-            }
-            if (!/[a-z]/.test(formData.password)) {
-                setError("Password must contain at least one lowercase letter");
-                return false;
-            }
-            if (!/[A-Z]/.test(formData.password)) {
-                setError("Password must contain at least one uppercase letter");
-                return false;
-            }
-            if (!/[0-9]/.test(formData.password)) {
-                setError("Password must contain at least one number");
-                return false;
-            }
-            if (!/[!@#$%^&*]/.test(formData.password)) {
-                setError("Password must contain at least one special character (!@#$%^&*)");
-                return false;
-            }
-            if (formData.password !== formData.confirmPassword) {
-                setError("Passwords do not match");
-                return false;
-            }
+            const passError = validateField('password', formData.password);
+            const confError = validateField('confirmPassword', formData.confirmPassword);
+            if (passError) { errors.password = passError; isValid = false; }
+            if (confError) { errors.confirmPassword = confError; isValid = false; }
         }
-        return true;
+
+        setFieldErrors(errors);
+        if (!isValid) {
+            const firstError = Object.values(errors)[0];
+            setError(firstError);
+        }
+        return isValid;
     };
 
     const handleSubmit = async (e) => {
@@ -142,28 +175,29 @@ export default function SignupPage() {
             );
 
             // Navigate to OTP Verification with userId in URL to survive refreshes
-            navigate(`/verify-otp?userId=${response.data?.userId}`, {
+            navigate(`/verify-otp?userId=${response.data?.userId || response.userId}`, {
                 state: {
-                    userId: response.data?.userId,
+                    userId: response.data?.userId || response.userId,
                     email: signupData.email,
                     phone: signupData.phone
                 }
             });
         } catch (err) {
-            console.error('Signup Error Data:', err); // Log full error for debugging
+            console.error('Signup Error Data:', err);
 
-            // Extract the most relevant error message
             let errorMessage = "An unexpected error occurred during signup.";
 
-            if (err.errors && Array.isArray(err.errors)) {
-                // validation errors from express-validator
-                errorMessage = err.errors[0].msg || err.errors[0].message;
+            if (err.errors && Array.isArray(err.errors) && err.errors.length > 0) {
+                // Validation errors from express-validator (formattedErrors in auth.middleware)
+                errorMessage = err.errors[0].message || err.errors[0].msg || "Validation failed";
             } else if (err.message) {
-                // standard error message
+                // Standard error message or conflict message
                 errorMessage = err.message;
             }
 
             setError(errorMessage);
+            // Scroll to error
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } finally {
             setIsLoading(false);
         }
@@ -228,26 +262,32 @@ export default function SignupPage() {
                         ))}
                     </div>
 
-                    <AnimatePresence mode="wait">
-                        {error && (
-                            <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: "auto" }}
-                                exit={{ opacity: 0, height: 0 }}
-                                className="mb-8 overflow-hidden"
-                            >
-                                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold uppercase tracking-widest text-center">
-                                    {error}
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+
 
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        <AnimatePresence>
+                            {error && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-start gap-4"
+                                >
+                                    <div className="w-5 h-5 rounded-full bg-rose-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                                    </div>
+                                    <p className="text-xs font-bold text-rose-500 uppercase tracking-wider leading-relaxed">
+                                        {error}
+                                    </p>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
                         <AnimatePresence mode="wait">
+
                             {step === 1 && (
                                 <motion.div key="step1" variants={stepVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.3 }} className="space-y-4">
-                                    <div className="space-y-2">
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Full Name</label>
                                         <div className="relative group">
                                             <UserIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-blue-500 transition-colors" />
@@ -257,12 +297,14 @@ export default function SignupPage() {
                                                 required
                                                 value={formData.name}
                                                 onChange={handleChange}
+                                                onBlur={handleBlur}
                                                 placeholder="John Doe"
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 text-white text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-700"
+                                                className={`w-full h-14 bg-white/5 border rounded-2xl pl-12 pr-5 text-white text-sm outline-none transition-all placeholder:text-gray-700 ${fieldErrors.name ? 'border-rose-500/50 ring-4 ring-rose-500/10' : 'border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'}`}
                                             />
                                         </div>
+                                        {fieldErrors.name && <p className="text-[10px] text-rose-500 font-bold ml-1">{fieldErrors.name}</p>}
                                     </div>
-                                    <div className="space-y-2">
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Work Email</label>
                                         <div className="relative group">
                                             <EnvelopeIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-blue-500 transition-colors" />
@@ -272,12 +314,30 @@ export default function SignupPage() {
                                                 required
                                                 value={formData.email}
                                                 onChange={handleChange}
+                                                onBlur={handleBlur}
                                                 placeholder="john@company.com"
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 text-white text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-700"
+                                                className={`w-full h-14 bg-white/5 border rounded-2xl pl-12 pr-5 text-white text-sm outline-none transition-all placeholder:text-gray-700 ${fieldErrors.email ? 'border-rose-500/50 ring-4 ring-rose-500/10' : 'border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'}`}
                                             />
                                         </div>
+                                        {fieldErrors.email && <p className="text-[10px] text-rose-500 font-bold ml-1">{fieldErrors.email}</p>}
                                     </div>
-                                    <div className="space-y-2">
+
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Account Role</label>
+                                        <div className="flex gap-2 p-1 bg-white/5 border border-white/10 rounded-2xl h-14">
+                                            {['user', 'admin'].map((r) => (
+                                                <button
+                                                    key={r}
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, role: r })}
+                                                    className={`flex-1 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${formData.role === r ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-white'}`}
+                                                >
+                                                    {r}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Phone Number</label>
                                         <div className="relative group">
                                             <PhoneIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-blue-500 transition-colors" />
@@ -287,17 +347,19 @@ export default function SignupPage() {
                                                 required
                                                 value={formData.phone}
                                                 onChange={handleChange}
-                                                placeholder="+1 (555) 000-0000"
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 text-white text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-700"
+                                                onBlur={handleBlur}
+                                                placeholder="10-digit number"
+                                                className={`w-full h-14 bg-white/5 border rounded-2xl pl-12 pr-5 text-white text-sm outline-none transition-all placeholder:text-gray-700 ${fieldErrors.phone ? 'border-rose-500/50 ring-4 ring-rose-500/10' : 'border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'}`}
                                             />
                                         </div>
+                                        {fieldErrors.phone && <p className="text-[10px] text-rose-500 font-bold ml-1">{fieldErrors.phone}</p>}
                                     </div>
                                 </motion.div>
                             )}
 
                             {step === 2 && (
                                 <motion.div key="step2" variants={stepVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.3 }} className="space-y-4">
-                                    <div className="space-y-2">
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Business Name</label>
                                         <div className="relative group">
                                             <BuildingOfficeIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-blue-500 transition-colors" />
@@ -307,12 +369,14 @@ export default function SignupPage() {
                                                 required
                                                 value={formData.businessName}
                                                 onChange={handleChange}
+                                                onBlur={handleBlur}
                                                 placeholder="Acme Global Inc."
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 text-white text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-700"
+                                                className={`w-full h-14 bg-white/5 border rounded-2xl pl-12 pr-5 text-white text-sm outline-none transition-all placeholder:text-gray-700 ${fieldErrors.businessName ? 'border-rose-500/50 ring-4 ring-rose-500/10' : 'border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'}`}
                                             />
                                         </div>
+                                        {fieldErrors.businessName && <p className="text-[10px] text-rose-500 font-bold ml-1">{fieldErrors.businessName}</p>}
                                     </div>
-                                    <div className="space-y-2">
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Company Website</label>
                                         <div className="relative group">
                                             <GlobeAltIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-blue-500 transition-colors" />
@@ -322,24 +386,27 @@ export default function SignupPage() {
                                                 required
                                                 value={formData.website}
                                                 onChange={handleChange}
+                                                onBlur={handleBlur}
                                                 placeholder="https://acme.com"
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 text-white text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-700"
+                                                className={`w-full h-14 bg-white/5 border rounded-2xl pl-12 pr-5 text-white text-sm outline-none transition-all placeholder:text-gray-700 ${fieldErrors.website ? 'border-rose-500/50 ring-4 ring-rose-500/10' : 'border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'}`}
                                             />
                                         </div>
+                                        {fieldErrors.website && <p className="text-[10px] text-rose-500 font-bold ml-1">{fieldErrors.website}</p>}
                                     </div>
-                                    <div className="space-y-2">
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Industry / Sector</label>
                                         <div className="relative">
                                             <button
                                                 type="button"
                                                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all flex items-center justify-between group"
+                                                className={`w-full h-14 bg-white/5 border rounded-2xl px-5 text-white text-sm outline-none transition-all flex items-center justify-between group ${fieldErrors.experience ? 'border-rose-500/50 ring-4 ring-rose-500/10' : 'border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'}`}
                                             >
                                                 <span className={formData.experience ? "text-white" : "text-gray-700"}>
                                                     {formData.experience || "Select Segment"}
                                                 </span>
                                                 <ChevronDownIcon className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`} />
                                             </button>
+                                            {fieldErrors.experience && <p className="text-[10px] text-rose-500 font-bold ml-1">{fieldErrors.experience}</p>}
 
                                             <AnimatePresence>
                                                 {dropdownOpen && (
@@ -372,7 +439,7 @@ export default function SignupPage() {
 
                             {step === 3 && (
                                 <motion.div key="step3" variants={stepVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.3 }} className="space-y-4">
-                                    <div className="space-y-2">
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Portal Password</label>
                                         <div className="relative group">
                                             <LockClosedIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-blue-500 transition-colors" />
@@ -382,8 +449,9 @@ export default function SignupPage() {
                                                 required
                                                 value={formData.password}
                                                 onChange={handleChange}
+                                                onBlur={handleBlur}
                                                 placeholder="••••••••••••"
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-12 text-white text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-700"
+                                                className={`w-full h-14 bg-white/5 border rounded-2xl pl-12 pr-12 text-white text-sm outline-none transition-all placeholder:text-gray-700 ${fieldErrors.password ? 'border-rose-500/50 ring-4 ring-rose-500/10' : 'border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'}`}
                                             />
                                             <button
                                                 type="button"
@@ -393,8 +461,9 @@ export default function SignupPage() {
                                                 {showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
                                             </button>
                                         </div>
+                                        {fieldErrors.password && <p className="text-[10px] text-rose-500 font-bold ml-1 leading-tight">{fieldErrors.password}</p>}
                                     </div>
-                                    <div className="space-y-2">
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Confirm Security Key</label>
                                         <div className="relative group">
                                             <LockClosedIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-blue-500 transition-colors" />
@@ -404,8 +473,9 @@ export default function SignupPage() {
                                                 required
                                                 value={formData.confirmPassword}
                                                 onChange={handleChange}
+                                                onBlur={handleBlur}
                                                 placeholder="••••••••••••"
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-12 text-white text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-700"
+                                                className={`w-full h-14 bg-white/5 border rounded-2xl pl-12 pr-12 text-white text-sm outline-none transition-all placeholder:text-gray-700 ${fieldErrors.confirmPassword ? 'border-rose-500/50 ring-4 ring-rose-500/10' : 'border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'}`}
                                             />
                                             <button
                                                 type="button"
@@ -415,6 +485,7 @@ export default function SignupPage() {
                                                 {showConfirmPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
                                             </button>
                                         </div>
+                                        {fieldErrors.confirmPassword && <p className="text-[10px] text-rose-500 font-bold ml-1">{fieldErrors.confirmPassword}</p>}
                                     </div>
                                     <div className="pt-4 flex items-start gap-4 p-4 rounded-2xl bg-blue-600/5 border border-blue-500/10">
                                         <CheckCircleIcon className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
@@ -444,16 +515,20 @@ export default function SignupPage() {
                                 <motion.button
                                     type="button"
                                     onClick={nextStep}
+                                    disabled={
+                                        (step === 1 && (!formData.name || !formData.email || !formData.phone || fieldErrors.name || fieldErrors.email || fieldErrors.phone)) ||
+                                        (step === 2 && (!formData.businessName || !formData.website || !formData.experience || fieldErrors.businessName || fieldErrors.website))
+                                    }
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
-                                    className="flex-[2] h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-[10px] sm:text-sm uppercase tracking-[0.2em] transition-all shadow-xl shadow-blue-600/20 flex items-center justify-center gap-2"
+                                    className="flex-[2] h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-[10px] sm:text-sm uppercase tracking-[0.2em] transition-all shadow-xl shadow-blue-600/20 flex items-center justify-center gap-2 disabled:opacity-40"
                                 >
                                     NEXT
                                     <ArrowRightIcon className="w-4 h-4" />
                                 </motion.button>
                             ) : (
                                 <motion.button
-                                    disabled={isLoading}
+                                    disabled={isLoading || !formData.password || !formData.confirmPassword || fieldErrors.password || fieldErrors.confirmPassword}
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     type="submit"

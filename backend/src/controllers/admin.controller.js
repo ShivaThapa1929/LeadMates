@@ -1,7 +1,6 @@
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 const User = require('../models/user.model');
 const Lead = require('../models/lead.model');
-const Project = require('../models/project.model');
 const Campaign = require('../models/campaign.model');
 
 /**
@@ -17,7 +16,6 @@ exports.getAdminAnalytics = async (req, res) => {
             verifiedUsers: allUsers.filter(u => u.is_verified).length,
             pendingVerification: allUsers.filter(u => !u.is_verified).length,
             totalLeads: (await Lead.findAll()).length,
-            totalProjects: (await Project.findAll()).length,
             activeCampaigns: (await Campaign.findAll()).length,
             systemHealth: 'Optimal',
             lastSync: new Date().toISOString()

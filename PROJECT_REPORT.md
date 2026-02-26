@@ -1,80 +1,73 @@
 # LeadMates Project Report
 
-**Date:** 2026-02-12
-**Project Name:** LeadMates
-**Version:** 1.0.0
+**Date:** 2026-02-26  
+**Project Name:** LeadMates  
+**Version:** 2.4.0 (Stable)
 
 ## 1. Executive Summary
 
-LeadMates is a comprehensive User & Lead Management System designed to streamline the process of capturing, tracking, and converting leads. Built with a modern tech stack, it features a robust role-based access control (RBAC) system, interactive dashboards, and a suite of tools for managing projects, campaigns, and team members.
+LeadMates is a premium User & Lead Management System engineered to optimize the capture, tracking, and conversion of professional leads. Version 2.4.0 introduces a production-grade security architecture featuring multi-factor authentication, a dynamic lead analysis engine, and a stabilized infrastructure for enterprise-level scaling.
 
 ## 2. Technology Stack
 
 ### Frontend Application
 - **Framework:** React 19 (via Vite)
-- **Styling:** TailwindCSS 4, Framer Motion (Animations), Lucide React (Icons)
-- **State Management:** Context API (Theme, Auth, Search, Notifications)
+- **Styling:** TailwindCSS 4, Vanilla CSS, Framer Motion (Premium Animations)
+- **State Management:** Context API (Auth, Theme, Search, Notifications)
 - **Routing:** React Router DOM v7
-- **HTTP Client:** Axios (with Interceptors for JWT handling)
-- **Charts:** Recharts
+- **HTTP Client:** Axios (with Interceptors for JWT & Refresh Token handling)
+- **Charts:** Recharts for dynamic analytics visualization
 
 ### Backend API
-- **Runtime:** Node.js
+- **Runtime:** Node.js v18+
 - **Framework:** Express.js 5
-- **Database:** MySQL (managed via Knex.js query builder)
-- **Authentication:** JWT (Access & Refresh Tokens)
-- **Security:** Helmet, CORS, BCrypt (Password Hashing)
-- **File Handling:** Multer (for Avatar uploads)
+- **Database:** MySQL 8.0 (managed via Knex.js query builder)
+- **Authentication:** Dual-layer security (JWT + 6-Digit Email OTP 2FA)
+- **Mail Engine:** Resend API for high-deliverability transactional emails
+- **Security:** Helmet, CORS (with credential support), BCrypt (Password Hashing)
 
 ## 3. Core Features
 
-### 3.1 Authentication & Security
-- **Secure Login/Signup:** JWT-based stateless authentication with automatic token refreshing.
-- **RBAC (Role-Based Access Control):** Granular permissions for Admins, Users, and custom roles.
-- **Session Management:** Secure logout and session invalidation.
-- **Profile Security:** Password encryption and secure avatar uploads.
+### 3.1 Authentication & Security (Enhanced)
+- **Dual-Factor Authentication (2FA):** Mandatory email-based OTP verification for all login sessions.
+- **Refresh Token Rotation:** Secure, HTTP-Only cookie strategy to prevent XSS and token theft.
+- **Identity Recovery:** Complete Forgot Password / Reset Password workflow with secure token hashing.
+- **RBAC (Role-Based Access Control):** Granular, hierarchical permissions for Super Admins, Admins, and Operatives.
 
-### 3.2 Dashboard & Analytics
-- **Interactive Dashboard:** Real-time overview of leads, projects, and active users.
-- **Data Visualization:** Charts displaying lead acquisition trends and campaign performance.
-- **Notification System:** Real-time alerts for system events and user actions.
+### 3.2 Lead Intelligence & Analytics (New)
+- **Analysis Engine:** Track campaign ROI, identify top lead sources, and monitor conversion trends.
+- **Interactive Dashboard:** Real-time visibility into active leads, project health, and user performance.
+- **Notification System:** Global alerts for critical system events and lead movements.
 
 ### 3.3 Lead Management
-- **Lead Capture:** Forms to capture new leads with custom fields.
-- **Lead Tracking:** List view with filtering, searching, and detailed profiles.
-- **Status Workflow:** Track leads through different stages (New, Contacted, Qualified, Closed).
+- **Capture & Nurture:** Advanced forms with dynamic custom field mapping.
+- **Workflow Automation:** Multi-stage status transitions (New → Contacted → Qualified → Closed).
+- **Advanced Filtering:** Precision search and filter capabilities for managing large lead datasets.
 
-### 3.4 Project & Campaign Management
-- **Projects:** Organize leads and tasks into specific projects.
-- **Campaigns:** Manage marketing campaigns and track their effectiveness.
-
-### 3.5 Administration
-- **User Management:** Create, update, and manage system users (Operatives).
-- **Role Management:** Define custom roles and assign specific permissions.
-- **System Logs:** Activity logging for auditing purposes.
-- **Trash/Archive:** Soft-delete functionality for recovering accidental deletions.
+### 3.4 Administration & Governance
+- **Health Check System:** Integrated monitoring for database connectivity and migration status.
+- **User Auditing:** Centralized logging of critical administrative and user actions.
+- **Soft Delete (Trash):** Safety mechanism to recover accidentally deleted leads or users.
 
 ## 4. Project Structure
 
 ### Frontend (`/src`)
-- **`api/`**: Centralized API service modules (auth, leads, projects, etc.).
-- **`components/`**: Reusable UI components (Navbar, Footer, Modals).
-- **`context/`**: Global state providers (Auth, Theme, Notifications).
-- **`dashboard/`**: Protected dashboard layout and pages (LeadsPage, ProjectsPage, etc.).
-- **`pages/`**: Public-facing pages (Home, Login, Pricing).
+- **`api/`**: Centralized service modules with automatic token refresh logic.
+- **`components/`**: Reusable UI components including `GalaxyHero` animated backgrounds.
+- **`dashboard/`**: Protected portal layouts and analytics modules.
+- **`pages/`**: Public and authenticated routes (Home, Login, 2FA-Verify, Analysis).
 
 ### Backend (`/backend/src`)
-- **`controllers/`**: Request handling logic.
-- **`models/`**: Database interaction via Knex.
-- **`routes/`**: API endpoint definitions.
-- **`middleware/`**: Auth checks, permission validation, and error handling.
-- **`migrations/`**: Database schema version control.
+- **`controllers/`**: Service-oriented business logic handlers.
+- **`services/`**: Core logic for auth, email delivery, and data processing.
+- **`db/migrations/`**: Version-controlled database schema stabilized at v2.4.0.
 
 ## 5. Setup & Installation
 
 ### Prerequisites
 - Node.js (v18+)
-- MySQL Server
+- MySQL Server 8.0
+- Resend API Key (for transactional emails)
 
 ### Installation Steps
 1.  **Clone Repository:**
@@ -87,8 +80,8 @@ LeadMates is a comprehensive User & Lead Management System designed to streamlin
     ```bash
     cd backend
     npm install
-    cp .env.example .env  # Configure DB credentials
-    npm run migrate:latest # Run DB migrations
+    cp .env.example .env  # Configure DB and RESEND_API_KEY
+    npm run migrate:latest # Run stabilized migrations
     npm run dev           # Start server on port 5000
     ```
 
@@ -101,14 +94,15 @@ LeadMates is a comprehensive User & Lead Management System designed to streamlin
 
 ## 6. API Overview
 
-The backend exposes a RESTful API at `http://localhost:5000/api`. Key endpoints include:
+The backend exposes a production-grade RESTful API. Key endpoints include:
 
--   `POST /api/auth/login`: Authenticate user.
--   `GET /api/leads`: Fetch all leads (paginated).
--   `POST /api/leads`: Create a new lead.
--   `GET /api/projects`: List active projects.
--   `GET /api/admin/users`: Admin-only user management.
+-   `POST /api/auth/login`: Initiate 2FA-protected authentication.
+-   `POST /api/auth/verify-login-2fa`: Finalize session and issue secure cookies.
+-   `GET /api/leads/analysis`: Fetch campaign and performance intelligence.
+-   `GET /api/admin/users`: Sanitize and manage system users.
 
 ## 7. Conclusion
 
-LeadMates is a scalable and secure solution for lead management. The separation of concerns between the frontend and backend ensures maintainability, while the use of modern libraries provides a high-performance user experience. The system is ready for deployment and further feature expansion.
+LeadMates v2.4.0 is a production-ready solution that prioritizes security and data-driven decision-making. The separation of concerns, combined with industrial-standard security patterns (2FA/Rotation), ensures the system is both maintainable and highly secure for enterprise use.
+
+---

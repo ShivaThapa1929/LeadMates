@@ -29,14 +29,14 @@ export default function SuspectBlendsPage() {
     }, []);
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Terminate this suspect node permanently?")) return;
+        if (!window.confirm("Are you sure you want to remove this suspect record permanently?")) return;
         try {
             const data = await suspectService.deleteSuspect(id);
             if (data.success) {
                 setSuspects(prev => prev.filter(s => s.id !== id));
                 addNotification({
-                    title: "Node Terminated",
-                    message: "Suspect entity removed from intelligence cache.",
+                    title: "Anomaly Removed",
+                    message: "The suspected record has been successfully deleted.",
                     type: "warning",
                     icon: Trash2
                 });

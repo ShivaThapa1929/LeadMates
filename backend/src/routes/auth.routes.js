@@ -2,12 +2,11 @@ const express = require('express');
 const router = express.Router();
 const {
     signup, login, refreshToken, getMe, logout, updateAvatar,
-    verifyOtp, resendOtp, forgotPassword, resetPassword, verifyLogin2FA,
-    sendOtp
+    verifyOtp, resendOtp, forgotPassword, resetPassword, verifyLogin2FA
 } = require('../controllers/auth.controller');
-const { signupValidation, loginValidation, forgotPasswordValidation, resetPasswordValidation, mobileOtpValidation, resendOtpValidation } = require('../validations/auth.validation');
+const { signupValidation, loginValidation, forgotPasswordValidation, resetPasswordValidation, resendOtpValidation } = require('../validations/auth.validation');
 const { validate, protect } = require('../middlewares/auth.middleware');
-const { otpRateLimiter, verificationRateLimiter } = require('../middlewares/rateLimiter');
+const { otpRateLimiter, verificationRateLimiter, resendOtpLimiter } = require('../middlewares/rateLimiter');
 const upload = require('../middlewares/upload.middleware');
 
 /**
@@ -24,9 +23,8 @@ router.post('/verify-login-2fa', verificationRateLimiter, verifyLogin2FA);
 /**
  * @desc    OTP Management Routes (Mobile/Email)
  */
-router.post('/send-otp', otpRateLimiter, mobileOtpValidation, validate, sendOtp);
 router.post('/verify-otp', verificationRateLimiter, verifyOtp);
-router.post('/resend-otp', otpRateLimiter, resendOtpValidation, validate, resendOtp);
+router.post('/resend-otp', resendOtpLimiter, resendOtpValidation, validate, resendOtp);
 
 /**
  * @desc    Request OTP (for login if needed later, or initial verification trigger)

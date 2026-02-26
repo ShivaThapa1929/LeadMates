@@ -1,10 +1,10 @@
 // src/sections/WhyLeadMates.jsx
 import { motion } from "framer-motion";
-import { 
-  ExclamationTriangleIcon, 
-  WrenchScrewdriverIcon,   
-  BoltIcon,                
-  UserGroupIcon            
+import {
+  ExclamationTriangleIcon,
+  WrenchScrewdriverIcon,
+  BoltIcon,
+  UserGroupIcon
 } from "@heroicons/react/24/outline";
 
 const storySections = [
@@ -32,13 +32,28 @@ const storySections = [
 
 export default function WhyLeadMates() {
   return (
-    <section className="relative py-20 bg-[#030405] text-white px-6 overflow-hidden">
-      
-      {/* 3D THEME LAYER */}
-      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[400px] bg-blue-600/5 blur-[120px] pointer-events-none" />
+    <section className="relative py-20 bg-background text-white px-6 overflow-hidden">
+
+      {/* ANIMATION SYNC: Pulsing Nebula Background from UseCases */}
+      <motion.div
+        animate={{
+          opacity: [0.05, 0.1, 0.05],
+          scale: [1, 1.2, 1]
+        }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-purple-600/10 blur-[160px] pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          opacity: [0.05, 0.15, 0.05],
+          scale: [1.2, 1, 1.2]
+        }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[140px] pointer-events-none"
+      />
 
       <div className="relative max-w-5xl mx-auto z-10">
-        
+
         {/* Header - Scaled Down */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -73,7 +88,8 @@ export default function WhyLeadMates() {
                   borderColor: "rgba(37, 99, 235, 0.3)",
                   backgroundColor: "rgba(255, 255, 255, 0.01)"
                 }}
-                className="group relative p-6 rounded-2xl border border-white/5 bg-black flex items-start gap-5 transition-all duration-300 cursor-default"
+                style={{ borderColor: "rgba(255, 255, 255, 0.05)" }}
+                className="group relative p-6 rounded-2xl border bg-black flex items-start gap-5 transition-all duration-300 cursor-default"
               >
                 <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-600/20 group-hover:bg-blue-600 transition-all duration-500 shrink-0">
                   <Icon className="w-5 h-5 text-blue-500 group-hover:text-white transition-colors" />
@@ -93,7 +109,7 @@ export default function WhyLeadMates() {
         </div>
 
         {/* Compact Philosophy Footer */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           className="mt-16 pt-8 border-t border-white/5 text-center"

@@ -43,8 +43,10 @@ class AuthService {
             roleDetails,
             permissions: Array.from(permissions),
             is_verified: user.is_verified,
+            phone_verified: user.phone_verified,
+            email_verified: user.email_verified,
             plan: user.plan,
-            role_type: user.role_type,
+            role: user.role,
             last_login_at: user.last_login_at
         };
     }
@@ -103,7 +105,8 @@ class AuthService {
         try {
             const decoded = jwt.verify(refreshToken, JWT_SECRET);
             const accessToken = generateAccessToken(decoded.id);
-            return { accessToken };
+            const newRefreshToken = generateRefreshToken(decoded.id);
+            return { accessToken, refreshToken: newRefreshToken };
         } catch (err) {
             throw new Error('Invalid or expired refresh token');
         }

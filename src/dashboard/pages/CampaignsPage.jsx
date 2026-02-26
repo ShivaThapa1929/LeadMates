@@ -67,16 +67,16 @@ export default function CampaignsPage() {
         setCampaigns(campaigns.map(c => c.id === editingId ? result.data : c));
         setIsModalOpen(false);
         addNotification({
-          title: "Channel Configured",
-          message: `Operational parameters for ${formData.name} updated.`,
+          title: "Campaign Updated",
+          message: `The settings for ${formData.name} have been successfully updated.`,
           type: "info",
           icon: Edit2
         });
       }
     } catch (err) {
       addNotification({
-        title: "Configuration Error",
-        message: err.message || "Failed to update campaign",
+        title: "Update Error",
+        message: err.message || "Failed to update the campaign. Please try again.",
         type: "error"
       });
     } finally {
@@ -86,14 +86,14 @@ export default function CampaignsPage() {
 
   const removeCampaign = async (id) => {
     const campaignToRemove = campaigns.find(c => c.id === id);
-    if (!window.confirm("Are you sure you want to terminate this campaign node?")) return;
+    if (!window.confirm("Are you sure you want to delete this campaign?")) return;
     try {
       const data = await campaignService.deleteCampaign(id);
       if (data.success) {
         setCampaigns((prev) => prev.filter((c) => c.id !== id));
         addNotification({
-          title: "Channel Terminated",
-          message: `${campaignToRemove?.name || 'A campaign channel'} has been deactivated.`,
+          title: "Campaign Deleted",
+          message: `${campaignToRemove?.name || 'The campaign'} has been moved to trash.`,
           type: "warning",
           icon: Trash2
         });

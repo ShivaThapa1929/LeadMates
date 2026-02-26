@@ -1,4 +1,5 @@
 const Lead = require('../models/lead.model');
+const { db } = require('../config/db');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 
 // @desc    Get all leads for logged in user
@@ -26,43 +27,178 @@ exports.getLeads = async (req, res) => {
     }
 };
 
+// @desc    Get Analysis Data
+// @route   GET /api/leads/analysis
+// @access  Private
+exports.getAnalysis = async (req, res) => {
+    try {
+        const { start_date, end_date, campaign_type, campaign_name, source, custom_source } = req.query;
+
+        // Helper for building filtered query
+        const buildQuery = () => {
+            let q = db('leads').where('is_deleted', false);
+
+            if (start_date) q.where('created_at', '>=', start_date);
+            if (end_date) q.where('created_at', '<=', `${end_date} 23:59:59`);
+
+            if (campaign_type && campaign_type !== 'All' && campaign_type !== 'All Types') {
+                q.where('campaign_type', campaign_type);
+            }
+
+            if (campaign_name && campaign_name !== 'All') {
+                q.where('campaign_name', 'like', `%${campaign_name}%`);
+            }
+
+            // Source search
+            if (custom_source) {
+                q.where('source', 'like', `%${custom_source}%`);
+            } else if (source && source !== 'All') {
+                q.where('source', 'like', `%${source}%`);
+            }
+
+            return q;
+        };
+
+        // 1. Total Leads
+        const totalRes = await buildQuery().count('* as count').first();
+        const total_leads = parseInt(totalRes.count || 0);
+
+        // 2. Converted Leads
+        const convertedRes = await buildQuery()
+            .whereIn('status', ['CONVERTED', 'WON', 'Converted', 'Won'])
+            .count('* as count').first();
+        const converted_leads = parseInt(convertedRes.count || 0);
+
+        // 3. Conversion Rate
+        const conversion_rate = total_leads > 0
+            ? parseFloat(((converted_leads / total_leads) * 100).toFixed(1))
+            : 0;
+
+        // 4. Breakdown by Campaign (Top 10)
+        let campaign_breakdown = await buildQuery()
+            .select('campaign_name as name', db.raw('count(*) as value'))
+            .whereNotNull('campaign_name')
+            .groupBy('campaign_name')
+            .orderBy('value', 'desc')
+            .limit(10);
+
+        // 5. Breakdown by Source (Top 10)
+        let source_breakdown = await buildQuery()
+            .select('source as name', db.raw('count(*) as value'))
+            .whereNotNull('source')
+            .groupBy('source')
+            .orderBy('value', 'desc')
+            .limit(10);
+
+        // 6. Best Performing Campaign (by conversion rate, min 1 lead)
+        const campaignStats = await buildQuery()
+            .select('campaign_name')
+            .count('* as total')
+            .select(db.raw("SUM(CASE WHEN status IN ('CONVERTED', 'WON', 'Converted', 'Won') THEN 1 ELSE 0 END) as converted"))
+            .whereNotNull('campaign_name')
+            .groupBy('campaign_name')
+            .orderByRaw('(SUM(CASE WHEN status IN (\'CONVERTED\', \'WON\', \'Converted\', \'Won\') THEN 1 ELSE 0 END) * 1.0 / count(*)) desc')
+            .first();
+
+        let best_campaign_data = {
+            name: "N/A",
+            conversion_rate: 0,
+            total_leads: 0
+        };
+
+        if (campaignStats) {
+            const total = parseInt(campaignStats.total || 0);
+            const converted = parseInt(campaignStats.converted || 0);
+            best_campaign_data = {
+                name: campaignStats.campaign_name,
+                total_leads: total,
+                conversion_rate: total > 0 ? parseFloat(((converted / total) * 100).toFixed(1)) : 0
+            };
+        }
+
+        // 7. Best Performing Source
+        const bestSourceRes = await buildQuery()
+            .select('source')
+            .whereIn('status', ['CONVERTED', 'WON', 'Converted', 'Won'])
+            .whereNotNull('source')
+            .groupBy('source')
+            .orderByRaw('count(*) desc')
+            .first();
+
+        // 8. Trend Data
+        const trendRaw = await buildQuery()
+            .select(db.raw('DATE(created_at) as date'), db.raw('count(*) as leads'))
+            .groupByRaw('DATE(created_at)')
+            .orderBy('date', 'asc');
+
+        const trend_data = trendRaw.map(r => ({
+            date: r.date instanceof Date ? r.date.toISOString().split('T')[0] : r.date,
+            leads: parseInt(r.leads || 0)
+        }));
+
+        // 9. Extra: Get unique campaign names and sources for filters
+        const uniqueCampaigns = await db('leads').distinct('campaign_name').whereNotNull('campaign_name').pluck('campaign_name');
+        const uniqueSources = await db('leads').distinct('source').whereNotNull('source').pluck('source');
+
+        sendSuccess(res, {
+            total_leads,
+            converted_leads,
+            conversion_rate,
+            best_campaign: best_campaign_data.name,
+            best_campaign_details: best_campaign_data,
+            best_source: bestSourceRes ? bestSourceRes.source : "N/A",
+            campaign_breakdown: campaign_breakdown.map(i => ({ name: i.name || 'Unknown', value: parseInt(i.value) })),
+            source_breakdown: source_breakdown.map(i => ({ name: i.name || 'Unknown', value: parseInt(i.value) })),
+            trend_data,
+            filters: {
+                campaigns: uniqueCampaigns.filter(Boolean),
+                sources: uniqueSources.filter(Boolean)
+            }
+        });
+
+    } catch (error) {
+        console.error("Analysis Error:", error);
+        sendError(res, "Failed to generate analysis data.");
+    }
+};
+
 // @desc    Create a new lead
 // @route   POST /api/leads
 // @access  Private
 exports.createLead = async (req, res) => {
     try {
-        const { name, email, contact, channel, status, assigned_to, notes, custom_values } = req.body;
+        const { name, email, contact, phone, channel, status, assigned_to, notes, custom_values, campaign_type, campaign_name, source } = req.body;
 
-        // Validation
-        if (!name || !email || !contact) {
-            return sendError(res, 'Name, Email, and Contact are mandatory fields', 400);
+        // Validation - Require Name + (Email OR Contact/Phone)
+        const phoneValue = phone || contact;
+        if (!name || (!email && !phoneValue)) {
+            return sendError(res, 'Name and at least one contact method (Email or Phone) are required', 400);
         }
 
-        // Email format validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return sendError(res, 'Invalid email format', 400);
-        }
-
-        // Contact numeric validation
-        const contactRegex = /^[0-9+\s-]{8,20}$/;
-        if (!contactRegex.test(contact)) {
-            return sendError(res, 'Invalid contact number. Use only numbers, +, -, or space (min 8 digits).', 400);
+        // Email format validation (if provided)
+        if (email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return sendError(res, 'Invalid email format', 400);
+            }
         }
 
         const leadData = {
             user_id: req.user.id,
             name,
             email,
-            contact,
-            phone: contact, // Keep phone for backward compatibility if any
+            contact: phoneValue || '',
+            phone: phoneValue || '',
             channel: channel || 'Manual Entry',
             status: status || 'NEW',
             assigned_to,
-            notes
+            notes,
+            campaign_type,
+            campaign_name,
+            source: source || channel || 'Direct'
         };
 
-        // Custom Fields Validation (Optional but recommended)
+        // Custom Fields Validation
         const customFields = await require('../models/customField.model').findAll();
         const validatedCustomValues = {};
 
@@ -70,12 +206,6 @@ exports.createLead = async (req, res) => {
             for (const field of customFields) {
                 const value = custom_values[field.field_name];
                 if (value) {
-                    if (field.field_type === 'select') {
-                        const options = typeof field.options === 'string' ? JSON.parse(field.options) : field.options;
-                        if (options && !options.includes(value)) {
-                            return sendError(res, `Invalid option for custom field: ${field.field_name}`, 400);
-                        }
-                    }
                     validatedCustomValues[field.field_name] = value;
                 }
             }

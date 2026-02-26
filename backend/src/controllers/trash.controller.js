@@ -15,9 +15,9 @@ const TrashController = {
                 return sendError(res, 'Module parameter is required', 400);
             }
 
-            const validModules = ['leads', 'users', 'campaigns', 'projects'];
+            const validModules = ['leads', 'users', 'campaigns'];
             if (!validModules.includes(module)) {
-                return sendError(res, 'Invalid module. Valid modules are: leads, users, campaigns, projects', 400);
+                return sendError(res, 'Invalid module. Valid modules are: leads, users, campaigns', 400);
             }
 
             // Get deleted items joined with the user who deleted it
@@ -42,7 +42,7 @@ const TrashController = {
     restoreItem: async (req, res) => {
         try {
             const { module, id } = req.params;
-            const validModules = ['leads', 'users', 'campaigns', 'projects'];
+            const validModules = ['leads', 'users', 'campaigns'];
             if (!validModules.includes(module)) {
                 return sendError(res, 'Invalid module', 400);
             }
@@ -70,7 +70,7 @@ const TrashController = {
     permanentDelete: async (req, res) => {
         try {
             const { module, id } = req.params;
-            const validModules = ['leads', 'users', 'campaigns', 'projects'];
+            const validModules = ['leads', 'users', 'campaigns'];
             if (!validModules.includes(module)) {
                 return sendError(res, 'Invalid module', 400);
             }

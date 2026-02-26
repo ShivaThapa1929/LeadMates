@@ -40,7 +40,7 @@ export default function LeadDetailsPage() {
 
     if (loading) return (
         <div className="flex h-[50vh] items-center justify-center text-muted-foreground">
-            <Loader2 className="animate-spin mr-2" /> Loading Intelligence...
+            <Loader2 className="animate-spin mr-2" /> Loading Lead Details...
         </div>
     );
 
@@ -83,7 +83,7 @@ export default function LeadDetailsPage() {
                 <div className="md:col-span-2 space-y-6">
                     <div className="bg-card border border-border rounded-[24px] p-8 shadow-sm relative overflow-hidden">
                         <div className="flex items-start justify-between mb-8">
-                            <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Contact Intelligence</h3>
+                            <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Contact Information</h3>
                             <User className="text-primary opacity-20" size={40} />
                         </div>
 
@@ -110,7 +110,7 @@ export default function LeadDetailsPage() {
                                 </div>
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Assigned Agent</label>
+                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Assigned To</label>
                                 <div className="flex items-center gap-2 text-foreground font-bold">
                                     <Shield size={14} className="text-orange-500" />
                                     {lead.assignee_name || "Unassigned"}
@@ -123,7 +123,7 @@ export default function LeadDetailsPage() {
                     {lead.custom_values && typeof lead.custom_values === 'object' && Object.keys(lead.custom_values).length > 0 && (
                         <div className="bg-card border border-border rounded-[24px] p-8 shadow-sm">
                             <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-                                <Shield size={16} className="text-primary" /> Strategic parameters
+                                <Shield size={16} className="text-primary" /> Additional Details
                             </h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 {Object.entries(lead.custom_values).map(([key, value]) => (
@@ -140,7 +140,7 @@ export default function LeadDetailsPage() {
 
                     {/* Notes Section */}
                     <div className="bg-card border border-border rounded-[24px] p-8 shadow-sm">
-                        <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-4">Intelligence Notes</h3>
+                        <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-4">Notes</h3>
                         <div className="p-4 rounded-xl bg-secondary/50 border border-border min-h-[100px] text-sm text-foreground">
                             {lead.notes || "No additional notes recorded for this lead."}
                         </div>

@@ -5,15 +5,9 @@
 
 
 @media (pointer: fine) {
-
-  .cursor-none,
-  .cursor-none * {
+  * {
     cursor: none !important;
   }
-}
-
-#root {
-  cursor: none;
 }
 
 :root {

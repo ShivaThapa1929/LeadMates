@@ -83,8 +83,8 @@ const DeployCampaign = () => {
             const response = await customFieldApi.createCustomField(newField);
             if (response.success) {
                 addNotification({
-                    title: "Parameter Registered",
-                    message: "New custom intelligence field has been added to the protocol.",
+                    title: "Field Added",
+                    message: "The new custom field has been successfully added.",
                     type: "success",
                     icon: Shield
                 });
@@ -94,8 +94,8 @@ const DeployCampaign = () => {
             }
         } catch (err) {
             addNotification({
-                title: "Protocol Violation",
-                message: "Failed to add new intelligence field.",
+                title: "Error",
+                message: "Failed to add the custom field.",
                 type: "error"
             });
         }
@@ -176,8 +176,8 @@ const DeployCampaign = () => {
             if (response.success) {
                 setLastDeployedCampaign({ ...formData });
                 addNotification({
-                    title: "Campaign Node Deployed",
-                    message: "Tactical campaign channel has been successfully initialized.",
+                    title: "Campaign Created",
+                    message: "The campaign has been successfully created.",
                     type: "success",
                     icon: CheckCircle
                 });
@@ -189,16 +189,16 @@ const DeployCampaign = () => {
                 });
             } else {
                 addNotification({
-                    title: "Deployment Failure",
-                    message: response.message || "Failed to initialize campaign channel.",
+                    title: "Creation Error",
+                    message: response.message || "Something went wrong while creating the campaign.",
                     type: "error",
                     icon: AlertCircle
                 });
             }
         } catch (err) {
             addNotification({
-                title: "Internal Error",
-                message: err.message || "A critical error occurred during deployment.",
+                title: "Error",
+                message: err.message || "An unexpected error occurred during campaign creation.",
                 type: "error",
                 icon: AlertCircle
             });

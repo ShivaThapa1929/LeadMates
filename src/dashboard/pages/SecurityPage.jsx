@@ -28,10 +28,10 @@ export default function SecurityPage() {
                         <Lock size={28} className="text-primary lg:w-9 lg:h-9" />
                         <div>
                             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight uppercase">
-                                Security <span className="text-primary">Node</span>
+                                Security <span className="text-primary">Settings</span>
                             </h1>
                             <p className="text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1 opacity-60">
-                                Authentication protocols and access management
+                                Manage your password and active sessions
                             </p>
                         </div>
                     </div>
@@ -49,7 +49,7 @@ export default function SecurityPage() {
                             <div className="p-3 rounded-2xl bg-primary/10 text-primary border border-primary/20">
                                 <Key size={20} />
                             </div>
-                            <h3 className="text-[13px] font-black text-foreground uppercase tracking-[0.2em]">Update Authentication</h3>
+                            <h3 className="text-[13px] font-black text-foreground uppercase tracking-[0.2em]">Change Password</h3>
                         </div>
 
                         <form className="space-y-6">
@@ -59,7 +59,7 @@ export default function SecurityPage() {
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         className="w-full bg-input/50 focus:bg-input border border-border rounded-2xl py-4 px-6 text-[12px] font-bold text-foreground focus:outline-none focus:border-primary/50 transition-all uppercase tracking-widest placeholder:text-muted-foreground/30"
-                                        placeholder="Enter current token"
+                                        placeholder="Enter current password"
                                         value={passwords.current}
                                         onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
                                     />
@@ -89,7 +89,7 @@ export default function SecurityPage() {
                                     <input
                                         type="password"
                                         className="w-full bg-input/50 focus:bg-input border border-border rounded-2xl py-4 px-6 text-[12px] font-bold text-foreground focus:outline-none focus:border-primary/50 transition-all uppercase tracking-widest placeholder:text-muted-foreground/30"
-                                        placeholder="Repeat new token"
+                                        placeholder="Repeat new password"
                                         value={passwords.confirm}
                                         onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
                                     />
@@ -97,7 +97,7 @@ export default function SecurityPage() {
                             </div>
 
                             <button className="w-full bg-primary text-white py-5 rounded-2xl text-[12px] font-black uppercase tracking-[0.3em] shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mt-4">
-                                Synchronize Security Token
+                                Update Password
                             </button>
                         </form>
                     </div>
@@ -142,7 +142,7 @@ export default function SecurityPage() {
                 <div className="space-y-8">
                     <div className="bg-primary/5 border border-primary/20 rounded-[32px] p-8 shadow-premium relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] pointer-events-none" />
-                        <h3 className="text-[11px] font-black text-primary uppercase tracking-[0.3em] mb-6">Security Integrity</h3>
+                        <h3 className="text-[11px] font-black text-primary uppercase tracking-[0.3em] mb-6">Security Status</h3>
                         <div className="flex items-center gap-6 mb-8">
                             <div className="w-20 h-20 rounded-full border-4 border-primary/20 flex items-center justify-center relative">
                                 <div className="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin-slow" />
@@ -154,7 +154,7 @@ export default function SecurityPage() {
                             </div>
                         </div>
                         <p className="text-[11px] text-muted-foreground leading-relaxed font-bold uppercase tracking-tight">
-                            Your account is protected with multi-layered encryption protocols.
+                            Your account is protected with advanced security measures.
                         </p>
                     </div>
 
@@ -168,7 +168,7 @@ export default function SecurityPage() {
                                     <Bell size={14} />
                                 </div>
                                 <p className="text-[10px] font-bold text-muted-foreground uppercase leading-relaxed tracking-tight">
-                                    Rotate your credentials every <span className="text-foreground">90 days</span> for maximum integrity.
+                                    Change your password every <span className="text-foreground">90 days</span> for better security.
                                 </p>
                             </div>
                             <div className="flex gap-4">
@@ -176,7 +176,7 @@ export default function SecurityPage() {
                                     <Lock size={14} />
                                 </div>
                                 <p className="text-[10px] font-bold text-muted-foreground uppercase leading-relaxed tracking-tight">
-                                    Use complex alphanumeric tokens to prevent unauthorized node access.
+                                    Use complex alphanumeric passwords to prevent unauthorized access.
                                 </p>
                             </div>
                         </div>

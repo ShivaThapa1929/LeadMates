@@ -72,7 +72,7 @@ export default function Login2FAPage() {
             setSuccess("");
             // If channel is 'both', we default resend to email for simplicity, 
             // or we could show a modal to choose. Let's send to email as primary.
-            const resendType = channel === 'mobile' ? 'mobile' : 'email';
+            const resendType = 'login';
             const response = await authService.resendOtp(userId, resendType);
             setSuccess(response.message || "Verification code resent successfully!");
             setTimeLeft(30);

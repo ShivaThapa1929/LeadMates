@@ -33,7 +33,7 @@ const steps = [
 export default function HowItWorks() {
   return (
     <section className="relative py-24 bg-[#030405] text-white px-6 overflow-hidden">
-      
+
       {/* Background Atmosphere */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-75 bg-blue-600/5 blur-[120px] pointer-events-none" />
 
@@ -69,7 +69,8 @@ export default function HowItWorks() {
                 borderColor: "rgba(37, 99, 235, 0.4)",
                 backgroundColor: "rgba(255, 255, 255, 0.01)"
               }}
-              className="group relative p-8 rounded-4xl border border-white/5 bg-black transition-all duration-300 overflow-hidden cursor-default"
+              style={{ borderColor: "rgba(255, 255, 255, 0.05)" }}
+              className="group relative p-8 rounded-4xl border bg-black transition-all duration-300 overflow-hidden cursor-default"
             >
               {/* Subtle Blue inner glow on hover */}
               <div className="absolute inset-0 bg-linear-to-br from-blue-600/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />

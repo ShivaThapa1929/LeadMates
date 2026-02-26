@@ -1,9 +1,9 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
-  LayoutDashboard, LineChart, Users, FolderKanban,
+  LayoutDashboard, LineChart, Users,
   Megaphone, Settings, User, Search, Bell, Sun, Moon,
-  Maximize, ChevronDown, Menu as MenuIcon, X, LogOut, Sparkles, ShieldCheck, Trash2, UserPlus, CreditCard
+  Maximize, ChevronDown, Menu as MenuIcon, X, LogOut, Sparkles, ShieldCheck, Trash2, UserPlus, CreditCard, Activity
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/logo-primary.png";
@@ -50,8 +50,8 @@ export default function Layout() {
 
       // Add to global notifications
       addNotification({
-        title: "System Initialized",
-        message: "Neural cluster active. Welcome to LeadMates central.",
+        title: "System Active",
+        message: "Welcome back to your LeadMates dashboard.",
         type: "info",
         icon: Sparkles
       });
@@ -90,8 +90,8 @@ export default function Layout() {
     const isProfile = location.pathname.includes('/profile');
     const items = [
       { to: `${basePrefix}/profile`, label: "Personal Info", icon: User },
-      { to: `${basePrefix}/profile/notifications`, label: "System Alerts", icon: Bell },
-      { to: `${basePrefix}/profile/security`, label: "Node Security", icon: ShieldCheck },
+      { to: `${basePrefix}/profile/notifications`, label: "Notifications", icon: Bell },
+      { to: `${basePrefix}/profile/security`, label: "Security Settings", icon: ShieldCheck },
     ];
     return { isProfileContext: isProfile, profileItems: items };
   }, [location.pathname, basePrefix]);
@@ -109,7 +109,9 @@ export default function Layout() {
     const allItems = [
       { to: basePrefix, label: "Overview", icon: LayoutDashboard, permission: null },
       { to: `${basePrefix}/leads`, label: "Leads", icon: Users, permission: "leads.view" },
-      { to: `${basePrefix}/projects`, label: "Projects", icon: FolderKanban, permission: "projects.view" },
+
+
+      { to: `${basePrefix}/analyse-leads`, label: "Analyse Leads", icon: Activity, permission: "analytics.view" },
       { to: `${basePrefix}/campaigns`, label: "Campaigns", icon: Megaphone, permission: "campaigns.view" },
       { to: `${basePrefix}/analytics`, label: "Analytics", icon: LineChart, permission: "reports.view" },
       { to: `${basePrefix}/users`, label: "Users", icon: Users, permission: "users.view" },
@@ -185,7 +187,7 @@ export default function Layout() {
                   className="flex items-center gap-4 px-4 py-3 rounded-xl text-[11px] font-black transition-all group relative text-primary hover:bg-primary/10 mb-4"
                 >
                   <LayoutDashboard size={18} className="shrink-0" />
-                  {!isCollapsed && <span className="uppercase tracking-[0.1em] whitespace-nowrap animate-fade-in">Back to Cluster</span>}
+                  {!isCollapsed && <span className="uppercase tracking-[0.1em] whitespace-nowrap animate-fade-in">Back to Dashboard</span>}
                 </NavLink>
 
                 {profileItems.map((item) => {
@@ -412,7 +414,7 @@ export default function Layout() {
                       className="absolute right-0 mt-4 w-[320px] sm:w-[380px] bg-card border border-border rounded-[24px] shadow-2xl z-[101] overflow-hidden"
                     >
                       <div className="p-5 border-b border-border flex items-center justify-between bg-muted/20">
-                        <h3 className="text-[11px] font-black uppercase tracking-widest text-foreground">Intelligence Feed</h3>
+                        <h3 className="text-[11px] font-black uppercase tracking-widest text-foreground">Notifications</h3>
                         <div className="flex gap-3">
                           <button onClick={clearNotifications} className="text-[9px] font-black text-rose-500 uppercase tracking-widest hover:underline">Clear</button>
                         </div>
@@ -422,7 +424,7 @@ export default function Layout() {
                         {notifications.length === 0 ? (
                           <div className="p-10 text-center space-y-3">
                             <Bell size={32} className="mx-auto text-muted-foreground opacity-20" />
-                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest leading-relaxed">No active signals detected in the stream.</p>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest leading-relaxed">You have no new notifications.</p>
                           </div>
                         ) : (
                           <div className="divide-y divide-border/50">
@@ -453,7 +455,7 @@ export default function Layout() {
 
                       {notifications.length > 0 && (
                         <div className="p-4 bg-muted/20 border-t border-border text-center">
-                          <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] opacity-40">End of secure transmission</p>
+                          <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] opacity-40">That's all for now</p>
                         </div>
                       )}
                     </motion.div>
@@ -497,7 +499,7 @@ export default function Layout() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="text-sm font-black text-foreground uppercase tracking-widest">Access Granted</h3>
+                    <h3 className="text-sm font-black text-foreground uppercase tracking-widest">Welcome Back</h3>
                     <button onClick={() => setShowWelcome(false)} className="text-muted-foreground hover:text-foreground"><X size={16} /></button>
                   </div>
                   <p className="text-xs text-muted-foreground font-bold">Welcome to LeadMates. Dashboard active.</p>

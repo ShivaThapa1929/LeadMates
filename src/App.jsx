@@ -33,7 +33,7 @@ import DashboardPage from "./pages/Dashboard";
 import AnalyticsPage from "./dashboard/pages/AnalyticsPage";
 import LeadsPage from "./dashboard/pages/LeadsPage";
 import LeadDetailsPage from "./dashboard/pages/LeadDetailsPage";
-import ProjectsPage from "./dashboard/pages/ProjectsPage";
+import AnalyseLeadsPage from "./dashboard/pages/AnalyseLeadsPage";
 import CampaignsPage from "./dashboard/pages/CampaignsPage";
 import SecuritySettings from "./dashboard/pages/SecurityPage";
 import SettingsPage from "./dashboard/pages/SettingsPage";
@@ -82,7 +82,7 @@ function Shell() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      className={`relative min-h-screen flex flex-col${isDashboardRoute ? "" : " cursor-none overflow-hidden"}`}
+      className={`relative min-h-screen flex flex-col${isDashboardRoute ? "" : " cursor-none overflow-x-hidden"}`}
     >
       {!hideNavAndFooter && <Navbar />}
       <main className={hideNavAndFooter ? "grow" : "grow pt-20"}>
@@ -115,14 +115,14 @@ function Shell() {
                 <Route path="capture-lead" element={<CaptureLead />} />
                 <Route path="leads" element={<LeadsPage />} />
                 <Route path="leads/:id" element={<LeadDetailsPage />} />
-                <Route path="projects" element={<ProjectsPage />} />
+
+                <Route path="analyse-leads" element={<AnalyseLeadsPage />} />
                 <Route path="campaigns" element={<CampaignsPage />} />
                 <Route path="deploy-campaign" element={<DeployCampaign />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
                 <Route path="users" element={<UsersPage />} />
                 <Route path="roles" element={<RolesPage />} />
                 <Route path="trash" element={<TrashPage />} />
-                <Route path="security" element={<SecuritySettings />} />
                 <Route path="security" element={<SecuritySettings />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="profile/settings" element={<SettingsPage />} />
@@ -139,9 +139,9 @@ function Shell() {
               <Route path="capture-lead" element={<CaptureLead />} />
               <Route path="leads" element={<LeadsPage />} />
               <Route path="leads/:id" element={<LeadDetailsPage />} />
-              <Route path="projects" element={<ProjectsPage />} />
               <Route path="campaigns" element={<CampaignsPage />} />
               <Route path="deploy-campaign" element={<DeployCampaign />} />
+              <Route path="analyse-leads" element={<AnalyseLeadsPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="security" element={<SecuritySettings />} />
               <Route path="profile" element={<ProfilePage />} />

@@ -81,10 +81,24 @@ export default function Pricing() {
   };
 
   return (
-    <main className="relative bg-[#030405] min-h-screen text-white pt-32 pb-24 px-6 overflow-hidden">
-
-      {/* Background Atmosphere */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-blue-600/[0.05] blur-[120px] pointer-events-none rounded-full" />
+    <main className="relative bg-background min-h-screen text-white pt-32 pb-24 px-6 overflow-hidden">
+      {/* ANIMATION SYNC: Pulsing Nebula Background from UseCases */}
+      <motion.div
+        animate={{
+          opacity: [0.05, 0.1, 0.05],
+          scale: [1, 1.2, 1]
+        }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-20 right-1/4 w-[600px] h-[600px] bg-purple-600/10 blur-[160px] pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          opacity: [0.05, 0.15, 0.05],
+          scale: [1.2, 1, 1.2]
+        }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[140px] pointer-events-none"
+      />
 
       <div className="max-w-7xl mx-auto relative z-10">
 
@@ -111,21 +125,21 @@ export default function Pricing() {
             />
             <button
               onClick={() => setActiveTab("admin")}
-              className={`relative z-10 flex items-center gap-2 px-8 py-3 text-[9px] font-black uppercase tracking-widest transition-colors ${activeTab === "admin" ? "text-white" : "text-gray-500"}`}
+              className={`relative z-10 flex items-center gap-2 px-8 py-3 text-[10px] font-black uppercase tracking-widest transition-colors ${activeTab === "admin" ? "text-white" : "text-gray-500"}`}
             >
-              <BuildingOfficeIcon className="w-3.5 h-3.5" />
+              <BuildingOfficeIcon className="w-4 h-4" />
               For Admins
             </button>
             <button
               onClick={() => setActiveTab("user")}
-              className={`relative z-10 flex items-center gap-2 px-8 py-3 text-[9px] font-black uppercase tracking-widest transition-colors ${activeTab === "user" ? "text-white" : "text-gray-500"}`}
+              className={`relative z-10 flex items-center gap-2 px-8 py-3 text-[10px] font-black uppercase tracking-widest transition-colors ${activeTab === "user" ? "text-white" : "text-gray-500"}`}
             >
-              <UserIcon className="w-3.5 h-3.5" />
+              <UserIcon className="w-4 h-4" />
               For Users
             </button>
           </div>
 
-          <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.5em] block">
+          <p className="text-gray-500 text-[11px] font-black uppercase tracking-[0.5em] block">
             One-time purchase • Lifetime usage
           </p>
         </motion.section>
@@ -150,13 +164,13 @@ export default function Pricing() {
                 )}
 
                 <div className="mb-6">
-                  <h3 className="text-gray-400 text-[8px] font-black uppercase tracking-widest mb-3 flex items-center gap-2">
-                    {activeTab === "admin" ? <BuildingOfficeIcon className="w-2.5 h-2.5 text-blue-500/50" /> : <UserIcon className="w-2.5 h-2.5 text-blue-500/50" />}
+                  <h3 className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-3 flex items-center gap-2">
+                    {activeTab === "admin" ? <BuildingOfficeIcon className="w-3 h-3 text-blue-500/50" /> : <UserIcon className="w-3 h-3 text-blue-500/50" />}
                     {plan.name}
                   </h3>
                   <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-black tracking-tighter">${plan.price}</span>
-                    <span className="text-gray-600 text-[8px] font-bold uppercase tracking-widest">{plan.price === "0" ? "/Forever" : "/Lifetime"}</span>
+                    <span className="text-gray-600 text-[10px] font-bold uppercase tracking-widest">{plan.price === "0" ? "/Forever" : "/Lifetime"}</span>
                   </div>
                 </div>
 
@@ -164,9 +178,9 @@ export default function Pricing() {
 
                 <ul className="space-y-3.5 mb-10 flex-grow">
                   {plan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-[10px] font-bold text-gray-400 group">
+                    <li key={idx} className="flex items-center gap-2 text-[11px] font-bold text-gray-400 group">
                       <div className={`w-4 h-4 rounded-md flex items-center justify-center transition-colors ${plan.popular ? 'bg-blue-500/10 text-blue-500' : 'bg-white/5 text-white/20'}`}>
-                        <CheckIcon className="w-2.5 h-2.5" />
+                        <CheckIcon className="w-3 h-3" />
                       </div>
                       <span className="group-hover:text-gray-200 transition-colors uppercase tracking-tight">{feature}</span>
                     </li>
@@ -176,7 +190,7 @@ export default function Pricing() {
                 <button
                   onClick={() => handleSelectPlan(plan)}
                   disabled={loadingPlan === plan.name}
-                  className={`w-full py-3.5 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${plan.popular ? 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/20' : 'bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300'} disabled:opacity-50`}
+                  className={`w-full py-4 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all ${plan.popular ? 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/20' : 'bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300'} disabled:opacity-50`}
                 >
                   {loadingPlan === plan.name ? "Processing..." : (plan.price === "0" ? "Get Started Now" : "Authorize Access")}
                 </button>

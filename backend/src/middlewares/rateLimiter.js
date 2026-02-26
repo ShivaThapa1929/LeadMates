@@ -7,10 +7,8 @@ const { sendError } = require('../utils/responseHandler');
  */
 const otpRateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Limit each IP or phone to 5 OTP requests per window
-    keyGenerator: (req) => {
-        return req.body.phone || req.body.userId || req.ip;
-    },
+    max: 50, // Relaxed for development/testing
+    // Removed custom keyGenerator to avoid ERR_ERL_KEY_GEN_IPV6
     message: {
         success: false,
         message: 'Too many requests. Please try again after 15 minutes.',
@@ -18,6 +16,7 @@ const otpRateLimiter = rateLimit({
     },
     standardHeaders: true,
     legacyHeaders: false,
+    validate: { trustProxy: false }, // Suppress warning for local development
     handler: (req, res, next, options) => {
         sendError(res, options.message.message, 429);
     }
@@ -29,15 +28,31 @@ const otpRateLimiter = rateLimit({
  */
 const verificationRateLimiter = rateLimit({
     windowMs: 10 * 60 * 1000, // 10 minutes
-    max: 10, // Max 10 verification attempts...
-    keyGenerator: (req) => {
-        return req.body.userId || req.ip;
-    },
+    max: 10, // Max 10 verification attempts
     message: {
         success: false,
         message: 'Too many failed verification attempts. Please try again later.',
         errors: null
     },
+    validate: { trustProxy: false },
+    handler: (req, res, next, options) => {
+        sendError(res, options.message.message, 429);
+    }
+});
+
+/**
+ * @desc Stricter Limiter for Resending OTP
+ * Limits to 3 attempts per hour as per requirements.
+ */
+const resendOtpLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 3, // Max 3 resend attempts per hour
+    message: {
+        success: false,
+        message: 'Maximum resend attempts reached (3 per hour). Please try again later.',
+        errors: null
+    },
+    validate: { trustProxy: false },
     handler: (req, res, next, options) => {
         sendError(res, options.message.message, 429);
     }
@@ -45,5 +60,6 @@ const verificationRateLimiter = rateLimit({
 
 module.exports = {
     otpRateLimiter,
-    verificationRateLimiter
+    verificationRateLimiter,
+    resendOtpLimiter
 };

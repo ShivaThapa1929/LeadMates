@@ -158,7 +158,7 @@ export default function RolesPage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[400px] gap-3 text-gray-400">
                 <Loader2 className="animate-spin" size={32} />
-                <p className="text-sm">Loading roles & protocols...</p>
+                <p className="text-sm">Loading roles...</p>
             </div>
         );
     }
@@ -171,7 +171,7 @@ export default function RolesPage() {
                         <ShieldCheck size={32} className="text-primary hidden sm:block" />
                         <span className="text-foreground">Access</span> <span className="text-primary">Control</span>
                     </h1>
-                    <p className="text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1 ml-1 opacity-60">Manage roles and security clearance</p>
+                    <p className="text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1 ml-1 opacity-60">Manage user roles and permissions</p>
                 </div>
                 {user?.roles?.includes('Super Admin') && (
                     <button
@@ -254,10 +254,10 @@ export default function RolesPage() {
                             <div className="p-8 border-b border-border flex items-center justify-between shrink-0">
                                 <div>
                                     <h3 className="text-xl font-black italic uppercase tracking-tighter text-foreground">
-                                        {modalMode === "add" ? "Define New Protocol" : "Modify Clearance"}
+                                        {modalMode === "add" ? "Create New Role" : "Edit Role"}
                                     </h3>
                                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1 opacity-60">
-                                        {modalMode === "add" ? "Create a new access level" : "Update permission matrix"}
+                                        {modalMode === "add" ? "Set up a new role with specific permissions" : "Change permissions for this role"}
                                     </p>
                                 </div>
                                 <button
@@ -313,7 +313,7 @@ export default function RolesPage() {
                                     </div>
 
                                     <div className="space-y-4">
-                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Permission Matrix</label>
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Permissions</label>
                                         <div className="border border-border rounded-2xl overflow-hidden bg-card/50">
                                             <div className="overflow-x-auto custom-scrollbar">
                                                 <div className="min-w-[800px]">
@@ -382,7 +382,7 @@ export default function RolesPage() {
                                     className="w-full bg-primary text-primary-foreground py-4 rounded-2xl text-xs font-black uppercase tracking-[0.2em] shadow-2xl shadow-primary/30 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50"
                                 >
                                     {submitting ? <Loader2 className="animate-spin inline mr-2" /> : <Save className="inline mr-2 w-4 h-4" />}
-                                    {modalMode === "add" ? 'Create Protocol' : 'Save Changes'}
+                                    {modalMode === "add" ? 'Create Role' : 'Save Changes'}
                                 </button>
                             </div>
                         </motion.div>

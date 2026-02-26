@@ -35,8 +35,8 @@ export default function TrashPage() {
             if (data.success) {
                 setTrash(prev => prev.filter(item => item.id !== id));
                 addNotification({
-                    title: "Node Restored",
-                    message: "Entity has been successfully reintegrated into the cluster.",
+                    title: "Item Restored",
+                    message: "The item has been successfully restored and is now active.",
                     type: "success",
                     icon: RefreshCcw
                 });
@@ -47,14 +47,14 @@ export default function TrashPage() {
     };
 
     const handlePermanentDelete = async (id) => {
-        if (!window.confirm("PERMANENT DATA PURGE: This action cannot be reversed. Proceed?")) return;
+        if (!window.confirm("Are you sure you want to permanently delete this item? This action cannot be undone.")) return;
         try {
             const data = await trashService.permanentDelete(activeModule, id);
             if (data.success) {
                 setTrash(prev => prev.filter(item => item.id !== id));
                 addNotification({
-                    title: "Data Purged",
-                    message: "Node and all associated telemetry permanently erased.",
+                    title: "Item Deleted Permanently",
+                    message: "The item and all associated data have been permanently removed.",
                     type: "warning",
                     icon: Trash2
                 });

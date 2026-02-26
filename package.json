@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "setup-admin": "npm --prefix backend run setup-admin"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.51.4",
@@ -23,7 +24,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "framer-motion": "^12.23.26",
     "helmet": "^8.1.0",
@@ -37,7 +38,8 @@
     "react-router-dom": "^7.11.0",
     "recharts": "^3.7.0",
     "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "twilio": "^5.12.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

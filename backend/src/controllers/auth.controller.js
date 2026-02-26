@@ -3,7 +3,6 @@ const Otp = require('../models/otp.model');
 const authService = require('../services/auth.service');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 const { sendEmail } = require('../services/email.service');
-const { sendSMS } = require('../services/sms.service');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const otpGenerator = require('otp-generator');
@@ -23,81 +22,77 @@ const generateOTP = () => otpGenerator.generate(6, {
  */
 exports.signup = async (req, res) => {
     try {
-        const { email, phone } = req.body;
+        let { email, phone, role, password } = req.body;
 
-        const userExists = await User.findByEmail(email);
-        if (userExists) {
-            return sendError(res, 'This email is already registered. Please login or use a different email.', 400);
+        // Normalize phone for Twilio (+91 for 10-digit India format)
+        if (phone && /^\d{10}$/.test(phone)) {
+            phone = `+91${phone}`;
+            req.body.phone = phone;
         }
 
-        // Create User (is_verified = false by default)
-        const newUser = await User.create(req.body);
+        // 1. Global Uniqueness Check
+        const emailExists = await User.findByEmail(email);
+        if (emailExists) {
+            console.log('⚠️ Signup Conflict: Email already exists -', email);
+            return sendError(res, 'Identity conflict: This email is already registered.', 400);
+        }
 
-        // Send OTPs for both channels
+        const phoneExists = await User.findByPhone(phone);
+        if (phoneExists) {
+            console.log('⚠️ Signup Conflict: Phone already exists -', phone);
+            return sendError(res, 'Identity conflict: This phone number is already registered.', 400);
+        }
+
+        // ... rest of validation logic handled by express-validator middleware ...
+
+        // 3. Create User
+        const newUser = await User.create({ ...req.body, role: role || 'user' });
+
+        // 4. Send Verification OTP
         const emailOtp = generateOTP();
-        const mobileOtp = generateOTP();
+        await Otp.create(newUser.id, emailOtp, 'email');
 
-        // parallelize OTP creation and external calls
-        await Promise.all([
-            Otp.create(newUser.id, emailOtp, 'email'),
-            Otp.create(newUser.id, mobileOtp, 'mobile')
-        ]);
-
-        // Fire and forget email/SMS (they have internal error handling)
         if (email) {
-            sendEmail(email, 'Verify Your Email', `<p>Your verification code is: <strong>${emailOtp}</strong>. It expires in 5 minutes.</p>`).catch(e => console.error('Background Email Error:', e));
+            sendEmail(email, 'Welcome to LeadMates - Verify Your Email', `
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; border: 1px solid #e1e7ef; border-radius: 20px; max-width: 500px; margin: auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #2563eb; margin: 0; font-size: 28px; font-weight: 800;">Welcome!</h1>
+                        <p style="color: #64748b; margin-top: 8px;">Let's verify your identity to get started</p>
+                    </div>
+                    
+                    <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">Thank you for joining LeadMates. Please use the following 6-digit code to complete your registration:</p>
+                    
+                    <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 30px; border-radius: 16px; text-align: center; margin: 30px 0; border: 1px solid #bae6fd;">
+                        <div style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #0284c7; font-family: monospace;">
+                            ${emailOtp}
+                        </div>
+                    </div>
+                    
+                    <p style="color: #64748b; font-size: 14px; text-align: center;">This code will expire in <strong style="color: #1e293b;">5 minutes</strong>.</p>
+                    
+                    <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 30px 0;" />
+                    
+                    <p style="color: #94a3b8; font-size: 12px; line-height: 1.5;">If you didn't create an account with LeadMates, you can safely ignore this email.</p>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <p style="color: #cbd5e1; font-size: 12px;">&copy; 2024 LeadMates Inc. All rights reserved.</p>
+                    </div>
+                </div>
+            `).catch(e => console.error('Background Auth Verification Error:', e));
         }
 
-        if (phone) {
-            sendSMS(phone, `Your LeadMates mobile verification code is: ${mobileOtp}`).catch(e => console.error('Background SMS Error:', e));
-        }
-
-        sendSuccess(res, { userId: newUser.id, email, phone }, 'Registration successful. Verification codes have been sent to your email and mobile.', 201);
+        sendSuccess(res, { userId: newUser.id, email, phone, role: newUser.role }, 'OTP has been sent to your email.', 201);
     } catch (error) {
-        console.error('Signup Error:', error);
-        sendError(res, error.message || 'Server error during registration.');
+        console.error('Signup Failure:', error);
+        sendError(res, error.message || 'Server error during signup.');
     }
 };
 
-
-
 /**
- * @desc    Send Mobile OTP
- * @route   POST /api/auth/send-otp
- * @access  Public
+ * @desc    Send OTP (Deprecated - Mobile OTP removed)
  */
 exports.sendOtp = async (req, res) => {
-    try {
-        const { phone, userId } = req.body;
-
-        if (!phone) return sendError(res, 'Phone number is required.', 400);
-
-        // Proper format validation (+91XXXXXXXXXX)
-        const phoneRegex = /^\+91\d{10}$/; // Modified to be specific if wanted, or general international
-        if (!phoneRegex.test(phone)) {
-            return sendError(res, 'Invalid phone format. Please use +91XXXXXXXXXX format.', 400);
-        }
-
-        const user = await User.findById(userId);
-        if (!user) return sendError(res, 'User not found.', 404);
-
-        // Update phone if different
-        if (user.phone !== phone) {
-            await User.update(userId, { phone });
-        }
-
-        const otpCode = generateOTP();
-        // Hashing is handled inside Otp.create as per current model design
-        await Otp.create(userId, otpCode, 'mobile', 5); // 5 min expiry
-
-        // Fire and forget SMS
-        sendSMS(phone, `Your LeadMates verification code is: ${otpCode}. It expires in 5 minutes.`).catch(e => console.error('Background SMS Error:', e));
-
-        sendSuccess(res, null, 'Verification code sent to your mobile number.');
-    } catch (error) {
-        console.error('Send OTP Error:', error);
-        sendError(res, error.message || 'Server error sending OTP.');
-    }
+    return sendError(res, 'Mobile OTP functionality has been disabled.', 400);
 };
 
 /**
@@ -111,57 +106,52 @@ exports.verifyOtp = async (req, res) => {
 
         if (!userId) return sendError(res, 'User identity is missing.', 400);
 
-        // Handle Email OTP if provided
-        if (emailOtp) {
+        const user = await User.findById(userId);
+        if (!user) return sendError(res, 'User not found.', 404);
+
+        // Handle Email OTP (Manual DB way)
+        const codeToVerify = otp || emailOtp;
+        if (codeToVerify) {
             const emailRecord = await Otp.findValid(userId, 'email');
             if (emailRecord) {
-                const isEmailValid = await Otp.verify(emailRecord, emailOtp);
+                const isEmailValid = await Otp.verify(emailRecord, codeToVerify);
                 if (isEmailValid) {
                     await Otp.delete(emailRecord.id);
                     await User.markEmailVerified(userId);
+                } else {
+                    return sendError(res, 'Invalid verification code.', 400);
                 }
+            } else {
+                return sendError(res, 'Verification code expired or invalid.', 400);
             }
-        }
-
-        // Handle Mobile OTP flow as per main request
-        if (otp) {
-            const otpRecord = await Otp.findValid(userId, 'mobile');
-            if (!otpRecord) {
-                return sendError(res, 'Verification code expired or too many failed attempts.', 400);
-            }
-
-            // bcrypt.compare is inside Otp.verify
-            const isValid = await Otp.verify(otpRecord, otp);
-            if (!isValid) {
-                await Otp.incrementAttempts(otpRecord.id);
-                const updatedRecord = await Otp.findValid(userId, 'mobile');
-                if (!updatedRecord) {
-                    return sendError(res, 'Too many failed attempts. Mobile number blocked for this code.', 400);
-                }
-                return sendError(res, 'Invalid verification code.', 400);
-            }
-
-            // Success: Clear OTP and update user
-            await Otp.delete(otpRecord.id);
-            await User.markMobileVerified(userId);
         }
 
         const updatedUser = await User.findById(userId);
 
-        // Finalize Verification
-        if (updatedUser.is_email_verified && updatedUser.is_phone_verified) {
+        // Finalize Verification (Only Email required now)
+        if (updatedUser.email_verified) {
             await User.markVerified(userId);
 
-            // Issue stateless tokens - using updatedUser to avoid redundant query
             const result = await authService.login(updatedUser.email, null, {
                 ip: req.ip,
                 userAgent: req.get('User-Agent')
             }, true, updatedUser);
 
-            return sendSuccess(res, { ...result, status: 'complete' }, 'Mobile number verified successfully.');
+            // Security: Set Refresh Token as HttpOnly Cookie
+            res.cookie('refreshToken', result.refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+
+            // Remove refreshToken from response data to enforce cookie usage
+            delete result.refreshToken;
+
+            return sendSuccess(res, { ...result, status: 'complete' }, 'Verification complete.');
         }
 
-        sendSuccess(res, { status: 'partial' }, 'Verification successful.');
+        sendSuccess(res, { status: 'partial' }, 'Verification step successful.');
     } catch (error) {
         console.error('Verify OTP Error:', error);
         sendError(res, error.message || 'Server error verifying OTP.');
@@ -175,43 +165,81 @@ exports.verifyOtp = async (req, res) => {
  */
 exports.resendOtp = async (req, res) => {
     try {
-        const { userId, type, phone } = req.body;
+        const { userId, type } = req.body;
         if (!userId) return sendError(res, 'User identity is required.', 400);
 
         const user = await User.findById(userId);
         if (!user) return sendError(res, 'User not found.', 404);
 
-        const targetType = type || 'mobile';
+        const targetType = type || 'email';
         const otpCode = generateOTP();
 
         if (targetType === 'email') {
             await Otp.create(userId, otpCode, 'email', 5);
-            sendEmail(user.email, 'Verification Code', `<p>Your code is: <strong>${otpCode}</strong>. Expires in 5m.</p>`).catch(e => console.error('Background Email Error:', e));
+            sendEmail(user.email, 'Verification OTP - LeadMates', `
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; border: 1px solid #e1e7ef; border-radius: 20px; max-width: 500px; margin: auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #1e293b; margin: 0; font-size: 24px; font-weight: 700;">Verification Code</h1>
+                        <p style="color: #64748b; margin-top: 8px;">Complete your LeadMates registration</p>
+                    </div>
+                    
+                    <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">Use the following 6-digit code to verify your identity at LeadMates:</p>
+                    
+                    <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 30px; border-radius: 16px; text-align: center; margin: 30px 0; border: 1px solid #bae6fd;">
+                        <div style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #0284c7; font-family: monospace;">
+                            ${otpCode}
+                        </div>
+                    </div>
+                    
+                    <p style="color: #64748b; font-size: 14px; text-align: center;">This code will expire in <strong style="color: #1e293b;">5 minutes</strong>.</p>
+                    
+                    <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 30px 0;" />
+                    
+                    <p style="color: #ef4444; font-size: 12px; font-weight: bold; text-align: center;">⚠️ Security Note: Do not share this OTP with anyone.</p>
+                </div>
+            `).catch(e => console.error('Background Email Error:', e));
             return sendSuccess(res, null, 'Verification code resent to your email.');
         }
 
         if (targetType === 'login') {
             await Otp.create(userId, otpCode, 'login', 10);
-
-            const tasks = [];
-            tasks.push(sendEmail(user.email, 'Security Code', `<p>Your code is: <strong>${otpCode}</strong>. Expires in 10m.</p>`));
-
-            if (user.is_phone_verified && user.phone) {
-                tasks.push(sendSMS(user.phone, `Your security code is: ${otpCode}`));
-            }
-
-            Promise.all(tasks).catch(e => console.error('Background Resend Error:', e));
-            return sendSuccess(res, null, 'Security code resent.');
+            sendEmail(user.email, 'Login Security OTP - LeadMates', `
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; border: 1px solid #e1e7ef; border-radius: 20px; max-width: 500px; margin: auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #1e293b; margin: 0; font-size: 24px; font-weight: 700;">Security Verification</h1>
+                        <p style="color: #64748b; margin-top: 8px;">Authorize your login to LeadMates</p>
+                    </div>
+                    
+                    <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">Please use the code below to authorize your secure login:</p>
+                    
+                    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 30px; border-radius: 16px; text-align: center; margin: 30px 0; border: 1px solid #e2e8f0;">
+                        <div style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #1e293b; font-family: monospace;">
+                            ${otpCode}
+                        </div>
+                    </div>
+                    
+                    <p style="color: #64748b; font-size: 14px; text-align: center;">This code will expire in <strong style="color: #1e293b;">10 minutes</strong>.</p>
+                    
+                    <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 30px 0;" />
+                    
+                    <p style="color: #ef4444; font-size: 12px; font-weight: bold; text-align: center;">⚠️ Security Note: Do not share this OTP with anyone.</p>
+                </div>
+            `).catch(e => console.error('Background Email Error:', e));
+            return sendSuccess(res, null, 'Security code resent to your email.');
         }
 
-        // Mobile flow
-        const targetPhone = phone || user.phone;
-        if (!targetPhone) return sendError(res, 'Phone number is required.', 400);
-
-        await Otp.create(userId, otpCode, 'mobile', 5);
-        sendSMS(targetPhone, `Your LeadMates verification code is: ${otpCode}. Expires in 5m.`).catch(e => console.error('Background SMS Error:', e));
-
-        return sendSuccess(res, null, 'Verification code resent to your mobile.');
+        // Default flow
+        await Otp.create(userId, otpCode, 'email', 5);
+        sendEmail(user.email, 'Verification OTP - LeadMates', `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; border: 1px solid #e1e7ef; border-radius: 20px; max-width: 500px; margin: auto;">
+                <h2 style="color: #2563eb; text-align: center;">Verify Your Identity</h2>
+                <div style="background: #f8fafc; padding: 25px; border-radius: 12px; text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 8px; color: #1e293b; margin: 25px 0; border: 1px solid #cbd5e1;">
+                    ${otpCode}
+                </div>
+                <p style="color: #64748b; font-size: 13px; text-align: center;">This code expires in <strong>5 minutes</strong>.</p>
+            </div>
+        `).catch(e => console.error('Background Email Error:', e));
+        return sendSuccess(res, null, 'Verification code resent to your email.');
     } catch (error) {
         console.error('Resend OTP Error:', error);
         sendError(res, error.message || 'Server error resending OTP.');
@@ -238,44 +266,50 @@ exports.login = async (req, res) => {
         }
 
         if (!user.is_verified) {
-            return sendError(res, 'Account not verified.', 403, { errorCode: 'NOT_VERIFIED', userId: user.id });
+            return sendError(res, 'Security restriction: Account verification required.', 403, { errorCode: 'NOT_VERIFIED', userId: user.id });
         }
 
         // Phase 2: Initiate 2FA
         const tempToken = generateTempToken(user.id);
-        const otpCode = generateOTP();
+        const emailCode = generateOTP();
 
-        // We'll use 'login' as a generic type for 2FA OTPs to allow verification from either channel
-        await Otp.create(user.id, otpCode, 'login', 10); // 10 min expiry for login 2FA
+        // 1. Email OTP (Manual DB way for 'login' type)
+        await Otp.create(user.id, emailCode, 'login', 10);
 
-        // Fire and forget Email/SMS
-        const tasks = [];
-        tasks.push(sendEmail(email, 'Login Verification Code', `
-            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                <h2 style="color: #2563eb;">Security Code</h2>
-                <p>Use the following code to complete your login to LeadMates:</p>
-                <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #1e293b;">
-                    ${otpCode}
+        // Fire and forget Email
+        sendEmail(email, 'Login Security OTP - LeadMates', `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; border: 1px solid #e1e7ef; border-radius: 20px; max-width: 500px; margin: auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #1e293b; margin: 0; font-size: 24px; font-weight: 700;">Security Verification</h1>
+                    <p style="color: #64748b; margin-top: 8px;">Authorize your login to LeadMates</p>
                 </div>
-                <p style="color: #64748b; font-size: 12px; margin-top: 20px;">This code expires in 10 minutes.</p>
+                
+                <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">Use the code below to authorize your secure login to LeadMates:</p>
+                
+                <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 30px; border-radius: 16px; text-align: center; margin: 30px 0; border: 1px solid #e2e8f0;">
+                    <div style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #1e293b; font-family: monospace;">
+                        ${emailCode}
+                    </div>
+                </div>
+                
+                <p style="color: #64748b; font-size: 14px; text-align: center;">This code will expire in <strong style="color: #1e293b;">10 minutes</strong>.</p>
+                
+                <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 30px 0;" />
+                
+                <p style="color: #ef4444; font-size: 12px; font-weight: bold; text-align: center;">⚠️ Security Note: Do not share this OTP with anyone.</p>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="color: #cbd5e1; font-size: 12px;">&copy; 2024 LeadMates Inc. All rights reserved.</p>
+                </div>
             </div>
-        `));
-
-        // Send OTP via Mobile if verified
-        if (user.is_phone_verified && user.phone) {
-            tasks.push(sendSMS(user.phone, `Your LeadMates login security code is: ${otpCode}`));
-        }
-
-        Promise.all(tasks).catch(e => console.error('Background Login 2FA Error:', e));
+        `).catch(e => console.error('Background Login 2FA Error:', e));
 
         sendSuccess(res, {
             require2fa: true,
             tempToken,
             userId: user.id,
-            channel: user.is_phone_verified ? 'both' : 'email',
-            message: user.is_phone_verified
-                ? `Verification code sent to ${email} and your mobile.`
-                : `Verification code sent to ${email}`
+            channel: 'email',
+            message: `Security code sent to ${email}`
         }, '2FA Verification Required');
 
     } catch (error) {
@@ -305,21 +339,22 @@ exports.verifyLogin2FA = async (req, res) => {
         }
 
         const userId = decoded.id;
-        const otpRecord = await Otp.findValid(userId, 'login');
-
-        if (!otpRecord) {
-            return sendError(res, 'Verification code expired.', 400);
-        }
-
-        const isValid = await Otp.verify(otpRecord, otp);
-        if (!isValid) {
-            await Otp.incrementAttempts(otpRecord.id);
-            return sendError(res, 'Invalid verification code.', 400);
-        }
-
-        await Otp.delete(otpRecord.id);
-
         const user = await User.findById(userId);
+
+        let isVerified = false;
+
+        // 1. Manual DB (Email/Login) Verify
+        const otpRecord = await Otp.findValid(userId, 'login');
+        if (otpRecord) {
+            isVerified = await Otp.verify(otpRecord, otp);
+            if (isVerified) await Otp.delete(otpRecord.id);
+        }
+
+        if (!isVerified) {
+            return sendError(res, 'Invalid or expired verification code.', 400);
+        }
+
+        // Success: Login user
         const result = await authService.login(user.email, null, {
             ip: req.ip,
             userAgent: req.get('User-Agent')
@@ -348,12 +383,25 @@ exports.verifyLogin2FA = async (req, res) => {
  */
 exports.refreshToken = async (req, res) => {
     try {
-        const { refreshToken } = req.body;
-        if (!refreshToken) {
-            return sendError(res, 'Refresh token is required.', 400);
+        // 1. Get token from secure cookie or fallback to body
+        const token = req.cookies.refreshToken || req.body.refreshToken;
+
+        if (!token) {
+            return sendError(res, 'Refresh token is required.', 401);
         }
 
-        const result = await authService.refresh(refreshToken);
+        const result = await authService.refresh(token);
+
+        // 2. Security: Refresh the HttpOnly Cookie
+        res.cookie('refreshToken', result.refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+        // Remove refreshToken from body response
+        delete result.refreshToken;
         sendSuccess(res, result, 'Token refreshed');
     } catch (error) {
         console.error('Refresh Token Error:', error);
@@ -410,10 +458,16 @@ exports.updateAvatar = async (req, res) => {
  */
 exports.logout = async (req, res) => {
     try {
-        const { refreshToken } = req.body;
-        await authService.logout(refreshToken);
-        sendSuccess(res, null, 'Logged out successfully');
+        // Clear the refresh token cookie
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+
+        sendSuccess(res, null, 'Logged out successfully.');
     } catch (error) {
+        console.error('Logout Error:', error);
         sendError(res, 'Server error during logout.');
     }
 };
@@ -430,22 +484,37 @@ exports.forgotPassword = async (req, res) => {
 
         if (!user) {
             // Security: Don't reveal if user exists. 
-            // But for LeadMates logic, we usually tell them.
-            return sendError(res, 'Email not found.', 404);
+            return sendSuccess(res, null, 'If this email is registered, a reset code has been sent.');
         }
 
         const otpCode = generateOTP();
         await Otp.create(user.id, otpCode, 'email');
 
-        // Fire and forget Email
-        sendEmail(email, 'Password Reset Code', `
-            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                <h2 style="color: #2563eb;">Password Reset</h2>
-                <p>You requested a password reset. Use the code below to update your key:</p>
-                <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #1e293b;">
-                    ${otpCode}
+        // Fire and forget Email with Premium Template
+        sendEmail(email, 'Password Reset OTP - LeadMates', `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; border: 1px solid #e1e7ef; border-radius: 20px; max-width: 500px; margin: auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #1e293b; margin: 0; font-size: 24px; font-weight: 700;">Password Reset</h1>
+                    <p style="color: #64748b; margin-top: 8px;">Secure access recovery for LeadMates</p>
                 </div>
-                <p style="color: #64748b; font-size: 12px; margin-top: 20px;">This code expires in 5 minutes. If you didn't request this, please ignore this email.</p>
+                
+                <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">You've requested to reset your password. Please use the following verification code to proceed:</p>
+                
+                <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 30px; border-radius: 16px; text-align: center; margin: 30px 0; border: 1px solid #e2e8f0;">
+                    <div style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #2563eb; font-family: monospace;">
+                        ${otpCode}
+                    </div>
+                </div>
+                
+                <p style="color: #64748b; font-size: 14px; text-align: center;">This code will expire in <strong style="color: #1e293b;">5 minutes</strong>.</p>
+                
+                <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 30px 0;" />
+                
+                <p style="color: #94a3b8; font-size: 12px; line-height: 1.5;">If you did not request this password reset, please ignore this email or contact support if you have concerns about your account security.</p>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="color: #cbd5e1; font-size: 12px;">&copy; 2024 LeadMates Inc. All rights reserved.</p>
+                </div>
             </div>
         `).catch(e => console.error('Background Password Reset Email Error:', e));
 

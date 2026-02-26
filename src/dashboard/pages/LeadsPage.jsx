@@ -100,8 +100,8 @@ export default function LeadsPage() {
           setIsModalOpen(false);
           resetForm();
           addNotification({
-            title: "Lead Captured",
-            message: `${formData.name} has been synchronized with the database.`,
+            title: "Lead Created",
+            message: `${formData.name} has been successfully added.`,
             type: "success",
             icon: Plus
           });
@@ -113,8 +113,8 @@ export default function LeadsPage() {
           setIsModalOpen(false);
           resetForm();
           addNotification({
-            title: "Record Updated",
-            message: `Telemetry for ${formData.name} has been modified.`,
+            title: "Lead Updated",
+            message: `The information for ${formData.name} has been updated.`,
             type: "info",
             icon: Edit2
           });
@@ -135,8 +135,8 @@ export default function LeadsPage() {
       if (data.success) {
         setLeads((prev) => prev.filter((l) => l.id !== id));
         addNotification({
-          title: "Lead Purged",
-          message: `${leadToRemove?.name || 'A record'} has been removed from the neural stream.`,
+          title: "Lead Deleted",
+          message: `${leadToRemove?.name || 'The lead'} has been moved to trash.`,
           type: "warning",
           icon: Trash2
         });

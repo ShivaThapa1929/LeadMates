@@ -6,7 +6,6 @@ import GalaxyHero from "../components/GalaxyHero";
 import logo from "../assets/logo-primary.png";
 import {
     EnvelopeIcon,
-    DevicePhoneMobileIcon,
     ArrowRightIcon,
     CheckCircleIcon,
     ExclamationCircleIcon
@@ -26,38 +25,35 @@ export default function OtpVerificationPage() {
 
     // Use step logic to guide the user
     // Default to email step if not specified
-    const [step, setStep] = useState('email'); // 'email' | 'mobile'
-    const [emailOtp, setEmailOtp] = useState(["", "", "", "", "", ""]);
-    const [mobileOtp, setMobileOtp] = useState(["", "", "", "", "", ""]);
+    const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
-    const [resendTimer, setResendTimer] = useState(30);
+    const [resendTimer, setResendTimer] = useState(300); // 5 minutes as per requirement
+    const [successMsg, setSuccessMsg] = useState("");
 
-    const handleOtpChange = (type, index, value) => {
+    const handleOtpChange = (index, value) => {
         if (isNaN(value)) return;
-        const newOtp = type === 'email' ? [...emailOtp] : [...mobileOtp];
+        const newOtp = [...otp];
         newOtp[index] = value;
-        if (type === 'email') setEmailOtp(newOtp);
-        else setMobileOtp(newOtp);
+        setOtp(newOtp);
 
         if (value && index < 5) {
-            document.getElementById(`${type}-otp-${index + 1}`).focus();
+            document.getElementById(`otp-${index + 1}`).focus();
         }
     };
 
-    const handleKeyDown = (type, index, e) => {
-        if (e.key === "Backspace" && !(type === 'email' ? emailOtp : mobileOtp)[index] && index > 0) {
-            document.getElementById(`${type}-otp-${index - 1}`).focus();
+    const handleKeyDown = (index, e) => {
+        if (e.key === "Backspace" && !otp[index] && index > 0) {
+            document.getElementById(`otp-${index - 1}`).focus();
         }
     };
 
-    const handlePaste = (type, e) => {
+    const handlePaste = (e) => {
         e.preventDefault();
-        const data = e.clipboardData.getData("text").slice(0, 6).split("");
+        const data = e.clipboardData.getData("text").trim().slice(0, 6).split("");
         if (data.length === 6 && data.every(char => !isNaN(char))) {
-            if (type === 'email') setEmailOtp(data);
-            else setMobileOtp(data);
-            document.getElementById(`${type}-otp-5`)?.focus();
+            setOtp(data);
+            document.getElementById(`otp-5`)?.focus();
         }
     };
 
@@ -69,7 +65,6 @@ export default function OtpVerificationPage() {
 
         // Persist email/phone if they came in via state
         if (stateParams.email) localStorage.setItem('verify_email', stateParams.email);
-        if (stateParams.phone) localStorage.setItem('verify_phone', stateParams.phone);
 
         // Timer countdown
         const timer = setInterval(() => {
@@ -79,65 +74,56 @@ export default function OtpVerificationPage() {
         return () => clearInterval(timer);
     }, [userId, navigate]);
 
-    // Handle verifying Email OTP
-    const handleVerifyEmail = async (e) => {
+    // Handle verifying OTP
+    const handleVerify = async (e) => {
         e.preventDefault();
-        const otpStr = emailOtp.join("");
+        const otpStr = otp.join("");
         if (otpStr.length !== 6) return setError("Enter 6-digit code");
 
         setError("");
+        setSuccessMsg("");
         setIsLoading(true);
         try {
             const response = await authService.verifyOtp(userId, otpStr, undefined);
-            if (response.success) {
-                if (response.data.status === 'complete') {
-                    navigate("/dashboard");
+            if (response.success && response.data.status === 'complete') {
+                const user = response.data.user;
+                const role = user?.role || (user?.roles && user.roles[0]);
+
+                if (role === 'admin' || role === 'Admin') {
+                    navigate("/admin/dashboard");
                 } else {
-                    setStep('mobile');
-                    setResendTimer(30);
+                    navigate("/dashboard");
                 }
+            } else if (response.success) {
+                // Should not happen with current backend but good for safety
+                navigate("/login", { state: { message: "Account verified successfully. Please login." } });
             }
         } catch (err) {
-            setError(err.message || "Email verification failed.");
+            setError(err.message || "Verification failed.");
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Handle verifying Mobile OTP
-    const handleVerifyMobile = async (e) => {
-        e.preventDefault();
-        const otpStr = mobileOtp.join("");
-        if (otpStr.length !== 6) return setError("Enter 6-digit code");
 
-        setError("");
-        setIsLoading(true);
-        try {
-            // Use the new standalone verification for mobile Step 2
-            const response = await authService.verifyMobileOtp(userId, otpStr);
-            if (response.success) {
-                navigate("/dashboard");
-            }
-        } catch (err) {
-            setError(err.message || "Mobile verification failed.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const handleResend = async () => {
         if (resendTimer > 0) return;
+        setError("");
+        setSuccessMsg("");
         try {
-            if (step === 'email') {
-                await authService.resendOtp(userId, 'email');
-            } else {
-                await authService.resendMobileOtp(userId, phone);
-            }
-            setResendTimer(30);
-            setError("");
+            await authService.resendOtp(userId, 'email');
+            setResendTimer(300); // Reset to 5 minutes
+            setSuccessMsg("A new verification code has been sent.");
         } catch (err) {
             setError(err.message || "Failed to resend OTP.");
         }
+    };
+
+    const formatTime = (seconds) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
     return (
@@ -164,12 +150,12 @@ export default function OtpVerificationPage() {
                 <div className="bg-background border border-blue-500/20 rounded-[2rem] p-8 shadow-2xl backdrop-blur-xl transition-all duration-500">
                     <div className="text-center mb-8">
                         <h2 className="text-xl font-bold text-white mb-2">
-                            {step === 'email' ? 'Verify Email' : 'Verify Mobile'}
+                            Verify Your Account
                         </h2>
                         <p className="text-gray-400 text-sm">
-                            Enter the code sent to <br />
+                            Enter the 6-digit code sent to <br />
                             <span className="text-blue-400 font-mono">
-                                {step === 'email' ? email : phone}
+                                {email}
                             </span>
                         </p>
                     </div>
@@ -185,119 +171,66 @@ export default function OtpVerificationPage() {
                         </motion.div>
                     )}
 
-                    <AnimatePresence mode="wait">
-                        {step === 'email' ? (
-                            <motion.form
-                                key="email-form"
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 20 }}
-                                onSubmit={handleVerifyEmail}
-                                className="space-y-8"
-                            >
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <label className="text-xs uppercase tracking-wider text-gray-500 font-bold ml-1">Email OTP</label>
-                                        <button
-                                            type="button"
-                                            onClick={handleResend}
-                                            disabled={resendTimer > 0}
-                                            className={`text-[10px] font-bold uppercase tracking-wider ${resendTimer > 0 ? 'text-gray-600' : 'text-blue-500 hover:text-blue-400'} transition-colors`}
-                                        >
-                                            {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Code'}
-                                        </button>
-                                    </div>
-                                    <div className="flex justify-between gap-2" onPaste={(e) => handlePaste('email', e)}>
-                                        {emailOtp.map((digit, index) => (
-                                            <input
-                                                key={index}
-                                                id={`email-otp-${index}`}
-                                                type="text"
-                                                maxLength="1"
-                                                value={digit}
-                                                onChange={(e) => handleOtpChange('email', index, e.target.value)}
-                                                onKeyDown={(e) => handleKeyDown('email', index, e)}
-                                                className="w-10 h-12 bg-white/5 border border-white/10 rounded-xl text-center text-lg font-bold text-white focus:border-blue-500 outline-none transition-all"
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
+                    {successMsg && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mb-6 p-3 bg-green-500/10 border border-green-500/20 rounded-xl flex items-center gap-3 text-green-400 text-sm font-bold"
+                        >
+                            <CheckCircleIcon className="w-5 h-5 shrink-0" />
+                            {successMsg}
+                        </motion.div>
+                    )}
 
+                    <form
+                        onSubmit={handleVerify}
+                        className="space-y-8"
+                    >
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center mb-2">
+                                <label className="text-xs uppercase tracking-wider text-gray-500 font-bold ml-1">Verification Code</label>
                                 <button
-                                    type="submit"
-                                    disabled={isLoading || emailOtp.some(d => !d)}
-                                    className="w-full h-14 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-2xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-600/20"
+                                    type="button"
+                                    onClick={handleResend}
+                                    disabled={resendTimer > 0}
+                                    className={`text-[10px] font-bold uppercase tracking-wider ${resendTimer > 0 ? 'text-gray-600' : 'text-blue-500 hover:text-blue-400'} transition-colors`}
                                 >
-                                    {isLoading ? (
-                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                    ) : (
-                                        <>
-                                            VERIFY EMAIL
-                                            <ArrowRightIcon className="w-5 h-5" />
-                                        </>
-                                    )}
+                                    {resendTimer > 0 ? `Resend in ${formatTime(resendTimer)}` : 'Resend Code'}
                                 </button>
-                            </motion.form>
-                        ) : (
-                            <motion.form
-                                key="mobile-form"
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 20 }}
-                                onSubmit={handleVerifyMobile}
-                                className="space-y-8"
-                            >
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <label className="text-xs uppercase tracking-wider text-gray-500 font-bold ml-1">Mobile OTP</label>
-                                        <button
-                                            type="button"
-                                            onClick={handleResend}
-                                            disabled={resendTimer > 0}
-                                            className={`text-[10px] font-bold uppercase tracking-wider ${resendTimer > 0 ? 'text-gray-600' : 'text-blue-500 hover:text-blue-400'} transition-colors`}
-                                        >
-                                            {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Code'}
-                                        </button>
-                                    </div>
-                                    <div className="flex justify-between gap-2" onPaste={(e) => handlePaste('mobile', e)}>
-                                        {mobileOtp.map((digit, index) => (
-                                            <input
-                                                key={index}
-                                                id={`mobile-otp-${index}`}
-                                                type="text"
-                                                maxLength="1"
-                                                value={digit}
-                                                onChange={(e) => handleOtpChange('mobile', index, e.target.value)}
-                                                onKeyDown={(e) => handleKeyDown('mobile', index, e)}
-                                                className="w-10 h-12 bg-white/5 border border-white/10 rounded-xl text-center text-lg font-bold text-white focus:border-emerald-500 outline-none transition-all"
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
+                            </div>
+                            <div className="flex justify-between gap-2" onPaste={handlePaste}>
+                                {otp.map((digit, index) => (
+                                    <input
+                                        key={index}
+                                        id={`otp-${index}`}
+                                        type="text"
+                                        maxLength="1"
+                                        value={digit}
+                                        onChange={(e) => handleOtpChange(index, e.target.value)}
+                                        onKeyDown={(e) => handleKeyDown(index, e)}
+                                        className="w-10 h-12 bg-white/5 border border-white/10 rounded-xl text-center text-lg font-bold text-white focus:border-blue-500 outline-none transition-all"
+                                    />
+                                ))}
+                            </div>
+                        </div>
 
-                                <button
-                                    type="submit"
-                                    disabled={isLoading || mobileOtp.some(d => !d)}
-                                    className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-2xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-600/20"
-                                >
-                                    {isLoading ? (
-                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                    ) : (
-                                        <>
-                                            FINALIZE REGISTRATION
-                                            <CheckCircleIcon className="w-5 h-5" />
-                                        </>
-                                    )}
-                                </button>
-                            </motion.form>
-                        )}
-                    </AnimatePresence>
+                        <button
+                            type="submit"
+                            disabled={isLoading || otp.some(d => !d)}
+                            className="w-full h-14 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-2xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-600/20"
+                        >
+                            {isLoading ? (
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <>
+                                    VERIFY ACCOUNT
+                                    <ArrowRightIcon className="w-5 h-5" />
+                                </>
+                            )}
+                        </button>
+                    </form>
 
-                    {/* Step Indicators */}
-                    <div className="flex justify-center gap-2 mt-8">
-                        <div className={`h-1.5 rounded-full transition-all duration-300 ${step === 'email' ? 'w-8 bg-blue-500' : 'w-2 bg-gray-700'}`} />
-                        <div className={`h-1.5 rounded-full transition-all duration-300 ${step === 'mobile' ? 'w-8 bg-emerald-500' : 'w-2 bg-gray-700'}`} />
-                    </div>
+
                 </div>
             </motion.div>
         </div>

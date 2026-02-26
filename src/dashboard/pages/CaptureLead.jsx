@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import customFieldApi from "../../api/customFieldApi";
-import leadApi from "../../api/leadApi";
+import leadService from "../../api/leadService";
 import DynamicField from "../components/DynamicField";
 import { useNotifications } from "../../context/NotificationContext.jsx";
 
@@ -47,15 +47,20 @@ const CaptureLead = () => {
     const validateForm = () => {
         const newErrors = {};
         if (!formData.name.trim()) newErrors.name = "IDENTITY IS REQUIRED";
-        if (!formData.email.trim()) {
-            newErrors.email = "COMMS CHANNEL (EMAIL) IS REQUIRED";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = "INVALID ENCRYPTION FORMAT (EMAIL)";
-        }
-        if (!formData.contact.trim()) {
-            newErrors.contact = "CONTACT PROTOCOL IS REQUIRED";
-        } else if (!/^[0-9+\s-]{8,20}$/.test(formData.contact)) {
-            newErrors.contact = "INVALID CONTACT SIGNATURE";
+
+        const hasEmail = formData.email.trim().length > 0;
+        const hasContact = formData.contact.trim().length > 0;
+
+        if (!hasEmail && !hasContact) {
+            newErrors.email = "PROVIDE EMAIL OR CONTACT NUMBER";
+            newErrors.contact = "PROVIDE EMAIL OR CONTACT NUMBER";
+        } else {
+            if (hasEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+                newErrors.email = "INVALID ENCRYPTION FORMAT (EMAIL)";
+            }
+            if (hasContact && !/^[0-9+\s-]{8,20}$/.test(formData.contact)) {
+                newErrors.contact = "INVALID CONTACT SIGNATURE";
+            }
         }
 
         setErrors(newErrors);
@@ -91,8 +96,8 @@ const CaptureLead = () => {
             const response = await customFieldApi.createCustomField(newField);
             if (response.success) {
                 addNotification({
-                    title: "Parameter Registered",
-                    message: "New custom intelligence field has been added to the protocol.",
+                    title: "Custom Field Added",
+                    message: "The new custom field has been successfully registered.",
                     type: "success",
                     icon: Shield
                 });
@@ -102,8 +107,8 @@ const CaptureLead = () => {
             }
         } catch (err) {
             addNotification({
-                title: "Protocol Violation",
-                message: "Failed to add new intelligence field.",
+                title: "Error",
+                message: "Failed to add the custom field.",
                 type: "error"
             });
         }
@@ -181,12 +186,12 @@ const CaptureLead = () => {
 
         setLoading(true);
         try {
-            const response = await leadApi.captureLead(formData);
+            const response = await leadService.createLead(formData);
             if (response.success) {
                 setLastCapturedLead({ ...formData });
                 addNotification({
-                    title: "Lead Intelligence Captured",
-                    message: "New entity has been successfully synchronized into the mainframe.",
+                    title: "Lead Captured",
+                    message: "The lead has been successfully added to the system.",
                     type: "success",
                     icon: CheckCircle
                 });
@@ -199,16 +204,16 @@ const CaptureLead = () => {
                 });
             } else {
                 addNotification({
-                    title: "Synchronization Error",
-                    message: response.message || "Failed to capture lead intelligence.",
+                    title: "Capture Error",
+                    message: response.message || "Something went wrong while capturing the lead.",
                     type: "error",
                     icon: AlertCircle
                 });
             }
         } catch (err) {
             addNotification({
-                title: "System Failure",
-                message: err.message || "A critical error occurred during lead capture.",
+                title: "Critical Error",
+                message: err.message || "An unexpected error occurred during lead capture.",
                 type: "error",
                 icon: AlertCircle
             });
@@ -269,7 +274,7 @@ const CaptureLead = () => {
 
                 {/* Right Side: Capture Form */}
                 <div className="lg:col-span-8">
-                    <form onSubmit={handleSubmit} className="bg-card border border-border rounded-[40px] p-10 shadow-premium relative overflow-hidden group">
+                    <form onSubmit={handleSubmit} className="bg-card border border-border rounded-[40px] p-10 shadow-premium relative overflow-hidden group/form">
                         {/* Background Accents */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[100px] pointer-events-none" />
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 blur-[100px] pointer-events-none" />

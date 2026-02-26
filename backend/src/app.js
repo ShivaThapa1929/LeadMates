@@ -5,13 +5,13 @@ const { NODE_ENV } = require('./config/env');
 const authRoutes = require('./routes/auth.routes');
 const leadRoutes = require('./routes/lead.routes');
 const campaignRoutes = require('./routes/campaign.routes');
-const projectRoutes = require('./routes/project.routes');
 const userRoutes = require('./routes/user.routes');
 const adminRoutes = require('./routes/admin.routes');
 const suspectRoutes = require('./routes/suspect.routes');
 const roleRoutes = require('./routes/role.routes');
 const trashRoutes = require('./routes/trash.routes');
 const customFieldRoutes = require('./routes/customField.routes');
+const cookieParser = require('cookie-parser');
 const { sendError } = require('./utils/responseHandler');
 
 const app = express();
@@ -19,6 +19,7 @@ const app = express();
 /**
  * Global Middlewares
  */
+app.use(cookieParser());
 app.use(express.json()); // Parse JSON bodies
 app.use(cors({
     origin: [
@@ -56,7 +57,6 @@ app.get('/favicon.ico', (req, res) => res.status(204).end());
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/campaigns', campaignRoutes);
-app.use('/api/projects', projectRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/suspects', suspectRoutes);

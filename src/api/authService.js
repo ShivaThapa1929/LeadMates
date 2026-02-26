@@ -3,6 +3,7 @@ import { API_BASE_URL } from './config';
 
 const api = axios.create({
     baseURL: API_BASE_URL,
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -50,11 +51,16 @@ api.interceptors.response.use(
             return Promise.reject(error);
         }
 
-        // If error is 401 and it's not a retry and not a login request
-        if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/login')) {
+        // If error is 401 and it's not a retry and not an auth route that shouldn't be retried
+        const isAuthRoute = originalRequest.url.includes('/auth/login') ||
+            originalRequest.url.includes('/auth/logout') ||
+            originalRequest.url.includes('/auth/refresh-token');
+
+        if (error.response?.status === 401 && !originalRequest._retry && !isAuthRoute) {
             originalRequest._retry = true;
 
             if (isRefreshing) {
+                console.log('⏳ AuthService: Refresh already in progress, queuing request...');
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
                 }).then(token => {
@@ -65,37 +71,34 @@ api.interceptors.response.use(
 
             isRefreshing = true;
 
-            const refreshToken = localStorage.getItem('refreshToken');
+            try {
+                console.log('🔄 AuthService: Access token expired. Attempting refresh...');
+                const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {}, { withCredentials: true });
 
-            if (refreshToken) {
-                try {
-                    console.log('🔄 AuthService: Attempting to refresh token...');
-                    const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, { refreshToken });
+                if (response.data.success) {
+                    const { accessToken } = response.data.data;
+                    console.log('✅ AuthService: Token refreshed successfully.');
+                    localStorage.setItem('accessToken', accessToken);
 
-                    if (response.data.success) {
-                        const { accessToken } = response.data.data;
-                        localStorage.setItem('accessToken', accessToken);
+                    processQueue(null, accessToken);
 
-                        processQueue(null, accessToken);
+                    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                    return api(originalRequest);
+                }
+            } catch (refreshError) {
+                processQueue(refreshError, null);
+                const status = refreshError.response?.status;
+                console.error(`❌ AuthService: Refresh failed (Status: ${status || 'Network Error'}).`);
 
-                        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-                        return api(originalRequest);
-                    }
-                } catch (refreshError) {
-                    processQueue(refreshError, null);
-                    console.error('❌ AuthService: Refresh token expired or invalid.');
-                    logout();
+                // If the refresh call itself is 401, we MUST logout
+                if (status === 401 || status === 403) {
+                    await logout();
                     if (window.location.pathname.startsWith('/dashboard')) {
                         window.location.href = '/login';
                     }
-                } finally {
-                    isRefreshing = false;
                 }
-            } else {
-                logout();
-                if (window.location.pathname.startsWith('/dashboard')) {
-                    window.location.href = '/login';
-                }
+            } finally {
+                isRefreshing = false;
             }
         }
         return Promise.reject(error);
@@ -127,6 +130,7 @@ const login = async (email, password) => {
             // localStorage.setItem('refreshToken', refreshToken); // No longer needed if HttpOnly cookie
             localStorage.setItem('user', JSON.stringify(user));
             console.log('✅ AuthService: Login successful.');
+            window.dispatchEvent(new Event('auth-update'));
         }
         return response.data;
     } catch (error) {
@@ -196,46 +200,11 @@ const resendOtp = async (userId, type) => {
     }
 };
 
-const sendMobileOtp = async (userId, phone) => {
-    try {
-        const response = await api.post('/auth/send-otp', { userId, phone });
-        return response.data;
-    } catch (error) {
-        throw error.response?.data || { message: 'Failed to send mobile OTP' };
-    }
-};
 
-const verifyMobileOtp = async (userId, otp) => {
-    try {
-        // The backend verify-otp now expects 'otp' for mobile
-        const response = await api.post('/auth/verify-otp', { userId, otp });
-        if (response.data.success) {
-            const { accessToken, user } = response.data.data;
-            if (accessToken) localStorage.setItem('accessToken', accessToken);
-            if (user) localStorage.setItem('user', JSON.stringify(user));
-            if (accessToken || user) window.dispatchEvent(new Event('auth-update'));
-        }
-        return response.data;
-    } catch (error) {
-        throw error.response?.data || { message: 'Mobile verification failed' };
-    }
-};
-
-const resendMobileOtp = async (userId, phone) => {
-    try {
-        const response = await api.post('/auth/resend-otp', { userId, phone, type: 'mobile' });
-        return response.data;
-    } catch (error) {
-        throw error.response?.data || { message: 'Resend failed' };
-    }
-};
 
 const logout = async () => {
     try {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (refreshToken) {
-            await api.post('/auth/logout', { refreshToken });
-        }
+        await api.post('/auth/logout');
     } catch (error) {
         console.error('AuthService: Logout request failed', error);
     } finally {
@@ -256,9 +225,9 @@ const forgotPassword = async (email) => {
     }
 };
 
-const resetPassword = async (token, password) => {
+const resetPassword = async (userId, otp, password) => {
     try {
-        const response = await api.post('/auth/reset-password', { token, password });
+        const response = await api.post('/auth/reset-password', { userId, otp, password });
         return response.data;
     } catch (error) {
         throw error.response?.data || { message: 'Reset failed' };
@@ -302,10 +271,7 @@ const authService = {
     updateAvatar,
     verifyLogin2FA,
     forgotPassword,
-    resetPassword,
-    sendMobileOtp,
-    verifyMobileOtp,
-    resendMobileOtp
-};
+    resetPassword
+}; // resetPassword(userId, otp, password)
 
 export default authService;

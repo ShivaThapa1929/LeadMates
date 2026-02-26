@@ -1,10 +1,10 @@
 // src/sections/CoreFeatures.jsx
 import { motion } from "framer-motion";
-import { 
-  Square3Stack3DIcon, 
-  ArrowsRightLeftIcon, 
-  KeyIcon, 
-  DevicePhoneMobileIcon 
+import {
+  Square3Stack3DIcon,
+  ArrowsRightLeftIcon,
+  KeyIcon,
+  DevicePhoneMobileIcon
 } from "@heroicons/react/24/outline";
 
 const features = [
@@ -33,13 +33,13 @@ const features = [
 export default function CoreFeatures() {
   return (
     <section className="relative py-32 bg-black text-white px-6 overflow-hidden">
-      
+
       {/* 3D THEME LAYER: Abstract galaxy elements */}
       <div className="absolute top-0 left-1/4 w-72 h-72 bg-blue-600/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/5 blur-[140px] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto z-10">
-        
+
         {/* Updated Heading from PDF Section 9 */}
         <div className="text-center mb-20">
           <motion.h2
@@ -72,7 +72,11 @@ export default function CoreFeatures() {
                   borderColor: "rgba(59, 130, 246, 0.5)",
                   backgroundColor: "rgba(255, 255, 255, 0.05)",
                 }}
-                className="relative p-8 rounded-3xl border border-white/5 bg-white/[0.02] backdrop-blur-xl transition-all duration-300 group"
+                style={{
+                  borderColor: "rgba(255, 255, 255, 0.05)",
+                  backgroundColor: "rgba(255, 255, 255, 0.02)"
+                }}
+                className="relative p-8 rounded-3xl border backdrop-blur-xl transition-all duration-300 group"
               >
                 {/* 3D Holographic Icon Container */}
                 <div className="mb-6 flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 group-hover:bg-blue-500/20 group-hover:border-blue-500/50 transition-all shadow-[0_0_15px_rgba(59,130,246,0.1)]">

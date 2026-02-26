@@ -27,7 +27,7 @@ export default function AnalyticsPage() {
         setLeads([]);
       }
     } catch (err) {
-      setError("Intelligence data synchronization failed.");
+      setError("Failed to load analytics data.");
       setLeads([]);
     } finally {
       setLoading(false);
@@ -74,14 +74,14 @@ export default function AnalyticsPage() {
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[400px] gap-3 text-gray-400">
       <Loader2 className="animate-spin" size={32} />
-      <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Synthesizing Neural Metrics...</p>
+      <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Loading Analytics...</p>
     </div>
   );
 
   if (error) return (
     <div className="p-10 text-center">
       <Activity size={48} className="mx-auto text-rose-500 mb-4 opacity-50" />
-      <h3 className="text-xl font-black text-rose-500 uppercase tracking-widest">Protocol Failure</h3>
+      <h3 className="text-xl font-black text-rose-500 uppercase tracking-widest">Error Loading Data</h3>
       <p className="text-xs text-muted-foreground mt-2 uppercase font-black tracking-widest">{error}</p>
     </div>
   );
@@ -101,10 +101,10 @@ export default function AnalyticsPage() {
           <div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight uppercase flex items-center gap-3">
 
-              <span className="text-foreground">Insight</span> <span className="text-primary">Terminal</span>
+              <span className="text-foreground">Analytics</span> <span className="text-primary">Dashboard</span>
             </h1>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest opacity-60">System Throughput: Optimized</span>
+              <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest opacity-60">Status: Active</span>
               <ChevronRight size={10} className="text-muted-foreground opacity-30" />
               <span className="text-[9px] font-black text-primary uppercase tracking-widest">Real-Time</span>
             </div>
@@ -116,13 +116,13 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
         <KpiCard title="Active Leads" value={leads.length} icon={Users} color="text-primary" bg="bg-primary/10" border="border-primary/20" trend="+12%" />
         <KpiCard title="Conversion" value={`${conversionRate}%`} icon={Zap} color="text-primary" bg="bg-primary/10" border="border-primary/20" trend="+4.5%" />
-        <KpiCard title="Entry Nodes" value={channelData.length} icon={Layers} color="text-primary" bg="bg-primary/10" border="border-primary/20" trend="Active" />
+        <KpiCard title="Lead Sources" value={channelData.length} icon={Layers} color="text-primary" bg="bg-primary/10" border="border-primary/20" trend="Active" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10">
         {/* Status Analysis */}
         <ChartCard title="Status Distribution" icon={PieChartIcon}>
-          <div className="h-[350px] w-full mt-4">
+          <div className="h-[350px] w-full min-w-0 mt-4">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={200}>
               <PieChart>
                 <Pie
@@ -149,8 +149,8 @@ export default function AnalyticsPage() {
         </ChartCard>
 
         {/* Source Analysis */}
-        <ChartCard title="Channel Intelligence" icon={BarChart3}>
-          <div className="h-[350px] w-full mt-4">
+        <ChartCard title="Lead Channels" icon={BarChart3}>
+          <div className="h-[350px] w-full min-w-0 mt-4">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={200}>
               <BarChart data={channelData} barSize={32}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
@@ -185,8 +185,8 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Temporal Expansion */}
-      <ChartCard title="Temporal Lead Propagation" icon={TrendingUp}>
-        <div className="h-[400px] w-full mt-6">
+      <ChartCard title="Lead Trends" icon={TrendingUp}>
+        <div className="h-[400px] w-full min-w-0 mt-6">
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={200}>
             <AreaChart data={timelineData}>
               <defs>

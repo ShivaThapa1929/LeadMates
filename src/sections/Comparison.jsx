@@ -60,29 +60,35 @@ export default function Comparison() {
           viewport={{ once: true }}
           className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-xl shadow-2xl"
         >
-          <div className="grid grid-cols-3 bg-white/5 py-6 px-4 md:px-8 border-b border-white/10 text-xs md:text-sm font-bold uppercase tracking-widest text-gray-400">
-            <div>Feature</div>
-            <div className="text-center">Traditional</div>
-            <div className="text-center text-blue-400">LeadMates</div>
+          <div className="grid grid-cols-2 md:grid-cols-3 bg-white/5 py-6 px-6 md:px-8 border-b border-white/10 text-[10px] md:text-sm font-bold uppercase tracking-widest text-gray-400">
+            <div className="md:col-span-1 col-span-2 mb-4 md:mb-0">Infrastructure Feature</div>
+            <div className="text-center hidden md:block">Traditional Site</div>
+            <div className="text-center md:text-center text-blue-400">LeadMates Core</div>
           </div>
 
           {comparisonData.map((row, i) => (
             <div 
               key={i} 
-              className="grid grid-cols-3 py-6 px-4 md:px-8 border-b border-white/5 items-center hover:bg-white/[0.03] transition-colors"
+              className="grid grid-cols-2 md:grid-cols-3 py-8 md:py-6 px-6 md:px-8 border-b border-white/5 items-center hover:bg-white/[0.03] transition-colors gap-y-4 md:gap-y-0"
             >
-              <div className="text-sm md:text-base font-semibold text-gray-300">
+              <div className="col-span-2 md:col-span-1 text-sm md:text-base font-semibold text-gray-300">
                 {row.feature}
               </div>
               
-              <div className="flex flex-col items-center text-center gap-2">
+              <div className="flex md:flex-col items-center md:justify-center gap-3 md:gap-2">
                 <XMarkIcon className="w-5 h-5 text-red-500/50" />
-                <span className="text-xs md:text-sm text-gray-500">{row.traditional}</span>
+                <div className="flex flex-col md:items-center">
+                  <span className="md:hidden text-[8px] font-black uppercase tracking-widest text-gray-600 mb-1">Traditional</span>
+                  <span className="text-xs md:text-sm text-gray-500">{row.traditional}</span>
+                </div>
               </div>
 
-              <div className="flex flex-col items-center text-center gap-2">
+              <div className="flex md:flex-col items-center md:justify-center gap-3 md:gap-2">
                 <CheckIcon className="w-6 h-6 text-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-                <span className="text-sm md:text-base text-white font-medium">{row.leadmates}</span>
+                <div className="flex flex-col md:items-center">
+                  <span className="md:hidden text-[8px] font-black uppercase tracking-widest text-blue-500/50 mb-1">LeadMates</span>
+                  <span className="text-sm md:text-base text-white font-medium">{row.leadmates}</span>
+                </div>
               </div>
             </div>
           ))}

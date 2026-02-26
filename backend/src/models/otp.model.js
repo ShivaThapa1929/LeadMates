@@ -25,10 +25,10 @@ const Otp = {
 
         const [id] = await db(Otp.tableName).insert({
             user_id: userId,
-            otp_hash: otpHash,
+            otp_code: otpHash,
             type,
             expires_at: expiresAt,
-            attempts: 0
+            attempt_count: 0
         });
 
         return { id, expires_at: expiresAt };
@@ -41,7 +41,7 @@ const Otp = {
         return await db(Otp.tableName)
             .where({ user_id: userId, type })
             .where('expires_at', '>', new Date())
-            .where('attempts', '<', 3) // Max 3 attempts
+            .where('attempt_count', '<', 3) // Max 3 attempts
             .first();
     },
 
@@ -49,7 +49,7 @@ const Otp = {
      * @desc Verify if code matches the hash
      */
     verify: async (otpRecord, otpCode) => {
-        return await bcrypt.compare(otpCode, otpRecord.otp_hash);
+        return await bcrypt.compare(otpCode, otpRecord.otp_code);
     },
 
     /**
@@ -58,7 +58,7 @@ const Otp = {
     incrementAttempts: async (id) => {
         return await db(Otp.tableName)
             .where({ id })
-            .increment('attempts', 1);
+            .increment('attempt_count', 1);
     },
 
     /**

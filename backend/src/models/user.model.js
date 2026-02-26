@@ -8,11 +8,15 @@ const bcrypt = require('bcryptjs');
 const User = {
     tableName: 'users',
 
-    /**
-     * @desc Find user by email
-     */
     findByEmail: async (email) => {
         return await db(User.tableName).where({ email, is_deleted: false }).first();
+    },
+
+    /**
+     * @desc Find user by phone
+     */
+    findByPhone: async (phone) => {
+        return await db(User.tableName).where({ phone, is_deleted: false }).first();
     },
 
     /**
@@ -40,18 +44,22 @@ const User = {
                 business_name: businessName,
                 website,
                 experience,
-                password: hashedPassword, // Store the secure hash, never plain text
+                password: hashedPassword,
                 is_verified: false,
-                role_type: userData.role || 'user',
+                email_verified: false,
+                phone_verified: false,
+                role: userData.role || 'user',
                 plan: userData.plan || (userData.role === 'admin' ? 'Starter Node' : 'Identity Basic')
             });
 
-            // Assign default 'User' role
-            const defaultRole = await trx('roles').where({ name: 'User' }).first();
-            if (defaultRole) {
+            // Assign proper RBAC role based on the role column
+            const targetRoleName = (userData.role === 'admin') ? 'Admin' : 'User';
+            const targetRole = await trx('roles').where({ name: targetRoleName }).first();
+
+            if (targetRole) {
                 await trx('user_roles').insert({
                     user_id: userId,
-                    role_id: defaultRole.id
+                    role_id: targetRole.id
                 });
             }
 
@@ -69,18 +77,12 @@ const User = {
     /**
      * @desc Find all users (excluding sensitive data)
      */
-    /**
-     * @desc Find all users (excluding sensitive data)
-     */
-    /**
-     * @desc Find all users (excluding sensitive data)
-     */
     findAll: async (filters = {}) => {
         let query = db(User.tableName)
             .leftJoin('user_roles', 'users.id', 'user_roles.user_id')
             .leftJoin('roles', 'user_roles.role_id', 'roles.id')
             .where('users.is_deleted', false)
-            .select('users.id', 'users.name', 'users.email', 'users.phone', 'roles.name as role_name', 'users.role_type', 'users.plan', 'users.is_verified', 'users.created_at', 'users.last_login_at');
+            .select('users.id', 'users.name', 'users.email', 'users.phone', 'roles.name as role_name', 'users.role', 'users.plan', 'users.is_verified', 'users.created_at', 'users.last_login_at');
 
         if (filters.status === 'verified') {
             query.where('users.is_verified', true);
@@ -117,7 +119,7 @@ const User = {
 
         return Array.from(usersMap.values()).map(u => ({
             ...u,
-            role: u.roles.join(', ') || u.role_type // Fallback
+            role: u.roles.join(', ') || u.role
         }));
     },
 
@@ -182,14 +184,14 @@ const User = {
      * @desc Mark email as verified
      */
     markEmailVerified: async (id) => {
-        return await db(User.tableName).where({ id }).update({ is_email_verified: true });
+        return await db(User.tableName).where({ id }).update({ email_verified: true });
     },
 
     /**
      * @desc Mark mobile as verified
      */
     markMobileVerified: async (id) => {
-        return await db(User.tableName).where({ id }).update({ is_phone_verified: true });
+        return await db(User.tableName).where({ id }).update({ phone_verified: true });
     },
 
     /**

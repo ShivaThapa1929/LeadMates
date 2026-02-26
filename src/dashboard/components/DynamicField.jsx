@@ -31,7 +31,7 @@ const DynamicField = ({ field, value, onChange, error }) => {
                 {field_name}
             </label>
 
-            <div className="relative group" ref={dropdownRef}>
+            <div className="relative group/df" ref={dropdownRef}>
                 {field_type === 'select' ? (
                     <div className="relative">
                         <div
@@ -98,7 +98,7 @@ const DynamicField = ({ field, value, onChange, error }) => {
 
                 {/* Visual Accent */}
                 {!isOpen && (
-                    <div className="absolute inset-x-0 bottom-0 h-[2px] bg-primary scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500 rounded-full" />
+                    <div className="absolute inset-x-0 bottom-0 h-[2px] bg-primary scale-x-0 group-focus-within/df:scale-x-100 transition-transform duration-500 rounded-full" />
                 )}
             </div>
 

@@ -29,3 +29,12 @@ dist-ssr
 # Backend dependencies
 backend/node_modules/
 backend/dist/
+backend/uploads/
+backend/migration_log.txt
+backend/rollback_log.txt
+
+# Temp test files
+test_email.cjs
+verify_schema.cjs
+APP_SUMMARY_REPORT.md
+BUGS_AND_ERRORS_REPORT.md

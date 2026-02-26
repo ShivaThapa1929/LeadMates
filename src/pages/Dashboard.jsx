@@ -185,8 +185,8 @@ export default function Dashboard() {
         setLeads([response.data, ...leads]);
         setIsAddModalOpen(false);
         addNotification({
-          title: "Lead Captured",
-          message: `${newLead.name} has been added to the intelligence stream.`,
+          title: "Lead Created",
+          message: `${newLead.name} has been successfully added.`,
           type: "success",
           icon: Plus
         });
@@ -208,7 +208,7 @@ export default function Dashboard() {
 
         addNotification({
           title: "Lead Assigned",
-          message: `${lead?.name} assigned to ${assignedMember?.name || 'operative'}.`,
+          message: `${lead?.name} has been assigned to ${assignedMember?.name || 'the team member'}.`,
           type: "info",
           icon: UserCheck
         });
@@ -593,13 +593,13 @@ export default function Dashboard() {
                       {hasPermission('delete_lead') && (
                         <button
                           onClick={async () => {
-                            if (window.confirm("Delete this entry?")) {
+                            if (window.confirm("Are you sure you want to delete this lead?")) {
                               const leadToRemove = lead;
                               await leadService.deleteLead(lead.id);
                               fetchLeads();
                               addNotification({
-                                title: "Lead Purged",
-                                message: `${leadToRemove?.name || 'A record'} has been removed from the stream.`,
+                                title: "Lead Deleted",
+                                message: `${leadToRemove?.name || 'The lead'} has been successfully deleted.`,
                                 type: "warning",
                                 icon: Trash2
                               });

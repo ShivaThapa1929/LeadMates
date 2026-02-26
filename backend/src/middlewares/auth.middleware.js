@@ -10,8 +10,10 @@ const authService = require('../services/auth.service');
 exports.validate = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.log('❌ VALIDATION_FAILED:', req.url, '| Errors:', JSON.stringify(errors.array(), null, 2));
+        console.log('📦 REQUEST_BODY:', req.body);
         const formattedErrors = errors.array().map(err => ({
-            field: err.param,
+            field: err.param || err.path, // handle both old and new express-validator formats
             message: err.msg
         }));
         return sendError(res, 'Validation Error', 400, formattedErrors);

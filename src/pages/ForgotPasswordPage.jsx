@@ -32,8 +32,14 @@ export default function ForgotPasswordPage() {
         setError("");
 
         try {
-            await authService.forgotPassword(email);
-            setIsSubmitted(true);
+            const result = await authService.forgotPassword(email);
+            // If backend returns userId, navigate to reset-password page with userId in URL
+            if (result?.data?.userId) {
+                navigate(`/reset-password?userId=${result.data.userId}`);
+            } else {
+                // Fallback: just show success message (userId was not returned, e.g., email not found)
+                setIsSubmitted(true);
+            }
         } catch (err) {
             setError(err.message || "Something went wrong. Please try again later.");
         } finally {

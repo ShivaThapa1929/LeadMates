@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import authService from "../api/authService";
@@ -13,16 +13,53 @@ export default function LoginPage() {
     const { selectedPlan, roleType } = location.state || {};
 
     const [formData, setFormData] = useState({ email: "", password: "" });
+    const [fieldErrors, setFieldErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [statusMsg, setStatusMsg] = useState(location.state?.message || "");
+
+    useEffect(() => {
+        if (location.state?.message) {
+            setStatusMsg(location.state.message);
+            // Clear location state after reading
+            window.history.replaceState({}, document.title);
+        }
+    }, [location.state]);
+
+    const validateField = (name, value) => {
+        if (!value.trim()) return "Email and password are required";
+        if (name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Email and password are required";
+        if (name === 'password' && value.length < 8) return "Email and password are required";
+        return "";
+    };
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        if (fieldErrors[name]) {
+            setFieldErrors({ ...fieldErrors, [name]: "" });
+        }
+    };
+
+    const handleBlur = (e) => {
+        const { name, value } = e.target;
+        const error = validateField(name, value);
+        setFieldErrors(prev => ({ ...prev, [name]: error }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!formData.email || !formData.password || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) || formData.password.length < 8) {
+            setError("Email and password are required");
+            setFieldErrors({
+                email: !formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) ? "Email and password are required" : "",
+                password: !formData.password || formData.password.length < 8 ? "Email and password are required" : ""
+            });
+            return;
+        }
+
         setIsLoading(true);
         setError("");
         try {
@@ -66,8 +103,7 @@ export default function LoginPage() {
                 navigate('/verify-otp', {
                     state: {
                         userId: err.errors.userId,
-                        email: formData.email,
-                        phone: 'your registered mobile'
+                        email: formData.email
                     }
                 });
                 return;
@@ -82,7 +118,7 @@ export default function LoginPage() {
         }
     };
 
-    const loginValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) && formData.password.length >= 8;
+    const loginValid = formData.email && formData.password && !fieldErrors.email && !fieldErrors.password;
 
     return (
         <div className="min-h-screen w-full flex items-center justify-center bg-background relative overflow-hidden px-4">
@@ -132,10 +168,23 @@ export default function LoginPage() {
                                 </div>
                             </motion.div>
                         )}
+
+                        {statusMsg && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="mb-6 overflow-hidden"
+                            >
+                                <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase tracking-wider text-center">
+                                    {statusMsg}
+                                </div>
+                            </motion.div>
+                        )}
                     </AnimatePresence>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="space-y-2">
+                        <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600 ml-1">Email Address</label>
                             <input
                                 type="email"
@@ -143,12 +192,14 @@ export default function LoginPage() {
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                                 placeholder="name@company.com"
-                                className="w-full h-14 bg-white/[0.03] border border-white/5 rounded-2xl px-5 text-white text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-800"
+                                className={`w-full h-14 bg-white/[0.03] border rounded-2xl px-5 text-white text-sm outline-none transition-all placeholder:text-gray-800 ${fieldErrors.email ? 'border-rose-500/50 ring-4 ring-rose-500/10' : 'border-white/5 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'}`}
                             />
+                            {fieldErrors.email && <p className="text-[10px] text-rose-500 font-bold ml-1">{fieldErrors.email}</p>}
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-1">
                             <div className="flex justify-between items-center ml-1">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600">Password</label>
                                 <Link to="/forgot-password" title="Recover Access" className="text-[10px] font-black uppercase tracking-[0.1em] text-blue-500 hover:text-blue-400 transition-colors">Forgot?</Link>
@@ -160,8 +211,9 @@ export default function LoginPage() {
                                     required
                                     value={formData.password}
                                     onChange={handleChange}
+                                    onBlur={handleBlur}
                                     placeholder="••••••••••••"
-                                    className="w-full h-14 bg-white/[0.03] border border-white/5 rounded-2xl pl-5 pr-12 text-white text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-800"
+                                    className={`w-full h-14 bg-white/[0.03] border rounded-2xl pl-5 pr-12 text-white text-sm outline-none transition-all placeholder:text-gray-800 ${fieldErrors.password ? 'border-rose-500/50 ring-4 ring-rose-500/10' : 'border-white/5 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'}`}
                                 />
                                 <button
                                     type="button"
@@ -171,6 +223,7 @@ export default function LoginPage() {
                                     {showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
                                 </button>
                             </div>
+                            {fieldErrors.password && <p className="text-[10px] text-rose-500 font-bold ml-1">{fieldErrors.password}</p>}
                         </div>
 
                         <motion.button

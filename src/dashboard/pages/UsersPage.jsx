@@ -107,8 +107,8 @@ export default function UsersPage() {
           setIsModalOpen(false);
           resetForm();
           addNotification({
-            title: "Operative Enrolled",
-            message: `${formData.name} has been granted system access.`,
+            title: "User Created",
+            message: `${formData.name} has been successfully added to the system.`,
             type: "success",
             icon: UserPlus
           });
@@ -120,8 +120,8 @@ export default function UsersPage() {
           setIsModalOpen(false);
           resetForm();
           addNotification({
-            title: "Node Reconfigured",
-            message: `Permissions for ${formData.name} have been updated.`,
+            title: "User Updated",
+            message: `The profile for ${formData.name} has been updated.`,
             type: "info",
             icon: Edit3
           });
@@ -148,8 +148,8 @@ export default function UsersPage() {
         setUsers(users.map(u => u.id === userId ? { ...u, avatar: response.data.avatar } : u));
 
         addNotification({
-          title: "Photo Updated",
-          message: `Biometric data updated for ${userToUpdate?.name}.`,
+          title: "Profile Photo Updated",
+          message: `The profile photo for ${userToUpdate?.name} has been updated.`,
           type: "info",
           icon: Camera
         });
@@ -173,8 +173,8 @@ export default function UsersPage() {
       if (data.success) {
         setUsers((prev) => prev.filter((u) => u.id !== id));
         addNotification({
-          title: "Node Decommissioned",
-          message: `${userToRemove?.name || 'An operative'} has been purged.`,
+          title: "User Deleted",
+          message: `${userToRemove?.name || 'The user'} has been removed from the system.`,
           type: "warning",
           icon: Trash2
         });

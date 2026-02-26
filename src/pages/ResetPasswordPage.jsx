@@ -9,7 +9,8 @@ import GalaxyHero from "../components/GalaxyHero";
 export default function ResetPasswordPage() {
     const navigate = useNavigate();
     const location = useLocation();
-    const [token, setToken] = useState("");
+    const [userId, setUserId] = useState("");
+    const [otp, setOtp] = useState("");
 
     const [formData, setFormData] = useState({
         password: "",
@@ -22,11 +23,11 @@ export default function ResetPasswordPage() {
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
-        const tokenParam = queryParams.get("token");
-        if (tokenParam) {
-            setToken(tokenParam);
+        const userIdParam = queryParams.get("userId");
+        if (userIdParam) {
+            setUserId(userIdParam);
         } else {
-            setError("Invalid or missing reset token.");
+            setError("Invalid or missing reset session. Please go back and request a password reset again.");
         }
     }, [location]);
 
@@ -50,16 +51,20 @@ export default function ResetPasswordPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!isPasswordValid || !passwordsMatch) return;
+        if (!otp.trim()) {
+            setError("Please enter the OTP code sent to your email.");
+            return;
+        }
 
         setIsLoading(true);
         setError("");
 
         try {
-            await authService.resetPassword(token, formData.password);
+            await authService.resetPassword(userId, otp, formData.password);
             setIsSuccess(true);
             setTimeout(() => navigate("/login"), 3000);
         } catch (err) {
-            setError(err.message || "Failed to reset password. Token may be expired.");
+            setError(err.message || "Failed to reset password. The OTP may have expired.");
         } finally {
             setIsLoading(false);
         }
@@ -119,7 +124,7 @@ export default function ResetPasswordPage() {
                 <div className="bg-background border border-blue-500/20 rounded-[2.5rem] p-6 sm:p-10 shadow-[0_0_50px_-12px_rgba(59,130,246,0.15)] backdrop-blur-3xl">
                     <div className="text-center mb-8">
                         <h1 className="text-xl sm:text-2xl font-black text-white mb-2 tracking-tight">Reset Password</h1>
-                        <p className="text-gray-400 text-xs sm:text-sm">Create a new secure password for your account</p>
+                        <p className="text-gray-400 text-xs sm:text-sm">Enter the OTP sent to your email and create a new secure password</p>
                     </div>
 
                     <AnimatePresence>
@@ -140,6 +145,20 @@ export default function ResetPasswordPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-4">
+                            {/* OTP Code Input */}
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Verification Code (OTP)</label>
+                                <input
+                                    type="text"
+                                    maxLength={6}
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                                    className="w-full h-12 bg-white/[0.03] border border-white/10 rounded-xl px-4 text-white text-sm outline-none focus:border-blue-500 transition-all tracking-[0.5em] text-center font-bold"
+                                    placeholder="_ _ _ _ _ _"
+                                />
+                                <p className="text-[9px] text-gray-600 font-bold ml-1 uppercase tracking-wider">Enter the 6-digit code sent to your email</p>
+                            </div>
+
                             {/* New Password */}
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">New Password</label>
@@ -193,7 +212,7 @@ export default function ResetPasswordPage() {
                         </div>
 
                         <motion.button
-                            disabled={isLoading || !isPasswordValid || !passwordsMatch || !token}
+                            disabled={isLoading || !isPasswordValid || !passwordsMatch || !userId || !otp.trim()}
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.99 }}
                             type="submit"
