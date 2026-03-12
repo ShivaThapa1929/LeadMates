@@ -48,11 +48,12 @@ exports.signup = async (req, res) => {
         // 3. Create User
         const newUser = await User.create({ ...req.body, role: role || 'user' });
 
-        // 4. Log in the user immediately (OTP Skip)
+        // 4. Log in the user immediately via a full DB re-fetch (OTP Skip)
+        // We do NOT pass existingUser to ensure getUserWithPermissions gets a complete user object
         const result = await authService.login(newUser.email, null, {
             ip: req.ip,
             userAgent: req.get('User-Agent')
-        }, true, newUser);
+        }, true); // bypassPassword = true, no existingUser so it re-fetches fully
 
         // Security: Set Refresh Token as HttpOnly Cookie
         res.cookie('refreshToken', result.refreshToken, {

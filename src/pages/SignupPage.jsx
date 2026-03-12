@@ -176,12 +176,12 @@ export default function SignupPage() {
             );
 
             // Log in the user immediately (OTP is now skipped on backend)
-            let user = response.data.user;
+            let user = response.data.data?.user;
             sessionStorage.setItem('showWelcome', 'true');
 
             if (selectedPlan) {
                 navigate('/checkout', { state: { plan: selectedPlan, roleType: signupData.role } });
-            } else if (user.roles.includes('Admin') || signupData.role === 'admin') {
+            } else if (user?.roles?.includes('Admin') || signupData.role === 'admin') {
                 navigate("/admin/dashboard");
             } else {
                 navigate("/dashboard");

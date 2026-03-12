@@ -168,7 +168,16 @@ const signup = async (name, email, password, role, phone, businessName, website,
             experience,
             plan
         });
-        // Note: Signup no longer returns tokens, it returns userId for OTP step
+
+        // Signup now returns tokens directly (OTP removed)
+        if (response.data.success && response.data.data?.accessToken) {
+            const { accessToken, user } = response.data.data;
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('user', JSON.stringify(user));
+            console.log('✅ AuthService: Signup & auto-login successful.');
+            window.dispatchEvent(new Event('auth-update'));
+        }
+
         return response.data;
     } catch (error) {
         console.error('❌ AuthService: Signup error:', error.response?.data || error.message);
