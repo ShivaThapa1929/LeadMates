@@ -9,12 +9,7 @@ import {
   UserCheck, Trash2, Edit3, Layers, LayoutDashboard
 } from "lucide-react";
 
-const leadStats = [
-  { label: "Today's Leads", value: "12", icon: Clock, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20" },
-  { label: "New Leads", value: "45", icon: Users, color: "text-purple-500", bg: "bg-purple-500/10", border: "border-purple-500/20" },
-  { label: "Contacted", value: "28", icon: CheckCircle, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-  { label: "Suspected (Fake)", value: "3", icon: AlertTriangle, color: "text-rose-500", bg: "bg-rose-500/10", border: "border-rose-500/20" }
-];
+// Removed static leadStats as it's now calculated dynamically
 
 const mockLeads = [
   { id: 1, name: "Rahul Sharma", phone: "+91 98765 43210", channel: "SOCIAL / FB ADS", state: "ACTIVE SYNC", stateColor: "text-emerald-500" },
@@ -130,16 +125,32 @@ export default function Dashboard() {
     return user?.roles?.some(r => r.toLowerCase() === 'admin');
   }, [user]);
 
-  const hasPermission = (permission) => {
+  const hasPermission = React.useCallback((permission) => {
     return user?.permissions?.includes(permission) || isAdmin;
-  };
+  }, [user, isAdmin]);
 
   const filteredStats = useMemo(() => {
-    return leadStats.filter(stat => {
+    // Current date logic to compare leads created today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todayCount = leads.filter(lead => new Date(lead.created_at || lead.createdAt) >= today).length;
+    const newCount = leads.filter(lead => lead.status === 'NEW').length;
+    const contactedCount = leads.filter(lead => lead.status === 'CONTACTED').length;
+    const suspectedCount = leads.filter(lead => lead.status === 'SUSPECTED').length;
+
+    const dynamicStats = [
+      { label: "Today's Leads", value: todayCount.toString(), icon: Clock, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20" },
+      { label: "New Leads", value: newCount.toString(), icon: Users, color: "text-purple-500", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+      { label: "Contacted", value: contactedCount.toString(), icon: CheckCircle, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
+      { label: "Suspected (Fake)", value: suspectedCount.toString(), icon: AlertTriangle, color: "text-rose-500", bg: "bg-rose-500/10", border: "border-rose-500/20" }
+    ];
+
+    return dynamicStats.filter(stat => {
       if (stat.label.includes('Suspected')) return hasPermission('manage_users') || user?.roles?.includes('Admin');
       return true;
     });
-  }, [user]);
+  }, [leads, user, hasPermission]);
 
   const currentLeads = useMemo(() => {
     const indexOfLastLead = currentPage * itemsPerPage;
