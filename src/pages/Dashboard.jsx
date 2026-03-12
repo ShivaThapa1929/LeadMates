@@ -160,6 +160,20 @@ export default function Dashboard() {
 
   const totalPages = Math.max(1, Math.ceil(leads.length / itemsPerPage));
 
+  // Lead Quota Calculation
+  const currentPlan = user?.plan || "Identity Basic";
+  const planLimits = {
+    "Identity Basic": 50,
+    "Pro Operative": 500,
+    "Lifetime Elite": 5000,
+    "Starter Node": 1000,
+    "Infrastructure Pro": 5000,
+    "Agency Sovereign": 100000
+  };
+  const maxLeads = planLimits[currentPlan] || 50;
+  const currentLeadsCount = leads.length;
+  const quotaPercentage = maxLeads >= 100000 ? 100 : Math.min((currentLeadsCount / maxLeads) * 100, 100);
+
   const fetchLeads = async () => {
     try {
       setLoading(true);
@@ -417,14 +431,14 @@ export default function Dashboard() {
             <div className="h-2 w-full bg-secondary rounded-full overflow-hidden mb-5">
               <Motion.div
                 initial={{ width: 0 }}
-                animate={{ width: "65%" }}
+                animate={{ width: `${quotaPercentage}%` }}
                 transition={{ duration: 1.5, ease: "circOut" }}
                 className="h-full bg-primary shadow-[0_0_15px_rgba(0,102,255,0.4)]"
               />
             </div>
             <div className="flex justify-between items-center text-[11px] font-black uppercase">
-              <span className="text-primary tracking-widest">809 / 1,245 Leads</span>
-              <span className="text-muted-foreground">{user?.plan || "Premium Tier"}</span>
+              <span className="text-primary tracking-widest">{currentLeadsCount.toLocaleString()} / {maxLeads >= 100000 ? '∞' : maxLeads.toLocaleString()} Leads</span>
+              <span className="text-muted-foreground">{currentPlan}</span>
             </div>
           </div>
         </div>
