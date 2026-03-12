@@ -75,11 +75,12 @@ export default function SignupPage() {
                 if (!value.trim()) error = "Website is required";
                 else if (!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})/.test(value)) error = "Enter a valid website URL";
                 break;
-            case 'password':
+            case 'password': {
                 const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
                 if (!value) error = "Password is required";
                 else if (!regex.test(value)) error = "Password must be 8+ characters with uppercase, lowercase, number and special character";
                 break;
+            }
             case 'confirmPassword':
                 if (!value) error = "Confirm Password is required";
                 else if (value !== formData.password) error = "Passwords do not match";

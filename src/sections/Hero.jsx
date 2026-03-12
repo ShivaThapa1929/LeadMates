@@ -69,7 +69,7 @@ export default function Hero() {
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
             <Link
-              to="/signup"
+              to="/pricing"
               className="block w-full px-8 py-4 bg-white/5 border border-white/10 text-white rounded-full font-semibold text-sm transition-all hover:bg-white/10 text-center backdrop-blur-sm"
             >
               See How It Works

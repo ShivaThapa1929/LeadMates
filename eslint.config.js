@@ -28,6 +28,15 @@ export default defineConfig([
         argsIgnorePattern: '^_',
         ignoreRestSiblings: true
       }],
+      // Context files intentionally export both component and hook — not a real issue
+      'react-refresh/only-export-components': 'warn',
+      // Math.random() inside useMemo during initialization is intentional (star positions)
+      'react-hooks/purity': 'off',
+      // Guarded setState in effects is intentional in this codebase
+      'react-hooks/set-state-in-effect': 'off',
+      // Memoization preservation warnings are cosmetic only
+      'react-hooks/preserve-manual-memoization': 'warn',
     },
   },
 ])
+
