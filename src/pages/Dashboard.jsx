@@ -461,17 +461,7 @@ export default function Dashboard() {
 
         {/* Mobile Lead Cards (Visible on mobile only) */}
         <div className="md:hidden divide-y divide-border">
-          {!hasPermission('view_lead') ? (
-            <div className="px-6 py-20 text-center">
-              <div className="flex flex-col items-center gap-4 grayscale opacity-50">
-                <Shield size={40} className="text-muted-foreground" />
-                <div className="space-y-1">
-                  <p className="text-[11px] font-black text-foreground uppercase tracking-[0.2em]">Clearance Required</p>
-                  <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest leading-tight">Access restricted by role.</p>
-                </div>
-              </div>
-            </div>
-          ) : loading ? (
+          {loading ? (
             <div className="px-6 py-20 text-center">
               <div className="flex flex-col items-center gap-4">
                 <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
@@ -526,19 +516,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {!hasPermission('view_lead') ? (
-                <tr>
-                  <td colSpan="6" className="px-10 py-20 text-center">
-                    <div className="flex flex-col items-center gap-4 py-10 grayscale opacity-50">
-                      <Shield size={48} className="text-muted-foreground" />
-                      <div className="space-y-1">
-                        <p className="text-[12px] font-black text-foreground uppercase tracking-[0.2em]">Clearance Required</p>
-                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Access to lead stream is restricted by role.</p>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ) : loading ? (
+              {loading ? (
                 <tr>
                   <td colSpan="6" className="px-10 py-20 text-center">
                     <div className="flex flex-col items-center gap-4">
