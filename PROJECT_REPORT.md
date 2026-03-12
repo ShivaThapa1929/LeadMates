@@ -1,6 +1,6 @@
 # LeadMates Project Report
 
-**Date:** 2026-02-26  
+**Date:** 2025-11-11  
 **Project Name:** LeadMates  
 **Version:** 2.4.0 (Stable)
 
@@ -104,5 +104,40 @@ The backend exposes a production-grade RESTful API. Key endpoints include:
 ## 7. Conclusion
 
 LeadMates v2.4.0 is a production-ready solution that prioritizes security and data-driven decision-making. The separation of concerns, combined with industrial-standard security patterns (2FA/Rotation), ensures the system is both maintainable and highly secure for enterprise use.
+
+---
+
+## 8. Recent Updates (Feb-Mar 2026)
+
+### 8.1 Frontend: Analytics & Visualization Enhancements
+- **Analyse Leads Page Optimization**:
+  - Expanded Y-axis label space (100px → 160px) in the **Campaign Acquisition Chart** for better campaign name visibility.
+  - Implemented automatic **name truncation** with ellipses (...) for extremely long campaign titles.
+  - Added **label rotation (-15°)** in the Conversion Efficiency Chart to prevent text overlapping.
+  - Streamlined **Search Filters**: Removed "Arrival Start/End" date fields and reconfigured the filter block into a balanced 4-column grid.
+  - Integrated **"Full Value on Hover"** tooltips in Metric Cards to show complete campaign names.
+
+### 8.2 Dashboard: Data Management & Pagination
+- **Real-Time Lead Stream Pagination**:
+  - Implemented functional row-based pagination (Limit: **5 leads per page**).
+  - Added dynamic footer controls including **Prev**, **Next**, and **Numbered Page Buttons**.
+  - Integrated "Showing X of Y" counters that update in real-time as data is filtered or paginated.
+  - Verified logic scalability with expanded mock and real intelligence datasets.
+
+### 8.3 Backend: Secure Credentials Refactoring
+- **Architectural Isolation**: 
+  - Created a dedicated `user_credentials` table to separate sensitive authentication data from public/profile user data.
+  - Migrated existing password hashes into the new table with updated timestamps.
+- **Model Security**:
+  - Refactored the `User` model to perform transactional inserts/updates across `users` and `user_credentials` tables.
+  - Implemented `leftJoin` logic in authentication lookups to fetch passwords securely only when required by the controller.
+- **Data Sanitization**:
+  - Executed a safe migration to drop the redundant `password` column from the primary `users` table, reducing the database's attack surface.
+
+---
+
+## 9. Conclusion
+
+LeadMates continues to evolve with a focus on high-performance data visualization and enterprise-grade security. The transition to separated credential storage and the implementation of paginated telemetry views ensure the system remains responsive and secure even as the database grows.
 
 ---

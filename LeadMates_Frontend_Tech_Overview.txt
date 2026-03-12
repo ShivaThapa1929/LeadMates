@@ -1,0 +1,281 @@
+# 🧠 LeadMates — Frontend Technology Overview
+> A plain-language guide explaining every technology used in the frontend and **exactly where** it shows up in the project.
+
+---
+
+## 📌 What Is the Frontend?
+
+The **frontend** is everything the user **sees and clicks** in their browser — the pages, buttons, charts, forms, and animations. It lives in the `src/` folder and talks to the backend (API server) to fetch and save data.
+
+---
+
+## 🗂️ Project Folder Map
+
+```
+LeadMates/
+├── src/
+│   ├── main.jsx          ← App entry point (starts React)
+│   ├── App.jsx           ← Route definitions (all pages listed here)
+│   ├── index.css         ← Global styles
+│   ├── App.css           ← App-level styles
+│   │
+│   ├── pages/            ← Public pages (Home, Login, Signup, Pricing…)
+│   ├── sections/         ← Sections inside the Home/Landing page
+│   ├── dashboard/        ← Everything inside the logged-in Dashboard
+│   │   ├── Layout.jsx    ← Dashboard sidebar + topbar shell
+│   │   └── pages/        ← Dashboard sub-pages (Leads, Analytics, Users…)
+│   │
+│   ├── components/       ← Reusable UI pieces (Navbar, Footer, etc.)
+│   │   └── ui/           ← Low-level UI atoms (Button, Card, Input…)
+│   ├── context/          ← Global state (Theme, Notifications, Search)
+│   ├── api/              ← All API call functions (one file per feature)
+│   └── lib/              ← Utility helpers
+│
+├── index.html            ← The single HTML file (SPA shell)
+├── vite.config.js        ← Build + dev-server configuration
+├── package.json          ← All dependencies listed here
+└── tailwind.config / tsconfig / eslint.config
+```
+
+---
+
+## ⚙️ 1. Vite — Build Tool & Dev Server
+
+| What it is | A super-fast tool that compiles and serves the app during development |
+|---|---|
+| **Used in** | [vite.config.js](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/vite.config.js), [package.json](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/package.json) scripts (`npm run dev`) |
+| **Why it's here** | Replaces the old, slow Create React App. Starts the app instantly and reloads the browser when you save a file. |
+
+**Key config in [vite.config.js](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/vite.config.js):**
+- Runs the frontend at `http://localhost:5173`
+- **Proxies** `/api` and `/uploads` requests to the backend at `http://localhost:5000` — so the browser never has CORS errors
+
+---
+
+## ⚛️ 2. React 19 — The UI Framework
+
+| What it is | A JavaScript library for building interactive, component-based user interfaces |
+|---|---|
+| **Used in** | Every [.jsx](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/App.jsx) file in `src/` |
+| **Why it's here** | The entire app is built as React components — each page, button, form, and chart is a React component |
+
+**Where you see it:**
+- [src/main.jsx](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/main.jsx) — mounts the React app into [index.html](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/index.html)
+- [src/App.jsx](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/App.jsx) — the root component that decides which page to show
+- Every file in `pages/`, `dashboard/pages/`, `components/`, `sections/`
+
+---
+
+## 🗺️ 3. React Router DOM v7 — Page Navigation
+
+| What it is | A library that makes a single-page app behave like a multi-page website |
+|---|---|
+| **Used in** | [src/App.jsx](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/App.jsx) |
+| **Why it's here** | Without it, changing the URL (`/login`, `/dashboard`, `/leads`) would reload the whole page. React Router handles navigation **instantly** without a page reload |
+
+**Key routes defined in [App.jsx](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/App.jsx):**
+| URL | Page shown |
+|---|---|
+| `/` | Home / Landing page |
+| `/login` | LoginPage |
+| `/signup` | SignupPage |
+| `/dashboard` | Dashboard (protected — login required) |
+| `/dashboard/leads` | LeadsPage |
+| `/dashboard/analytics` | AnalyticsPage |
+| `/dashboard/users` | UsersPage |
+| `/dashboard/campaigns` | CampaignsPage |
+| … and more | … |
+
+**Special route guards in `components/`:**
+- [RequireAuth.jsx](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/components/RequireAuth.jsx) — blocks pages if not logged in
+- [RequireRole.jsx](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/components/RequireRole.jsx) — blocks pages based on user role (admin vs agent)
+- [RequirePermission.jsx](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/components/RequirePermission.jsx) — blocks pages based on individual permissions
+- [PublicRoute.jsx](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/components/PublicRoute.jsx) — redirects logged-in users away from Login/Signup
+
+---
+
+## 🎨 4. Tailwind CSS v4 — Styling
+
+| What it is | A utility-first CSS framework — you style elements by adding class names like `bg-blue-500 p-4 rounded-lg` |
+|---|---|
+| **Used in** | Every [.jsx](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/App.jsx) file's `className` attribute, [src/index.css](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/index.css), `@tailwindcss/vite` plugin |
+| **Why it's here** | Faster to write than plain CSS, consistent spacing/color system, responsive design built-in |
+
+**Where you see it:**
+- [index.css](file:///c:/Users/Admin/OneDrive/Desktop/LeadMates/LeadMates/src/index.css) — Tailwind base imports + custom design tokens (dark/light theme variables)
+- Every component file uses Tailwind class names directly on HTML elements
+- `tailwind-merge` (clsx) used in `src/lib/` to combine classes without conflicts
+
+**Also installed:** `tw-animate-css` — adds pre-made Tailwind animation classes (fade, slide, etc.)
+
+---
+
+## 💫 5. Framer Motion — Animations
+
+| What it is | A professional animation library for React |
+|---|---|
+| **Used in** | `src/components/AnimatedSection.jsx`, landing page `sections/`, splash screen |
+| **Why it's here** | Makes elements fade in, slide up, or scale as you scroll — gives the app a premium polished feel |
+
+**Where you see it:**
+- `AnimatedSection.jsx` — wraps any section to animate it into view on scroll
+- `SplashScreen.jsx` — animated loading screen on first visit
+- Hero sections on the landing page use motion effects
+
+---
+
+## 📊 6. Recharts — Charts & Graphs
+
+| What it is | A React chart library for drawing bar charts, line charts, pie charts, etc. |
+|---|---|
+| **Used in** | `src/dashboard/pages/AnalyticsPage.jsx`, `Dashboard.jsx` |
+| **Why it's here** | Shows visual analytics — lead conversion rates, campaign performance, user activity over time |
+
+**Charts you'll find:**
+- Line charts for trends over time
+- Bar charts for comparisons
+- Pie/donut charts for breakdowns
+
+---
+
+## 🌐 7. Axios — HTTP Client (API Calls)
+
+| What it is | A library for making HTTP requests (GET, POST, PUT, DELETE) to the backend |
+|---|---|
+| **Used in** | All files in `src/api/` |
+| **Why it's here** | Used to talk to the backend server — fetch leads, save users, login, etc. |
+
+**API service files (each one handles a different feature):**
+| File | What it does |
+|---|---|
+| `authService.js` | Login, logout, signup, OTP, token refresh |
+| `leadService.js` | Get, create, update, delete leads |
+| `userService.js` | Manage users |
+| `campaignService.js` | Campaign CRUD operations |
+| `adminService.js` | Admin-only operations |
+| `roleService.js` | Role management |
+| `suspectService.js` | Suspect blends management |
+| `trashService.js` | Trash/recycle bin |
+| `customFieldApi.js` | Custom lead fields |
+
+Axios is configured with **interceptors** in `authService.js` to automatically:
+- Attach JWT tokens to every request
+- Refresh expired tokens silently
+- Redirect to login if the session is fully expired
+
+---
+
+## 🧩 8. Radix UI — Accessible UI Primitives
+
+| What it is | A headless (no built-in styling) component library focused on accessibility |
+|---|---|
+| **Used in** | `src/components/ui/` (button, card, input, label, navigation-menu, separator) |
+| **Why it's here** | Provides keyboard navigation, ARIA labels, and screen-reader support out of the box |
+
+**Specific Radix packages used:**
+- `@radix-ui/react-label` — accessible `<label>` for form fields
+- `@radix-ui/react-navigation-menu` — the top navigation bar
+- `@radix-ui/react-separator` — visual divider lines
+- `@radix-ui/react-slot` — allows component composition (used in Button)
+
+> These are styled with **shadcn/ui** patterns — meaning Radix provides the behavior and Tailwind provides the look.
+
+---
+
+## 🖼️ 9. Icons — Three Icon Libraries
+
+The app uses **three** icon packs to cover different styles:
+
+| Library | Used in | Notes |
+|---|---|---|
+| **Lucide React** | Dashboard pages, sidebar menu | Clean, minimal line icons |
+| **Heroicons** | Buttons, action icons | Made by Tailwind team, two styles (outline/solid) |
+| **React Icons** | Various sections | Huge collection including Font Awesome, Material Icons, etc. |
+
+---
+
+## 🌓 10. React Context — Global State Management
+
+| What it is | React's built-in way to share data across many components without passing it through every level |
+|---|---|
+| **Used in** | `src/context/` |
+| **Why it's here** | Avoids "prop drilling" — passing the same data down 5 levels of components |
+
+**Three context providers:**
+| File | What it shares globally |
+|---|---|
+| `ThemeContext.jsx` | Dark mode / Light mode toggle — any component can read or change the theme |
+| `NotificationContext.jsx` | Toast/notification system — any component can trigger a success or error message |
+| `SearchContext.jsx` | Global search state — the search bar in the header shares results with pages |
+
+---
+
+## 🔷 11. TypeScript (Partial) — Type Safety in UI Components
+
+| What it is | A superset of JavaScript that adds types to catch bugs before runtime |
+|---|---|
+| **Used in** | `src/components/ui/*.tsx` files (button, card, input, label, etc.) |
+| **Why it's here** | Only the low-level reusable UI components use TypeScript — the rest of the app uses regular JavaScript (`.jsx`) |
+
+**Config files:** `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`
+
+---
+
+## ✅ 12. ESLint — Code Quality
+
+| What it is | A linter that finds code errors and enforces consistent coding style |
+|---|---|
+| **Used in** | `eslint.config.js`, runs via `npm run lint` |
+| **Why it's here** | Catches bugs and bad patterns (like missing React keys, unused variables) before they go into production |
+
+---
+
+## 🧭 Complete Technology Summary Table
+
+| Technology | Version | Category | Used Where |
+|---|---|---|---|
+| **Vite** | v7 | Build Tool | `vite.config.js`, dev server |
+| **React** | v19 | UI Framework | All `.jsx` files |
+| **React Router DOM** | v7 | Routing | `App.jsx`, route guards |
+| **Tailwind CSS** | v4 | Styling | All component class names |
+| **Framer Motion** | v12 | Animations | Landing sections, splash |
+| **Recharts** | v3 | Charts | Analytics + Dashboard |
+| **Axios** | v1 | HTTP Client | All `src/api/*.js` files |
+| **Radix UI** | v2 | UI Primitives | `src/components/ui/` |
+| **Lucide React** | v0.5 | Icons | Dashboard sidebar & pages |
+| **Heroicons** | v2 | Icons | Action buttons |
+| **React Icons** | v5 | Icons | Various sections |
+| **React Context** | built-in | State Management | Theme, Notifications, Search |
+| **TypeScript** | via tsconfig | Type Safety | `src/components/ui/*.tsx` |
+| **ESLint** | v9 | Code Quality | `eslint.config.js` |
+| **class-variance-authority** | v0.7 | Styling Helper | Button/Card variant logic |
+| **clsx + tailwind-merge** | latest | Styling Helper | Merging Tailwind classes safely |
+| **@uidotdev/usehooks** | v2 | Custom Hooks | Utility React hooks |
+| **prop-types** | v15 | Runtime Types | Component prop validation |
+
+---
+
+## 🗺️ How a User Journey Maps to Technologies
+
+```
+User opens the app
+  └─► Vite serves index.html
+        └─► React mounts in the browser
+              └─► React Router reads the URL and shows the correct page
+                    ├─► Landing Page (Home.jsx + sections/)
+                    │     └─► Tailwind CSS styling + Framer Motion animations
+                    │
+                    ├─► Login Page (LoginPage.jsx)
+                    │     └─► Axios calls /api/auth/login → gets JWT token
+                    │
+                    └─► Dashboard (RequireAuth → Dashboard.jsx → Layout.jsx)
+                          ├─► Tailwind CSS dark/light theme (ThemeContext)
+                          ├─► Sidebar menu with Lucide icons
+                          ├─► Recharts for analytics charts
+                          ├─► Axios for all data fetching (leads, users, campaigns)
+                          └─► Radix UI + shadcn components for forms/tables
+```
+
+---
+
+> **In short:** React builds the pages, Vite compiles and serves them fast, React Router navigates between pages, Tailwind CSS makes them look great, Framer Motion adds animations, Axios talks to the backend, Recharts draws charts, and Radix UI makes forms and menus accessible.

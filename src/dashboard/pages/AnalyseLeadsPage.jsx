@@ -154,39 +154,7 @@ export default function AnalyseLeadsPage() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 relative z-10">
-                    {/* Arrival Start */}
-                    <div className="space-y-2 group/field">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1 flex items-center gap-2 group-focus-within/field:text-primary transition-colors">
-                            <Calendar size={10} /> Arrival Start
-                        </label>
-                        <div className="relative">
-                            <input
-                                type="date"
-                                name="start_date"
-                                value={filters.start_date}
-                                onChange={handleFilterChange}
-                                className="w-full bg-secondary/30 backdrop-blur-sm border border-border/50 rounded-2xl px-4 py-3 text-[11px] font-black uppercase tracking-widest text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all hover:bg-secondary/50 cursor-pointer"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Arrival End */}
-                    <div className="space-y-2 group/field">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1 flex items-center gap-2 group-focus-within/field:text-primary transition-colors">
-                            <Calendar size={10} /> Arrival End
-                        </label>
-                        <div className="relative">
-                            <input
-                                type="date"
-                                name="end_date"
-                                value={filters.end_date}
-                                onChange={handleFilterChange}
-                                className="w-full bg-secondary/30 backdrop-blur-sm border border-border/50 rounded-2xl px-4 py-3 text-[11px] font-black uppercase tracking-widest text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all hover:bg-secondary/50 cursor-pointer"
-                            />
-                        </div>
-                    </div>
-
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
                     {/* Campaign Type */}
                     <div className="space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 ml-1 flex items-center gap-2">
@@ -334,6 +302,7 @@ export default function AnalyseLeadsPage() {
                                     bg="bg-rose-500/10"
                                     border="border-rose-500/20"
                                     isTextValue
+                                    fullValue={best_campaign}
                                 />
                                 <MetricCard title="Best Source" value={best_source} icon={Zap} color="text-purple-500" bg="bg-purple-500/10" border="border-purple-500/20" isTextValue />
                             </div>
@@ -343,11 +312,21 @@ export default function AnalyseLeadsPage() {
                                 {/* Leads per Campaign */}
                                 <ChartContainer title="Campaign Acquisition" icon={Target}>
                                     <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0} debounce={100}>
-                                        <BarChart data={campaign_breakdown} layout="vertical" margin={{ left: 20 }}>
+                                        <BarChart data={campaign_breakdown} layout="vertical" margin={{ left: 20, right: 30 }}>
                                             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff03" horizontal={false} />
                                             <XAxis type="number" stroke="#94a3b820" tick={{ fontSize: 9, fontWeight: 900 }} />
-                                            <YAxis dataKey="name" type="category" width={100} stroke="#94a3b820" tick={{ fontSize: 9, fontWeight: 900 }} />
-                                            <RechartsTooltip contentStyle={{ backgroundColor: '#0a0a0b', border: '1px solid #222', borderRadius: '12px', fontSize: '10px', color: '#fff' }} />
+                                            <YAxis
+                                                dataKey="name"
+                                                type="category"
+                                                width={160}
+                                                stroke="#94a3b820"
+                                                tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }}
+                                                tickFormatter={(value) => value.length > 22 ? value.substring(0, 20) + "..." : value}
+                                            />
+                                            <RechartsTooltip
+                                                cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                                                contentStyle={{ backgroundColor: '#0a0a0b', border: '1px solid #333', borderRadius: '12px', fontSize: '11px', color: '#fff' }}
+                                            />
                                             <Bar dataKey="value" name="Total Leads" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={16} />
                                         </BarChart>
                                     </ResponsiveContainer>
@@ -425,9 +404,20 @@ export default function AnalyseLeadsPage() {
                                             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={100}>
                                                 <BarChart data={campaign_breakdown.slice(0, 5)}>
                                                     <CartesianGrid strokeDasharray="3 3" stroke="#ffffff03" vertical={false} />
-                                                    <XAxis dataKey="name" stroke="#94a3b820" tick={{ fontSize: 10, fontWeight: 900 }} />
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        stroke="#94a3b820"
+                                                        tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }}
+                                                        interval={0}
+                                                        angle={-15}
+                                                        textAnchor="end"
+                                                        height={50}
+                                                    />
                                                     <YAxis stroke="#94a3b820" tick={{ fontSize: 10, fontWeight: 900 }} />
-                                                    <RechartsTooltip contentStyle={{ backgroundColor: '#0a0a0b', border: '1px solid #222', borderRadius: '12px', fontSize: '10px' }} />
+                                                    <RechartsTooltip
+                                                        cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                                                        contentStyle={{ backgroundColor: '#0a0a0b', border: '1px solid #333', borderRadius: '12px', fontSize: '10px' }}
+                                                    />
                                                     <Bar dataKey="value" name="Total" fill="#6366f1" radius={[4, 4, 0, 0]} barSize={40} />
                                                 </BarChart>
                                             </ResponsiveContainer>
@@ -575,7 +565,7 @@ function MetricCard({ title, value, subValue, icon: Icon, color, bg, border, isT
                 </div>
             </div>
 
-            <div className="relative z-10">
+            <div className="relative z-10" title={isTextValue ? value : ""}>
                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-2 group-hover:text-foreground transition-colors">{title}</p>
                 <div className={`${isTextValue ? 'text-sm lg:text-base' : 'text-3xl'} font-black text-foreground tracking-tighter truncate leading-none`}>
                     {value}

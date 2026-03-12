@@ -60,7 +60,7 @@ export default function Hero() {
         >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
             <Link
-              to="/get-access"
+              to="/signup"
               className="block w-full px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-bold text-sm transition-all shadow-[0_0_30px_rgba(37,99,235,0.4)] text-center"
             >
               Get Access to LeadMates
@@ -69,7 +69,7 @@ export default function Hero() {
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
             <Link
-              to="/get-access"
+              to="/signup"
               className="block w-full px-8 py-4 bg-white/5 border border-white/10 text-white rounded-full font-semibold text-sm transition-all hover:bg-white/10 text-center backdrop-blur-sm"
             >
               See How It Works

@@ -1,29 +1,36 @@
 const { db } = require('../config/db');
 const bcrypt = require('bcryptjs');
-
-/**
- * User Model
- * Handles all database operations for users using Knex.js
- */
 const User = {
     tableName: 'users',
 
     findByEmail: async (email) => {
-        return await db(User.tableName).where({ email, is_deleted: false }).first();
+        return await db(User.tableName)
+            .leftJoin('user_credentials', 'users.id', 'user_credentials.user_id')
+            .where({ email, 'users.is_deleted': false })
+            .select('users.*', 'user_credentials.password_hash as password')
+            .first();
     },
 
     /**
      * @desc Find user by phone
      */
     findByPhone: async (phone) => {
-        return await db(User.tableName).where({ phone, is_deleted: false }).first();
+        return await db(User.tableName)
+            .leftJoin('user_credentials', 'users.id', 'user_credentials.user_id')
+            .where({ phone, 'users.is_deleted': false })
+            .select('users.*', 'user_credentials.password_hash as password')
+            .first();
     },
 
     /**
      * @desc Find user by id
      */
     findById: async (id) => {
-        return await db(User.tableName).where({ id, is_deleted: false }).first();
+        return await db(User.tableName)
+            .leftJoin('user_credentials', 'users.id', 'user_credentials.user_id')
+            .where({ 'users.id': id, 'users.is_deleted': false })
+            .select('users.*', 'user_credentials.password_hash as password')
+            .first();
     },
 
     /**
@@ -44,12 +51,17 @@ const User = {
                 business_name: businessName,
                 website,
                 experience,
-                password: hashedPassword,
-                is_verified: false,
-                email_verified: false,
-                phone_verified: false,
+                is_verified: true,
+                email_verified: true,
+                phone_verified: true,
                 role: userData.role || 'user',
                 plan: userData.plan || (userData.role === 'admin' ? 'Starter Node' : 'Identity Basic')
+            });
+
+            // Store password in separate credentials table
+            await trx('user_credentials').insert({
+                user_id: userId,
+                password_hash: hashedPassword
             });
 
             // Assign proper RBAC role based on the role column
@@ -163,14 +175,29 @@ const User = {
      */
     update: async (id, updateData) => {
         const data = { ...updateData };
+        let passwordData = null;
 
-        // If password is being updated, hash it before storing
+        // If password is being updated, hash it and prep for credentials table
         if (data.password) {
             const salt = await bcrypt.genSalt(10);
-            data.password = await bcrypt.hash(data.password, salt);
+            const hashedPassword = await bcrypt.hash(data.password, salt);
+            passwordData = hashedPassword;
+            delete data.password; // Remove from users table update
         }
 
-        return await db(User.tableName).where({ id }).update(data);
+        return await db.transaction(async (trx) => {
+            if (Object.keys(data).length > 0) {
+                await trx(User.tableName).where({ id }).update(data);
+            }
+
+            if (passwordData) {
+                await trx('user_credentials').where({ user_id: id }).update({
+                    password_hash: passwordData,
+                    updated_at: db.fn.now()
+                });
+            }
+            return true;
+        });
     },
 
     /**

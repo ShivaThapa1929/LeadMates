@@ -1,5 +1,6 @@
 // src/sections/FinalCTA.jsx
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { ArrowRightIcon, SparklesIcon } from "@heroicons/react/24/outline";
 
 export default function FinalCTA() {
@@ -33,25 +34,27 @@ export default function FinalCTA() {
 
           {/* Reduced Button Container */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mt-12">
-            <motion.button
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0px 0px 30px rgba(37, 99, 235, 0.4)"
-              }}
-              whileTap={{ scale: 0.95 }}
-              /* REDUCED SIZE: Changed px-10 py-5 to px-8 py-3, and text-lg to text-sm */
-              className="group relative px-8 py-3 bg-blue-600 text-white rounded-full font-black text-sm transition-all flex items-center gap-2 overflow-hidden shadow-xl shadow-blue-600/20"
-            >
-              <span className="relative z-10">Get Access Now</span>
-              <ArrowRightIcon className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
+            <Link to="/signup">
+              <motion.button
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0px 0px 30px rgba(37, 99, 235, 0.4)"
+                }}
+                whileTap={{ scale: 0.95 }}
+                /* REDUCED SIZE: Changed px-10 py-5 to px-8 py-3, and text-lg to text-sm */
+                className="group relative px-8 py-3 bg-blue-600 text-white rounded-full font-black text-sm transition-all flex items-center gap-2 overflow-hidden shadow-xl shadow-blue-600/20"
+              >
+                <span className="relative z-10">Get Access Now</span>
+                <ArrowRightIcon className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
 
-              {/* Animated Inner Shine */}
-              <motion.div
-                animate={{ x: ['-100%', '200%'] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="absolute top-0 left-0 w-1/2 h-full bg-white/10 skew-x-[45deg] z-0"
-              />
-            </motion.button>
+                {/* Animated Inner Shine */}
+                <motion.div
+                  animate={{ x: ['-100%', '200%'] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="absolute top-0 left-0 w-1/2 h-full bg-white/10 skew-x-[45deg] z-0"
+                />
+              </motion.button>
+            </Link>
 
             <motion.a
               href="/docs"

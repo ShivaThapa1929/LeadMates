@@ -174,14 +174,17 @@ export default function SignupPage() {
                 signupData.plan
             );
 
-            // Navigate to OTP Verification with userId in URL to survive refreshes
-            navigate(`/verify-otp?userId=${response.data?.userId || response.userId}`, {
-                state: {
-                    userId: response.data?.userId || response.userId,
-                    email: signupData.email,
-                    phone: signupData.phone
-                }
-            });
+            // Log in the user immediately (OTP is now skipped on backend)
+            let user = response.data.user;
+            sessionStorage.setItem('showWelcome', 'true');
+
+            if (selectedPlan) {
+                navigate('/checkout', { state: { plan: selectedPlan, roleType: signupData.role } });
+            } else if (user.roles.includes('Admin') || signupData.role === 'admin') {
+                navigate("/admin/dashboard");
+            } else {
+                navigate("/dashboard");
+            }
         } catch (err) {
             console.error('Signup Error Data:', err);
 
@@ -209,7 +212,7 @@ export default function SignupPage() {
         exit: { opacity: 0, x: -20 }
     };
 
-    const industries = ["SaaS / Software", "Real Estate", "Healthcare", "E-commerce"];
+    const industries = ["SaaS / Software", "Real Estate", "Healthcare", "E-commerce","Hospital"];
 
     return (
         <div className="min-h-screen w-full flex items-center justify-center bg-background relative overflow-hidden px-4 py-10 sm:py-20">

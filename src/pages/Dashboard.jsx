@@ -107,6 +107,8 @@ export default function Dashboard() {
     name: "", email: "", phone: "", channel: "Social / FB Ads", status: "NEW", notes: "", assigned_to: ""
   });
   const [activityLogs, setActivityLogs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const [user, setUser] = useState(() => {
     try {
@@ -138,6 +140,14 @@ export default function Dashboard() {
       return true;
     });
   }, [user]);
+
+  const currentLeads = useMemo(() => {
+    const indexOfLastLead = currentPage * itemsPerPage;
+    const indexOfFirstLead = indexOfLastLead - itemsPerPage;
+    return leads.slice(indexOfFirstLead, indexOfLastLead);
+  }, [leads, currentPage]);
+
+  const totalPages = Math.max(1, Math.ceil(leads.length / itemsPerPage));
 
   const fetchLeads = async () => {
     try {
@@ -443,11 +453,11 @@ export default function Dashboard() {
                 <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Scanning Network..</span>
               </div>
             </div>
-          ) : leads.length === 0 ? (
+          ) : currentLeads.length === 0 ? (
             <div className="px-6 py-20 text-center text-muted-foreground text-[10px] font-black uppercase tracking-widest">
               No intelligence nodes found.
             </div>
-          ) : leads.map((lead) => (
+          ) : currentLeads.map((lead) => (
             <div key={lead.id} className="p-6 space-y-4 hover:bg-muted/30 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -512,13 +522,13 @@ export default function Dashboard() {
                     </div>
                   </td>
                 </tr>
-              ) : leads.length === 0 ? (
+              ) : currentLeads.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="px-10 py-20 text-center text-muted-foreground text-[12px] font-black uppercase tracking-widest">
                     No intelligence nodes found. Add your first data point.
                   </td>
                 </tr>
-              ) : leads.map((lead) => (
+              ) : currentLeads.map((lead) => (
                 <tr key={lead.id} className="hover:bg-muted/30 transition-colors group">
                   <td className="px-6 sm:px-10 py-6 sm:py-8">
                     <span className="flex items-center gap-4 sm:gap-5">
@@ -620,15 +630,36 @@ export default function Dashboard() {
 
         {/* Table Footer */}
         <div className="px-6 sm:px-10 py-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-0 text-[10px] sm:text-[11px] font-black text-muted-foreground uppercase tracking-widest bg-muted/20">
-          <div>Showing {leads.length} of {leads.length} Leads</div>
+          <div>Showing {currentLeads.length} of {leads.length} Leads</div>
           <div className="flex items-center gap-4">
-            <button className="hover:text-foreground transition-colors cursor-pointer">Prev</button>
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className={`hover:text-foreground transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed`}
+            >
+              Prev
+            </button>
             <div className="flex items-center gap-1">
-              <button className="w-8 h-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center">1</button>
-              <button className="w-8 h-8 rounded-lg hover:bg-secondary flex items-center justify-center transition-colors cursor-pointer">2</button>
-              <button className="w-8 h-8 rounded-lg hover:bg-secondary flex items-center justify-center transition-colors cursor-pointer">3</button>
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i + 1}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${currentPage === i + 1
+                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
+                    : 'hover:bg-secondary text-muted-foreground hover:text-foreground cursor-pointer'
+                    }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
             </div>
-            <button className="hover:text-foreground transition-colors cursor-pointer">Next</button>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className={`hover:text-foreground transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed`}
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

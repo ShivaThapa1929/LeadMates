@@ -48,40 +48,24 @@ exports.signup = async (req, res) => {
         // 3. Create User
         const newUser = await User.create({ ...req.body, role: role || 'user' });
 
-        // 4. Send Verification OTP
-        const emailOtp = generateOTP();
-        await Otp.create(newUser.id, emailOtp, 'email');
+        // 4. Log in the user immediately (OTP Skip)
+        const result = await authService.login(newUser.email, null, {
+            ip: req.ip,
+            userAgent: req.get('User-Agent')
+        }, true, newUser);
 
-        if (email) {
-            sendEmail(email, 'Welcome to LeadMates - Verify Your Email', `
-                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; border: 1px solid #e1e7ef; border-radius: 20px; max-width: 500px; margin: auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                    <div style="text-align: center; margin-bottom: 30px;">
-                        <h1 style="color: #2563eb; margin: 0; font-size: 28px; font-weight: 800;">Welcome!</h1>
-                        <p style="color: #64748b; margin-top: 8px;">Let's verify your identity to get started</p>
-                    </div>
-                    
-                    <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">Thank you for joining LeadMates. Please use the following 6-digit code to complete your registration:</p>
-                    
-                    <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 30px; border-radius: 16px; text-align: center; margin: 30px 0; border: 1px solid #bae6fd;">
-                        <div style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #0284c7; font-family: monospace;">
-                            ${emailOtp}
-                        </div>
-                    </div>
-                    
-                    <p style="color: #64748b; font-size: 14px; text-align: center;">This code will expire in <strong style="color: #1e293b;">5 minutes</strong>.</p>
-                    
-                    <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 30px 0;" />
-                    
-                    <p style="color: #94a3b8; font-size: 12px; line-height: 1.5;">If you didn't create an account with LeadMates, you can safely ignore this email.</p>
-                    
-                    <div style="text-align: center; margin-top: 20px;">
-                        <p style="color: #cbd5e1; font-size: 12px;">&copy; 2024 LeadMates Inc. All rights reserved.</p>
-                    </div>
-                </div>
-            `).catch(e => console.error('Background Auth Verification Error:', e));
-        }
+        // Security: Set Refresh Token as HttpOnly Cookie
+        res.cookie('refreshToken', result.refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
 
-        sendSuccess(res, { userId: newUser.id, email, phone, role: newUser.role }, 'OTP has been sent to your email.', 201);
+        // Remove refreshToken from response data to enforce cookie usage
+        delete result.refreshToken;
+
+        sendSuccess(res, result, 'Account created successfully and logged in.', 201);
     } catch (error) {
         console.error('Signup Failure:', error);
         sendError(res, error.message || 'Server error during signup.');
@@ -269,48 +253,24 @@ exports.login = async (req, res) => {
             return sendError(res, 'Security restriction: Account verification required.', 403, { errorCode: 'NOT_VERIFIED', userId: user.id });
         }
 
-        // Phase 2: Initiate 2FA
-        const tempToken = generateTempToken(user.id);
-        const emailCode = generateOTP();
+        // Phase 2: Complete Login immediately (Bypass 2FA)
+        const result = await authService.login(user.email, null, {
+            ip: req.ip,
+            userAgent: req.get('User-Agent')
+        }, true, user);
 
-        // 1. Email OTP (Manual DB way for 'login' type)
-        await Otp.create(user.id, emailCode, 'login', 10);
+        // Security: Set Refresh Token as HttpOnly Cookie
+        res.cookie('refreshToken', result.refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
 
-        // Fire and forget Email
-        sendEmail(email, 'Login Security OTP - LeadMates', `
-            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; border: 1px solid #e1e7ef; border-radius: 20px; max-width: 500px; margin: auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h1 style="color: #1e293b; margin: 0; font-size: 24px; font-weight: 700;">Security Verification</h1>
-                    <p style="color: #64748b; margin-top: 8px;">Authorize your login to LeadMates</p>
-                </div>
-                
-                <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">Use the code below to authorize your secure login to LeadMates:</p>
-                
-                <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 30px; border-radius: 16px; text-align: center; margin: 30px 0; border: 1px solid #e2e8f0;">
-                    <div style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #1e293b; font-family: monospace;">
-                        ${emailCode}
-                    </div>
-                </div>
-                
-                <p style="color: #64748b; font-size: 14px; text-align: center;">This code will expire in <strong style="color: #1e293b;">10 minutes</strong>.</p>
-                
-                <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 30px 0;" />
-                
-                <p style="color: #ef4444; font-size: 12px; font-weight: bold; text-align: center;">⚠️ Security Note: Do not share this OTP with anyone.</p>
-                
-                <div style="text-align: center; margin-top: 20px;">
-                    <p style="color: #cbd5e1; font-size: 12px;">&copy; 2024 LeadMates Inc. All rights reserved.</p>
-                </div>
-            </div>
-        `).catch(e => console.error('Background Login 2FA Error:', e));
+        // Remove refreshToken from response data to enforce cookie usage
+        delete result.refreshToken;
 
-        sendSuccess(res, {
-            require2fa: true,
-            tempToken,
-            userId: user.id,
-            channel: 'email',
-            message: `Security code sent to ${email}`
-        }, '2FA Verification Required');
+        sendSuccess(res, result, 'Login successful');
 
     } catch (error) {
         console.error('Login Error:', error);

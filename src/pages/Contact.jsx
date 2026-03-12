@@ -11,7 +11,7 @@ export default function Contact() {
 
   function handleMouse(event) {
     const rect = event.currentTarget.getBoundingClientRect();
-    x.set(event.clientX - rect.left - rect.width / 2);
+    x.set(event.clientX - rect.left - rect.width / 2);  
     y.set(event.clientY - rect.top - rect.height / 2);
   }
 

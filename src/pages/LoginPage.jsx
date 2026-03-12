@@ -64,28 +64,7 @@ export default function LoginPage() {
         setError("");
         try {
             const response = await authService.login(formData.email, formData.password);
-            if (response.require2fa) {
-                // Save to localStorage so refresh doesn't break 2FA
-                localStorage.setItem('temp2fa', JSON.stringify({
-                    tempToken: response.tempToken,
-                    userId: response.userId,
-                    email: formData.email,
-                    channel: response.channel,
-                    message: response.message
-                }));
-
-                navigate('/auth/2fa', {
-                    state: {
-                        tempToken: response.tempToken,
-                        userId: response.userId,
-                        email: formData.email,
-                        channel: response.channel,
-                        message: response.message
-                    }
-                });
-                return;
-            }
-
+            
             let user = response.data.user;
 
             sessionStorage.setItem('showWelcome', 'true');
@@ -98,17 +77,6 @@ export default function LoginPage() {
                 navigate("/dashboard");
             }
         } catch (err) {
-            // Handle unverified account
-            if (err.errors && err.errors.errorCode === 'NOT_VERIFIED') {
-                navigate('/verify-otp', {
-                    state: {
-                        userId: err.errors.userId,
-                        email: formData.email
-                    }
-                });
-                return;
-            }
-
             const errorMessage = err.errors && Array.isArray(err.errors) && err.errors.length > 0
                 ? err.errors[0].message || err.errors[0].msg
                 : err.message || "Invalid email or password";
