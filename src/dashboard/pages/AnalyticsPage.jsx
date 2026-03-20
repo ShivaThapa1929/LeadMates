@@ -6,13 +6,23 @@ import {
 import { Loader2, TrendingUp, Users, Filter, BarChart3, PieChart as PieChartIcon, Activity, Zap, Layers, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import leadService from "../../api/leadService";
+import authService from "../../api/authService";
+import { useNavigate } from "react-router-dom";
 
 const COLORS = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"];
 
 export default function AnalyticsPage() {
+  const navigate = useNavigate();
+  const user = authService.getCurrentUser();
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (user?.plan_status === 'pending' && !user?.roles?.includes('Admin')) {
+      navigate('/pricing', { state: { message: "Please purchase a plan to access analytics" } });
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     fetchData();

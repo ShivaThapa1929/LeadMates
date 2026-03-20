@@ -14,11 +14,12 @@ import authService from "../api/authService";
 export default function Checkout() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { plan, roleType } = location.state || {};
+    const { plan, price, roleType } = location.state || {};
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
     const user = authService.getCurrentUser();
+    const [status, setStatus] = useState({ type: "", message: "" });
 
     useEffect(() => {
         if (!plan) {
@@ -29,25 +30,31 @@ export default function Checkout() {
     const handlePayment = async (e) => {
         e.preventDefault();
         setIsProcessing(true);
+        setStatus({ type: "", message: "" });
 
-        // Simulate payment processing
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        try {
+            // Simulate payment processing delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
-        setIsProcessing(false);
-        setIsSuccess(true);
+            // Real backend call to finalize purchase
+            await authService.completePurchase(plan, roleType);
 
-        // Update user plan
-        if (user) {
-            const updatedUser = { ...user, plan: plan, role_type: roleType || user.role_type };
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            window.dispatchEvent(new Event('auth-update'));
+            setIsProcessing(false);
+            setIsSuccess(true);
+
+            // Redirect after success animation
+            setTimeout(() => {
+                sessionStorage.setItem('showWelcome', 'true');
+                navigate(roleType === 'admin' ? "/admin/dashboard" : "/dashboard");
+            }, 2000);
+        } catch (error) {
+            console.error('Purchase failure:', error);
+            setStatus({
+                type: "error",
+                message: error.message || "Failed to authorize access. Please contact support."
+            });
+            setIsProcessing(false);
         }
-
-        // Redirect after success
-        setTimeout(() => {
-            sessionStorage.setItem('showWelcome', 'true');
-            navigate(roleType === 'admin' ? "/admin/dashboard" : "/dashboard");
-        }, 2000);
     };
 
     return (
@@ -83,9 +90,21 @@ export default function Checkout() {
                                     </div>
                                     <div className="text-right">
                                         <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">One-Time Fee</p>
-                                        <p className="text-2xl font-black text-white">$49</p>
+                                        <p className="text-2xl font-black text-white">${price || '49'}</p>
                                     </div>
                                 </div>
+
+                                <AnimatePresence>
+                                    {status.message && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-black uppercase tracking-wider text-center mb-6"
+                                        >
+                                            {status.message}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
 
                                 <form onSubmit={handlePayment} className="space-y-6">
                                     <div className="space-y-2">

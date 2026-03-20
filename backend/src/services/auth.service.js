@@ -46,7 +46,11 @@ class AuthService {
             phone_verified: user.phone_verified,
             email_verified: user.email_verified,
             plan: user.plan,
+            plan_status: user.plan_status,
+            plan_expires_at: user.plan_expires_at || null,
+            payment_status: user.payment_status,
             role: user.role,
+            experience: user.experience,
             last_login_at: user.last_login_at
         };
     }

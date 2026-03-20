@@ -15,8 +15,10 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import UseCases from "./pages/UseCases";
 import Pricing from "./pages/Pricing";
+import LatestJobsPage from "./pages/LatestJobsPage";
 import Docs from "./pages/Docs";
 import Contact from "./pages/Contact";
+import OurProducts from "./pages/OurProducts";
 import FeaturesPage from "./sections/Features";
 import WhyLeadMates from "./sections/WhyLeadMates";
 import SocialProof from "./sections/SocialProof";
@@ -30,6 +32,7 @@ import RequireRole from "./components/RequireRole";
 import PublicRoute from "./components/PublicRoute";
 import DashboardApp from "./dashboard/DashboardApp";
 import DashboardPage from "./pages/Dashboard";
+import JobApplications from "./dashboard/pages/JobApplications";
 import AnalyticsPage from "./dashboard/pages/AnalyticsPage";
 import LeadsPage from "./dashboard/pages/LeadsPage";
 import LeadDetailsPage from "./dashboard/pages/LeadDetailsPage";
@@ -46,6 +49,10 @@ import RolesPage from "./dashboard/pages/RolesPage";
 import TrashPage from "./dashboard/pages/TrashPage";
 import CaptureLead from "./dashboard/pages/CaptureLead";
 import DeployCampaign from "./dashboard/pages/DeployCampaign";
+import Jobs from "./dashboard/pages/Jobs";
+import Offers from "./dashboard/pages/Offers";
+import MyApplications from "./dashboard/pages/MyApplications";
+
 
 import CustomCursor from "./components/CustomCursor";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -99,7 +106,9 @@ function Shell() {
           <Route path="/features" element={<FeaturesPage />} />
           <Route path="/socialproof" element={<SocialProof />} />
           <Route path="/use-cases" element={<UseCases />} />
+          <Route path="/our-products" element={<OurProducts />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/latest-jobs" element={<LatestJobsPage />} />
           <Route path="/why-leadmates" element={<WhyLeadMates />} />
           <Route path="/docs" element={<Docs />} />
           <Route path="/contact" element={<Contact />} />
@@ -119,6 +128,10 @@ function Shell() {
                 <Route path="analyse-leads" element={<AnalyseLeadsPage />} />
                 <Route path="campaigns" element={<CampaignsPage />} />
                 <Route path="deploy-campaign" element={<DeployCampaign />} />
+                <Route path="jobs" element={<Jobs />} />
+                <Route path="applications" element={<JobApplications />} />
+                <Route path="offers" element={<Offers />} />
+
                 <Route path="analytics" element={<AnalyticsPage />} />
                 <Route path="users" element={<UsersPage />} />
                 <Route path="roles" element={<RolesPage />} />
@@ -141,8 +154,12 @@ function Shell() {
               <Route path="leads/:id" element={<LeadDetailsPage />} />
               <Route path="campaigns" element={<CampaignsPage />} />
               <Route path="deploy-campaign" element={<DeployCampaign />} />
+              <Route path="jobs" element={<Jobs />} />
+              <Route path="my-applications" element={<MyApplications />} />
+
               <Route path="analyse-leads" element={<AnalyseLeadsPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
+              <Route path="trash" element={<TrashPage />} />
               <Route path="security" element={<SecuritySettings />} />
               <Route path="profile" element={<ProfilePage />} />
               <Route path="profile/settings" element={<SettingsPage />} />

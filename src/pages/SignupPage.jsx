@@ -24,7 +24,7 @@ import {
 export default function SignupPage() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { selectedPlan, roleType } = location.state || {};
+    const { selectedPlan, price, roleType } = location.state || {};
 
     const [step, setStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
@@ -155,7 +155,7 @@ export default function SignupPage() {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
-                role: roleType || 'user',
+                role: formData.role, // Use the role selected in the form
                 phone: formData.phone,
                 businessName: formData.businessName,
                 website: formData.website,
@@ -180,7 +180,7 @@ export default function SignupPage() {
             sessionStorage.setItem('showWelcome', 'true');
 
             if (selectedPlan) {
-                navigate('/checkout', { state: { plan: selectedPlan, roleType: signupData.role } });
+                navigate('/checkout', { state: { plan: selectedPlan, price: price, roleType: signupData.role } });
             } else if (user?.roles?.includes('Admin') || signupData.role === 'admin') {
                 navigate("/admin/dashboard");
             } else {
@@ -329,18 +329,19 @@ export default function SignupPage() {
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Account Role</label>
                                         <div className="flex gap-2 p-1 bg-white/5 border border-white/10 rounded-2xl h-14">
-                                            {['user', 'admin'].map((r) => (
+                                            {['admin', 'user'].map((r) => (
                                                 <button
                                                     key={r}
                                                     type="button"
                                                     onClick={() => setFormData({ ...formData, role: r })}
                                                     className={`flex-1 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${formData.role === r ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-white'}`}
                                                 >
-                                                    {r}
+                                                    {r.charAt(0).toUpperCase() + r.slice(1)}
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
+
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Phone Number</label>
                                         <div className="relative group">

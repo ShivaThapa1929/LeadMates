@@ -10,9 +10,10 @@ import {
   ShieldCheckIcon,
   UserIcon,
   BuildingOfficeIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  XMarkIcon
 } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import authService from "../api/authService";
 
 const adminPlans = [
@@ -65,19 +66,30 @@ const userPlans = [
 
 export default function Pricing() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("admin"); // "admin" or "user"
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(() => {
+    // If we're coming from jobs, default to user tab
+    if (location.state?.message?.includes("post a job")) return "user";
+    return "admin";
+  });
   const [loadingPlan, setLoadingPlan] = useState(null);
   const currentPlans = activeTab === "admin" ? adminPlans : userPlans;
 
   const user = authService.getCurrentUser();
+  const [stateMessage, setStateMessage] = useState(location.state?.message);
 
   const handleSelectPlan = async (plan) => {
     if (!user) {
-      navigate('/signup', { state: { selectedPlan: plan.name, roleType: activeTab } });
+      navigate('/signup', { state: { selectedPlan: plan.name, price: plan.price, roleType: activeTab } });
       return;
     }
 
-    navigate('/checkout', { state: { plan: plan.name, roleType: activeTab } });
+    if (plan.price === "0") {
+      navigate(activeTab === 'admin' ? "/admin/dashboard" : "/dashboard");
+      return;
+    }
+
+    navigate('/checkout', { state: { plan: plan.name, price: plan.price, roleType: activeTab } });
   };
 
   return (
@@ -101,6 +113,32 @@ export default function Pricing() {
       />
 
       <div className="max-w-7xl mx-auto relative z-10">
+        <AnimatePresence>
+          {stateMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="mb-12 p-6 rounded-[2rem] bg-blue-600/10 border border-blue-500/20 text-center relative group backdrop-blur-3xl overflow-hidden"
+            >
+               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-transparent animate-pulse" />
+               <div className="relative z-10 flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center text-blue-500">
+                     <SparklesIcon className="w-6 h-6" />
+                  </div>
+                  <p className="flex-1 text-[13px] font-black uppercase tracking-[0.2em] text-blue-400 px-6 italic">
+                    {stateMessage}
+                  </p>
+                  <button 
+                    onClick={() => setStateMessage("")}
+                    className="p-2 hover:bg-white/5 rounded-xl text-blue-400 group-hover:text-blue-300 transition-colors"
+                  >
+                    <XMarkIcon className="w-5 h-5" />
+                  </button>
+               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Header */}
         <motion.section
@@ -189,10 +227,10 @@ export default function Pricing() {
 
                 <button
                   onClick={() => handleSelectPlan(plan)}
-                  disabled={loadingPlan === plan.name}
+                  disabled={loadingPlan === plan.name || user?.plan === plan.name}
                   className={`w-full py-4 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all ${plan.popular ? 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/20' : 'bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300'} disabled:opacity-50`}
                 >
-                  {loadingPlan === plan.name ? "Processing..." : (plan.price === "0" ? "Get Started Now" : "Authorize Access")}
+                  {loadingPlan === plan.name ? "Processing..." : (user?.plan === plan.name ? "Current Plan" : (plan.price === "0" ? "Get Started Now" : "Authorize Access"))}
                 </button>
               </motion.div>
             ))}

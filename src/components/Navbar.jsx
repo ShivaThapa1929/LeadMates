@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/logo-primary.png";
+import captureLeadImg from "../assets/product-capture-lead.svg";
+import captureJobsImg from "../assets/product-capture-jobs.svg";
 import authService from "../api/authService";
 import { useTheme } from "../context/ThemeContext";
-import { Sun, Moon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -12,6 +14,8 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const { isDarkMode, toggleTheme } = useTheme();
   const location = useLocation();
+  const [productsOpen, setProductsOpen] = useState(false);
+  const productsCloseTimer = useRef(null);
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
@@ -46,13 +50,43 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileMenuOpen]);
 
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Why LeadMates", path: "/why-leadmates" },
-    { name: "Pricing", path: "/pricing" },
-    { name: "Use Cases", path: "/use-cases" },
-    { name: "Docs", path: "/docs" },
-  ];
+  const navLinks = useMemo(() => {
+    return [
+      { name: "Home", path: "/" },
+      { name: "Why LeadMates", path: "/why-leadmates" },
+      { name: "Our Products", path: "/our-products", kind: "dropdown" },
+      { name: "Pricing", path: "/pricing" },
+      { name: "Use Cases", path: "/use-cases" },
+      { name: "Docs", path: "/docs" },
+    ];
+  }, []);
+
+  const productLinks = useMemo(() => {
+    return [
+      {
+        name: "CaptureLead",
+        description: "Add leads into your mainframe",
+        path: "/dashboard/capture-lead",
+        image: captureLeadImg,
+      },
+      {
+        name: "CaptureJobs",
+        description: "Publish job listings to the network",
+        path: "/dashboard/post-job",
+        image: captureJobsImg,
+      },
+    ];
+  }, []);
+
+  const openProducts = () => {
+    if (productsCloseTimer.current) clearTimeout(productsCloseTimer.current);
+    setProductsOpen(true);
+  };
+
+  const closeProductsSoon = () => {
+    if (productsCloseTimer.current) clearTimeout(productsCloseTimer.current);
+    productsCloseTimer.current = setTimeout(() => setProductsOpen(false), 120);
+  };
 
   const isHomePage = location.pathname === "/";
 
@@ -79,6 +113,111 @@ export default function Navbar() {
           <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((item) => {
               const isActive = location.pathname === item.path;
+              if (item.kind === "dropdown") {
+                const isProductsActive = location.pathname === item.path;
+                return (
+                  <div
+                    key={item.name}
+                    className="relative"
+                    onMouseEnter={openProducts}
+                    onMouseLeave={closeProductsSoon}
+                    onFocus={openProducts}
+                    onBlur={closeProductsSoon}
+                  >
+                    <Link
+                      to={item.path}
+                      className={`relative text-xs font-bold uppercase tracking-widest transition-colors group py-1 inline-flex items-center gap-2 ${isProductsActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      aria-haspopup="menu"
+                      aria-expanded={productsOpen}
+                    >
+                      {item.name}
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform duration-200 ${productsOpen ? "rotate-180" : ""}`}
+                      />
+                      <span
+                        className={`absolute bottom-0 left-0 h-[2px] bg-blue-500 transition-all duration-300 ease-out ${isProductsActive ? "w-full" : "w-0 group-hover:w-full"
+                          }`}
+                      />
+                    </Link>
+
+                    <AnimatePresence>
+                      {productsOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.98, filter: "blur(8px)" }}
+                          animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                          exit={{ opacity: 0, y: 8, scale: 0.99, filter: "blur(8px)" }}
+                          transition={{ duration: 0.22, ease: "easeOut" }}
+                          className="absolute left-1/2 -translate-x-1/2 top-[calc(100%+18px)] w-[560px] rounded-3xl bg-background/95 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden"
+                          role="menu"
+                        >
+                          <div className="p-5 bg-white/[0.02] border-b border-white/10">
+                            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-muted-foreground">
+                              Products
+                            </p>
+                          </div>
+
+                          <div className="p-5 grid grid-cols-2 gap-4">
+                            {productLinks.map((p) => (
+                              <Link
+                                key={p.name}
+                                to={p.path}
+                                role="menuitem"
+                                className="group rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors overflow-hidden"
+                                onClick={() => setProductsOpen(false)}
+                              >
+                                <div className="h-28 w-full overflow-hidden bg-black/20">
+                                  <img
+                                    src={p.image}
+                                    alt={`${p.name} preview`}
+                                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                                    loading="lazy"
+                                  />
+                                </div>
+                                <div className="p-4">
+                                  <div className="flex items-center justify-between gap-3">
+                                    <h4 className="text-[12px] font-black uppercase tracking-widest text-foreground">
+                                      {p.name}
+                                    </h4>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-blue-400 opacity-70 group-hover:opacity-100 transition-opacity">
+                                      Open
+                                    </span>
+                                  </div>
+                                  <p className="mt-2 text-[10px] font-bold text-muted-foreground uppercase tracking-tight opacity-80 leading-snug">
+                                    {p.description}
+                                  </p>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+
+                          <div className="px-5 pb-5">
+                            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4 flex items-center justify-between gap-4">
+                              <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-foreground">
+                                  Looking for all modules?
+                                </p>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight opacity-70 mt-1">
+                                  Browse full catalog on the products page.
+                                </p>
+                              </div>
+                              <Link
+                                to="/our-products"
+                                className="shrink-0 h-10 px-5 rounded-full bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center hover:bg-blue-500 transition-colors"
+                                onClick={() => setProductsOpen(false)}
+                              >
+                                View All
+                              </Link>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={item.name}
@@ -160,13 +299,42 @@ export default function Navbar() {
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: i * 0.05 }}
                     >
-                      <Link
-                        to={item.path}
-                        className={`text-[28px] font-bold transition-colors tracking-tight ${isActive ? "text-blue-500" : "text-white"
-                          }`}
-                      >
-                        {item.name}
-                      </Link>
+                      {item.kind === "dropdown" ? (
+                        <div className="mt-2">
+                          <Link
+                            to={item.path}
+                            className={`text-[28px] font-bold transition-colors tracking-tight ${isActive ? "text-blue-500" : "text-white"
+                              }`}
+                          >
+                            {item.name}
+                          </Link>
+                          <div className="mt-5 grid grid-cols-1 gap-4">
+                            {productLinks.map((p) => (
+                              <Link
+                                key={p.name}
+                                to={p.path}
+                                className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden hover:bg-white/[0.04] transition-colors"
+                              >
+                                <div className="h-24 overflow-hidden bg-black/20">
+                                  <img src={p.image} alt={`${p.name} preview`} className="w-full h-full object-cover opacity-95" loading="lazy" />
+                                </div>
+                                <div className="p-4">
+                                  <div className="text-[12px] font-black uppercase tracking-widest text-white">{p.name}</div>
+                                  <div className="text-[10px] font-bold uppercase tracking-tight text-white/60 mt-1">{p.description}</div>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <Link
+                          to={item.path}
+                          className={`text-[28px] font-bold transition-colors tracking-tight ${isActive ? "text-blue-500" : "text-white"
+                            }`}
+                        >
+                          {item.name}
+                        </Link>
+                      )}
                     </motion.div>
                   );
                 })}

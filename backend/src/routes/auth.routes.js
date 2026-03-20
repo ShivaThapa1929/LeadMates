@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {
     signup, login, refreshToken, getMe, logout, updateAvatar,
-    verifyOtp, resendOtp, forgotPassword, resetPassword, verifyLogin2FA
+    verifyOtp, resendOtp, forgotPassword, resetPassword, verifyLogin2FA,
+    completePurchase
 } = require('../controllers/auth.controller');
 const { signupValidation, loginValidation, forgotPasswordValidation, resetPasswordValidation, resendOtpValidation } = require('../validations/auth.validation');
 const { validate, protect } = require('../middlewares/auth.middleware');
@@ -56,5 +57,10 @@ router.post('/me/avatar', protect, upload.single('avatar'), updateAvatar);
  * @desc    Logout Route
  */
 router.post('/logout', protect, logout);
+
+/**
+ * @desc    Purchase Completion Route
+ */
+router.post('/complete-purchase', protect, completePurchase);
 
 module.exports = router;

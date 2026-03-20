@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import leadService from "../../api/leadService";
+import authService from "../../api/authService";
+import { useNavigate } from "react-router-dom";
 
 const COLORS = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#34d399"];
 
@@ -28,6 +30,14 @@ export default function AnalyseLeadsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filterOptions, setFilterOptions] = useState({ campaigns: [], sources: [] });
+    const navigate = useNavigate();
+    const user = authService.getCurrentUser();
+
+    useEffect(() => {
+        if (user?.plan_status === 'pending' && !user?.roles?.includes('Admin')) {
+            navigate('/pricing', { state: { message: "Please purchase a plan to access analysis features" } });
+        }
+    }, [user, navigate]);
 
     const fetchData = async () => {
         setLoading(true);

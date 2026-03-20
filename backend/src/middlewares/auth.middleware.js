@@ -113,3 +113,25 @@ exports.hasPermission = (moduleName, action) => {
         next();
     };
 };
+
+/**
+ * @desc    Verify if user's plan is active and payment is successful
+ */
+exports.isPlanActive = (req, res, next) => {
+    // Admins bypass plan checks for basic operations (though they usually have an active plan)
+    if (req.user.roles.includes('Admin') || req.user.roles.includes('Super Admin')) {
+        return next();
+    }
+
+    if (
+        (req.user.plan === 'Identity Basic') || 
+        (req.user.payment_status !== 'success' || req.user.plan_status !== 'active')
+    ) {
+        return sendError(res, 'Please purchase or activate a plan to access this feature.', 403, { 
+            errorCode: 'PLAN_INACTIVE',
+            message: 'Please purchase a plan to access premium features'
+        });
+    }
+
+    next();
+};

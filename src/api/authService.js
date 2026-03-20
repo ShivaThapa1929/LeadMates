@@ -105,10 +105,10 @@ api.interceptors.response.use(
     }
 );
 
-const login = async (email, password) => {
+const login = async (email, password, role) => {
     try {
         console.log('📬 AuthService: Attempting login...');
-        const response = await api.post('/auth/login', { email, password });
+        const response = await api.post('/auth/login', { email, password, role });
 
         // 2FA Handling
         if (response.data.data.require2fa) {
@@ -260,6 +260,94 @@ const updateAvatar = async (formData) => {
     }
 };
 
+const completePurchase = async (plan, role) => {
+    try {
+        const response = await api.post('/auth/complete-purchase', { plan, role });
+        if (response.data.success) {
+            const { user } = response.data.data;
+            localStorage.setItem('user', JSON.stringify(user));
+            window.dispatchEvent(new Event('auth-update'));
+        }
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Purchase update failed' };
+    }
+};
+
+const getPublicJobs = async (filters = {}) => {
+    try {
+        const response = await api.get('/jobs/public', { params: filters });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Failed to fetch public jobs' };
+    }
+};
+
+const applyForJob = async (jobId, formData) => {
+    try {
+        const response = await api.post(`/jobs/${jobId}/apply`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Application failed' };
+    }
+};
+
+const getUserApplications = async () => {
+    try {
+        const res = await api.get('/jobs/applications');
+        return res.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Failed to fetch applications' };
+    }
+};
+
+/**
+ * Fetches all job applications for admin view.
+ * @returns {Promise<object>} The response data containing all applications.
+ * @throws {object} Error object with a message if the request fails.
+ */
+const getAdminApplications = async () => {
+    try {
+        const response = await api.get('/jobs/admin/applications');
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Failed to fetch admin applications' };
+    }
+};
+
+/**
+ * Updates the status of a specific job application.
+ * @param {string} id - The ID of the application to update.
+ * @param {string} status - The new status for the application (e.g., 'Pending', 'Approved', 'Rejected').
+ * @returns {Promise<object>} The response data after updating the status.
+ * @throws {object} Error object with a message if the request fails.
+ */
+const updateApplicationStatus = async (id, status) => {
+    try {
+        const response = await api.patch(`/jobs/admin/applications/${id}/status`, { status });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Failed to update status' };
+    }
+};
+
+/**
+ * Deletes a specific job application.
+ * @param {string} id - The ID of the application to delete.
+ * @returns {Promise<object>} The response data after deleting the application.
+ * @throws {object} Error object with a message if the request fails.
+ */
+const deleteApplication = async (id) => {
+    try {
+        const response = await api.delete(`/jobs/admin/applications/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Failed to delete application' };
+    }
+};
+
 const getCurrentUser = () => {
     const user = localStorage.getItem('user');
     try {
@@ -280,7 +368,14 @@ const authService = {
     updateAvatar,
     verifyLogin2FA,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    completePurchase,
+    getPublicJobs,
+    applyForJob,
+    getUserApplications,
+    getAdminApplications,
+    updateApplicationStatus,
+    deleteApplication
 }; // resetPassword(userId, otp, password)
 
 export default authService;

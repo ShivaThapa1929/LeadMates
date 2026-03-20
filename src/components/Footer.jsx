@@ -9,6 +9,7 @@ export default function Footer() {
   const footerLinks = [
     { name: "Home", path: "/" },
     { name: "Pricing", path: "/pricing" },
+    { name: "Latest Jobs", path: "/latest-jobs" },
     { name: "Use Cases", path: "/use-cases" },
     { name: "Documentation", path: "/docs" },
     { name: "Privacy Policy", path: "/privacy" },

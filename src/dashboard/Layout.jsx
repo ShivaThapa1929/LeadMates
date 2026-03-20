@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, LineChart, Users,
   Megaphone, Settings, User, Search, Bell, Sun, Moon,
-  Maximize, ChevronDown, Menu as MenuIcon, X, LogOut, Sparkles, ShieldCheck, Trash2, UserPlus, CreditCard, Activity
+  Maximize, ChevronDown, Menu as MenuIcon, X, LogOut, Sparkles, ShieldCheck, Trash2, UserPlus, CreditCard, Activity, Tag, FileText
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/logo-primary.png";
@@ -11,6 +11,7 @@ import authService from "../api/authService";
 import { useTheme } from "../context/ThemeContext";
 import { useSearch } from "../context/SearchContext";
 import { useNotifications } from "../context/NotificationContext";
+import { BriefcaseBusiness } from "lucide-react";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -93,12 +94,18 @@ export default function Layout() {
       { to: `${basePrefix}/profile/notifications`, label: "Notifications", icon: Bell },
       { to: `${basePrefix}/profile/security`, label: "Security Settings", icon: ShieldCheck },
     ];
+    if (!isAdminPath) {
+      items.push({ to: `${basePrefix}/my-applications`, label: "Job Applications", icon: BriefcaseBusiness });
+    }
     return { isProfileContext: isProfile, profileItems: items };
   }, [location.pathname, basePrefix]);
 
   const navItems = useMemo(() => {
     const plan = user?.plan || 'Identity Basic';
-    const isAdmin = user?.roles?.includes('Admin') || user?.roles?.includes('Super Admin');
+    const isAdmin = 
+      user?.role?.toLowerCase() === 'admin' || 
+      user?.role?.toLowerCase() === 'super admin' ||
+      user?.roles?.some(r => r.toLowerCase() === 'admin' || r.toLowerCase() === 'super admin');
 
     // Define features that are locked for specific plans
     const lockedFeatures = {
@@ -109,6 +116,10 @@ export default function Layout() {
     const allItems = [
       { to: basePrefix, label: "Overview", icon: LayoutDashboard, permission: null },
       { to: `${basePrefix}/leads`, label: "Leads", icon: Users, permission: "leads.view" },
+
+      { to: `${basePrefix}/jobs`, label: "Jobs", icon: BriefcaseBusiness, permission: null },
+      { to: `${basePrefix}/applications`, label: "Job Applications", icon: FileText, permission: null },
+      { to: `${basePrefix}/offers`, label: "Offers", icon: Tag, permission: null },
 
 
       { to: `${basePrefix}/analyse-leads`, label: "Analyse Leads", icon: Activity, permission: "analytics.view" },
@@ -122,17 +133,27 @@ export default function Layout() {
     return allItems
       .filter(item => {
         // Explicitly restrict Users and Roles to Admins only
-        if (['Users', 'Roles'].includes(item.label)) {
+        if (['Users', 'Roles', 'Offers', 'Job Applications'].includes(item.label)) {
           return isAdmin;
         }
         // Others use permission check
         return !item.permission || hasPermission(item.permission);
       })
-      .map(item => ({
-        ...item,
-        // Admin/Super Admin bypasses all plan locks
-        isLocked: !isAdmin && lockedFeatures[plan]?.includes(item.label)
-      }));
+      .map(item => {
+        const isLockedByPlan = lockedFeatures[plan]?.includes(item.label);
+        const isPending = user?.plan_status === 'pending';
+        
+        let label = item.label;
+        if (!isAdmin && label === 'Jobs') label = 'Apply Jobs';
+
+        return {
+          ...item,
+          label,
+          // Admin/Super Admin bypasses all plan locks
+          // If pending, almost everything premium is locked
+          isLocked: !isAdmin && (isLockedByPlan || (isPending && ['Campaigns', 'Analyse Leads', 'Analytics'].includes(item.label)))
+        };
+      });
   }, [user, basePrefix]);
 
   const footerItems = useMemo(() => {
@@ -231,10 +252,15 @@ export default function Layout() {
                   {navItems.filter(item => !['users', 'roles', 'trash'].some(k => item.to.includes(k))).map((item) => {
                     const IconComp = item.icon;
                     if (item.isLocked) {
+                      const isPending = user?.plan_status === 'pending';
+                      const message = isPending && item.label === 'Campaigns' 
+                        ? "Please purchase a plan to access campaigns" 
+                        : `Upgrade your strategy to unlock ${item.label}`;
+
                       return (
                         <div
                           key={item.to}
-                          onClick={() => navigate('/pricing')}
+                          onClick={() => navigate('/pricing', { state: { message } })}
                           className="flex items-center justify-between gap-4 px-4 py-3 rounded-xl text-[11px] font-black transition-all group relative text-muted-foreground/40 cursor-pointer hover:bg-white/[0.02]"
                         >
                           <div className="flex items-center gap-4">

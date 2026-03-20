@@ -11,6 +11,20 @@ export default function TrashPage() {
     const [activeModule, setActiveModule] = useState("leads");
     const [searchQuery, setSearchQuery] = useState("");
 
+    const [user] = useState(() => {
+        try {
+            const raw = localStorage.getItem("user");
+            return raw ? JSON.parse(raw) : null;
+        } catch { return null; }
+    });
+
+    const isAdmin = 
+        user?.role?.toLowerCase() === 'admin' || 
+        user?.role?.toLowerCase() === 'super admin' ||
+        user?.roles?.some(r => r.toLowerCase() === 'admin' || r.toLowerCase() === 'super admin');
+
+    const availableModules = isAdmin ? ["leads", "users", "campaigns"] : ["leads", "campaigns"];
+
     const fetchTrash = async (module) => {
         try {
             setLoading(true);
@@ -26,6 +40,10 @@ export default function TrashPage() {
     };
 
     useEffect(() => {
+        // Ensure starting module is valid for user
+        if (!availableModules.includes(activeModule)) {
+            setActiveModule(availableModules[0]);
+        }
         fetchTrash(activeModule);
     }, [activeModule]);
 
@@ -65,7 +83,7 @@ export default function TrashPage() {
     };
 
     const filteredTrash = trash.filter(item =>
-        (item.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.name || item.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item.email || "").toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -88,7 +106,7 @@ export default function TrashPage() {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                    {["leads", "projects", "campaigns"].map(m => (
+                    {availableModules.map(m => (
                         <button
                             key={m}
                             onClick={() => setActiveModule(m)}

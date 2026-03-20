@@ -12,7 +12,7 @@ export default function LoginPage() {
     const location = useLocation();
     const { selectedPlan, roleType } = location.state || {};
 
-    const [formData, setFormData] = useState({ email: "", password: "" });
+    const [formData, setFormData] = useState({ email: "", password: "", role: "employee" });
     const [fieldErrors, setFieldErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
@@ -28,6 +28,7 @@ export default function LoginPage() {
     }, [location.state]);
 
     const validateField = (name, value) => {
+        if (name === 'role') return value ? "" : "Please select a role";
         if (!value.trim()) return "Email and password are required";
         if (name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Email and password are required";
         if (name === 'password' && value.length < 8) return "Email and password are required";
@@ -51,11 +52,12 @@ export default function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.email || !formData.password || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) || formData.password.length < 8) {
+        if (!formData.email || !formData.password || !formData.role || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) || formData.password.length < 8) {
             setError("Email and password are required");
             setFieldErrors({
                 email: !formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) ? "Email and password are required" : "",
-                password: !formData.password || formData.password.length < 8 ? "Email and password are required" : ""
+                password: !formData.password || formData.password.length < 8 ? "Email and password are required" : "",
+                role: !formData.role ? "Please select a role" : ""
             });
             return;
         }
@@ -63,14 +65,14 @@ export default function LoginPage() {
         setIsLoading(true);
         setError("");
         try {
-            const response = await authService.login(formData.email, formData.password);
+            const response = await authService.login(formData.email, formData.password, formData.role);
             
             let user = response.data.user;
 
             sessionStorage.setItem('showWelcome', 'true');
 
             if (selectedPlan) {
-                navigate('/checkout', { state: { plan: selectedPlan, roleType: roleType } });
+                navigate('/checkout', { state: { plan: selectedPlan, roleType: roleType || formData.role } });
             } else if (user.roles.includes('Admin') || roleType === 'admin') {
                 navigate("/admin/dashboard");
             } else {
@@ -86,7 +88,7 @@ export default function LoginPage() {
         }
     };
 
-    const loginValid = formData.email && formData.password && !fieldErrors.email && !fieldErrors.password;
+    const loginValid = formData.email && formData.password && formData.role && !fieldErrors.email && !fieldErrors.password;
 
     return (
         <div className="min-h-screen w-full flex items-center justify-center bg-background relative overflow-hidden px-4">
@@ -152,6 +154,23 @@ export default function LoginPage() {
                     </AnimatePresence>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="bg-white/[0.03] border border-white/5 p-1.5 rounded-2xl flex items-center mb-4">
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, role: 'employee' })}
+                                className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${formData.role === 'employee' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-gray-500 hover:text-gray-300'}`}
+                            >
+                                Employee
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, role: 'freelancer' })}
+                                className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${formData.role === 'freelancer' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-gray-500 hover:text-gray-300'}`}
+                            >
+                                Freelancer
+                            </button>
+                        </div>
+
                         <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600 ml-1">Email Address</label>
                             <input

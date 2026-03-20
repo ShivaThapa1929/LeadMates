@@ -3,6 +3,7 @@ import { Plus, Trash2, Loader2, Edit2, Megaphone, X, Activity, Clock, ShieldChec
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import campaignService from "../../api/campaignService";
+import authService from "../../api/authService";
 import { useSearch } from "../../context/SearchContext.jsx";
 import { useNotifications } from "../../context/NotificationContext.jsx";
 
@@ -14,6 +15,13 @@ export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const user = authService.getCurrentUser();
+
+  useEffect(() => {
+    if (user?.plan_status === 'pending' && !user?.roles?.includes('Admin')) {
+      navigate('/pricing', { state: { message: "Please purchase a plan to access campaigns" } });
+    }
+  }, [user, navigate]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [submitting, setSubmitting] = useState(false);

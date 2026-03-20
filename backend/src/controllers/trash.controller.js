@@ -15,20 +15,30 @@ const TrashController = {
                 return sendError(res, 'Module parameter is required', 400);
             }
 
-            const validModules = ['leads', 'users', 'campaigns'];
+            const validModules = ['leads', 'users', 'campaigns', 'job_applications'];
             if (!validModules.includes(module)) {
-                return sendError(res, 'Invalid module. Valid modules are: leads, users, campaigns', 400);
+                return sendError(res, 'Invalid module', 400);
             }
 
-            // Get deleted items joined with the user who deleted it
-            const trashedItems = await db(module)
+            const isAdmin = 
+                req.user.role?.toLowerCase() === 'admin' || 
+                req.user.role?.toLowerCase() === 'super admin' ||
+                req.user.roles?.some(r => r.toLowerCase() === 'admin' || r.toLowerCase() === 'super admin');
+
+            let query = db(module)
                 .leftJoin('users as deleter', `${module}.deleted_by`, 'deleter.id')
                 .where(`${module}.is_deleted`, true)
                 .select(
                     `${module}.*`,
                     'deleter.name as deleted_by_name'
-                )
-                .orderBy(`${module}.deleted_at`, 'desc');
+                );
+
+            if (!isAdmin) {
+                // Non-admins can only see what THEY deleted
+                query = query.where(`${module}.deleted_by`, req.user.id);
+            }
+
+            const trashedItems = await query.orderBy(`${module}.deleted_at`, 'desc');
 
             sendSuccess(res, trashedItems, `Trashed ${module} fetched successfully`);
         } catch (error) {
@@ -38,18 +48,30 @@ const TrashController = {
 
     // @desc    Restore a trashed item
     // @route   PATCH /api/trash/restore/:module/:id
-    // @access  Private (Admin/Sub-admin)
+    // @access  Private
     restoreItem: async (req, res) => {
         try {
             const { module, id } = req.params;
-            const validModules = ['leads', 'users', 'campaigns'];
+            const validModules = ['leads', 'users', 'campaigns', 'job_applications'];
             if (!validModules.includes(module)) {
                 return sendError(res, 'Invalid module', 400);
             }
 
-            const item = await db(module).where({ id, is_deleted: true }).first();
+            const isAdmin = 
+                req.user.role?.toLowerCase() === 'admin' || 
+                req.user.role?.toLowerCase() === 'super admin' ||
+                req.user.roles?.some(r => r.toLowerCase() === 'admin' || r.toLowerCase() === 'super admin');
+
+            const query = db(module).where({ id, is_deleted: true });
+            
+            if (!isAdmin) {
+                // Non-admins can only restore what THEY deleted
+                query.where('deleted_by', req.user.id);
+            }
+
+            const item = await query.first();
             if (!item) {
-                return sendError(res, 'Item not found in trash', 404);
+                return sendError(res, 'Item not found in your trash archive', 404);
             }
 
             await db(module).where({ id }).update({
@@ -70,12 +92,17 @@ const TrashController = {
     permanentDelete: async (req, res) => {
         try {
             const { module, id } = req.params;
-            const validModules = ['leads', 'users', 'campaigns'];
+            const validModules = ['leads', 'users', 'campaigns', 'job_applications'];
             if (!validModules.includes(module)) {
                 return sendError(res, 'Invalid module', 400);
             }
 
-            if (!req.user.roles.includes('Admin') && !req.user.roles.includes('Super Admin')) {
+            const isAdmin = 
+                req.user.role?.toLowerCase() === 'admin' || 
+                req.user.role?.toLowerCase() === 'super admin' ||
+                req.user.roles?.some(r => r.toLowerCase() === 'admin' || r.toLowerCase() === 'super admin');
+
+            if (!isAdmin) {
                 return sendError(res, 'Only Admins can perform permanent deletion', 403);
             }
 

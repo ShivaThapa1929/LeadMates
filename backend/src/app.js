@@ -11,6 +11,9 @@ const suspectRoutes = require('./routes/suspect.routes');
 const roleRoutes = require('./routes/role.routes');
 const trashRoutes = require('./routes/trash.routes');
 const customFieldRoutes = require('./routes/customField.routes');
+const jobRoutes = require('./routes/job.routes');
+const offerRoutes = require('./routes/offer.routes');
+
 const cookieParser = require('cookie-parser');
 const { sendError } = require('./utils/responseHandler');
 
@@ -63,6 +66,9 @@ app.use('/api/suspects', suspectRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/trash', trashRoutes);
 app.use('/api/custom-fields', customFieldRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/offers', offerRoutes);
+
 
 /**
  * 404 Handler - Catch-all for undefined routes

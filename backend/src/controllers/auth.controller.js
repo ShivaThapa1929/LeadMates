@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const otpGenerator = require('otp-generator');
 const { generateTempToken } = require('../utils/tokenHandler');
-const { JWT_SECRET } = require('../config/env');
+const { JWT_SECRET, CLIENT_URL } = require('../config/env');
 
 const generateOTP = () => otpGenerator.generate(6, {
     upperCaseAlphabets: false,
@@ -238,7 +238,7 @@ exports.resendOtp = async (req, res) => {
  */
 exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, role } = req.body;
 
         const user = await User.findByEmail(email);
         if (!user) {
@@ -248,6 +248,19 @@ exports.login = async (req, res) => {
         const isMatch = await User.matchPassword(password, user.password);
         if (!isMatch) {
             return sendError(res, 'Invalid credentials.', 401);
+        }
+
+        // Validate Role (if provided)
+        const dbRole = user.role.toLowerCase();
+        const requestedRole = role ? role.toLowerCase() : null;
+
+        if (requestedRole && dbRole !== 'admin') {
+            const isLegacyUser = dbRole === 'user';
+            const isUserType = requestedRole === 'employee' || requestedRole === 'freelancer';
+
+            if (!isLegacyUser && dbRole !== requestedRole) {
+                return sendError(res, `Access denied: Your account is registered as ${user.role}, not ${role}.`, 403);
+            }
         }
 
         if (!user.is_verified) {
@@ -449,32 +462,41 @@ exports.forgotPassword = async (req, res) => {
         }
 
         const otpCode = generateOTP();
-        await Otp.create(user.id, otpCode, 'email');
+        await Otp.create(user.id, otpCode, 'email', 5);
+
+        // Construct reset link
+        const resetLink = `${CLIENT_URL}/reset-password?userId=${user.id}&otp=${otpCode}`;
 
         // Fire and forget Email with Premium Template
-        sendEmail(email, 'Password Reset OTP - LeadMates', `
+        sendEmail(email, 'Password Reset - LeadMates', `
             <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; border: 1px solid #e1e7ef; border-radius: 20px; max-width: 500px; margin: auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 <div style="text-align: center; margin-bottom: 30px;">
                     <h1 style="color: #1e293b; margin: 0; font-size: 24px; font-weight: 700;">Password Reset</h1>
                     <p style="color: #64748b; margin-top: 8px;">Secure access recovery for LeadMates</p>
                 </div>
                 
-                <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">You've requested to reset your password. Please use the following verification code to proceed:</p>
+                <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">You've requested to reset your password. Click the button below to securely reset it:</p>
                 
-                <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 30px; border-radius: 16px; text-align: center; margin: 30px 0; border: 1px solid #e2e8f0;">
-                    <div style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #2563eb; font-family: monospace;">
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="${resetLink}" style="display: inline-block; padding: 16px 32px; background-color: #2563eb; color: #ffffff; font-weight: 700; text-decoration: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);">Reset Password Now</a>
+                </div>
+
+                <p style="color: #4b5563; font-size: 14px; line-height: 1.6; text-align: center;">Or use this verification code:</p>
+                
+                <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 20px; border-radius: 16px; text-align: center; margin: 20px 0; border: 1px solid #e2e8f0;">
+                    <div style="font-size: 32px; font-weight: 800; letter-spacing: 12px; color: #1e293b; font-family: monospace;">
                         ${otpCode}
                     </div>
                 </div>
                 
-                <p style="color: #64748b; font-size: 14px; text-align: center;">This code will expire in <strong style="color: #1e293b;">5 minutes</strong>.</p>
+                <p style="color: #64748b; font-size: 14px; text-align: center;">This link and code will expire in <strong style="color: #1e293b;">5 minutes</strong>.</p>
                 
                 <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 30px 0;" />
                 
-                <p style="color: #94a3b8; font-size: 12px; line-height: 1.5;">If you did not request this password reset, please ignore this email or contact support if you have concerns about your account security.</p>
+                <p style="color: #94a3b8; font-size: 11px; line-height: 1.5;">If you did not request this password reset, please ignore this email or contact support if you have concerns about your account security.</p>
                 
                 <div style="text-align: center; margin-top: 20px;">
-                    <p style="color: #cbd5e1; font-size: 12px;">&copy; 2024 LeadMates Inc. All rights reserved.</p>
+                    <p style="color: #cbd5e1; font-size: 11px;">&copy; 2024 LeadMates Inc. All rights reserved.</p>
                 </div>
             </div>
         `).catch(e => console.error('Background Password Reset Email Error:', e));
@@ -520,5 +542,52 @@ exports.resetPassword = async (req, res) => {
     } catch (error) {
         console.error('Reset Password Error:', error);
         sendError(res, 'Server error resetting password.');
+    }
+};
+
+/**
+ * @desc    Complete plan purchase, upgrade plan and grant roles
+ * @route   POST /api/auth/complete-purchase
+ * @access  Private
+ */
+exports.completePurchase = async (req, res) => {
+    try {
+        const { plan, role } = req.body;
+        const userId = req.user.id;
+
+        const { db } = require('../config/db');
+
+        await db.transaction(async (trx) => {
+            // 1. Update User Plan & Status
+            await trx('users').where({ id: userId }).update({
+                plan: plan,
+                role: role || req.user.role,
+                plan_status: 'active',
+                payment_status: 'success'
+            });
+
+            // 2. Assign RBAC Role (Admin/User)
+            const targetRoleName = (role === 'admin' || req.user.role === 'admin') ? 'Admin' : 'User';
+            const targetRole = await trx('roles').where({ name: targetRoleName }).first();
+
+            if (targetRole) {
+                // Check if role already exists, otherwise insert
+                const existingRole = await trx('user_roles').where({ user_id: userId, role_id: targetRole.id }).first();
+                if (!existingRole) {
+                    await trx('user_roles').insert({
+                        user_id: userId,
+                        role_id: targetRole.id
+                    });
+                }
+            }
+        });
+
+        // 3. Get updated user data
+        const updatedUser = await authService.getUserWithPermissions(userId);
+
+        sendSuccess(res, { user: updatedUser }, 'Purchase completed successfully. Account upgraded.');
+    } catch (error) {
+        console.error('Complete Purchase Error:', error);
+        sendError(res, 'Failed to complete purchase process.', 500);
     }
 };

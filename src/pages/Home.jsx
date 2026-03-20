@@ -15,6 +15,7 @@ import CoreFeatures from "../sections/CoreFeatures"; // Section 9 [cite: 48]
 import Comparison from "../sections/Comparison"; // Section 10 
 import RealWorldFeedback from "../sections/RealWorldFeedback"; // Section 11 [cite: 55]
 import PricingPhilosophy from "../sections/PricingPhilosophy"; // Section 12 
+import LatestJobsSection from "../sections/LatestJobsSection"; // Jobs Preview
 import FAQ from "../sections/FAQ"; // Section 13 [cite: 63]
 import FinalCTA from "../sections/FinalCTA"; // Section 14 [cite: 71]
 
@@ -40,6 +41,11 @@ export default function Home() {
 
         {/* SECTION 2: TRUST STRIP - Used internally by TechMates [cite: 15] */}
         <SocialProof />
+
+        {/* LATEST JOBS SECTION - Public Marketplace Preview */}
+        <AnimatedSection>
+          <LatestJobsSection />
+        </AnimatedSection>
 
         {/* SECTION 3: CORE PROBLEM - Why Most Websites Fail to Convert [cite: 19] */}
         <AnimatedSection>

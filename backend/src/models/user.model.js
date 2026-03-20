@@ -37,13 +37,16 @@ const User = {
      * @desc Create new user with secure password hashing
      */
     create: async (userData) => {
-        const { password, name, email, phone, businessName, website, experience } = userData;
+        const { password, name, email, phone, businessName, website, experience, is_script } = userData;
 
         // Hash password before storing in database
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         return await db.transaction(async (trx) => {
+            const plan = userData.plan || (userData.role === 'admin' ? 'Starter Node' : 'Identity Basic');
+            const isPaidPlan = plan !== 'Identity Basic' && !is_script;
+
             const [userId] = await trx(User.tableName).insert({
                 name,
                 email,
@@ -55,7 +58,9 @@ const User = {
                 email_verified: true,
                 phone_verified: true,
                 role: userData.role || 'user',
-                plan: userData.plan || (userData.role === 'admin' ? 'Starter Node' : 'Identity Basic')
+                plan: plan,
+                plan_status: isPaidPlan ? 'pending' : 'active',
+                payment_status: isPaidPlan ? 'pending' : 'success'
             });
 
             // Store password in separate credentials table
@@ -64,15 +69,18 @@ const User = {
                 password_hash: hashedPassword
             });
 
-            // Assign proper RBAC role based on the role column
-            const targetRoleName = (userData.role === 'admin') ? 'Admin' : 'User';
-            const targetRole = await trx('roles').where({ name: targetRoleName }).first();
+            // If not a paid plan or it's an admin setup script, assign role immediately
+            if (!isPaidPlan || is_script) {
+                // Assign proper RBAC role based on the role column
+                const targetRoleName = (userData.role === 'admin') ? 'Admin' : 'User';
+                const targetRole = await trx('roles').where({ name: targetRoleName }).first();
 
-            if (targetRole) {
-                await trx('user_roles').insert({
-                    user_id: userId,
-                    role_id: targetRole.id
-                });
+                if (targetRole) {
+                    await trx('user_roles').insert({
+                        user_id: userId,
+                        role_id: targetRole.id
+                    });
+                }
             }
 
             return await trx(User.tableName).where({ id: userId }).first();

@@ -64,8 +64,12 @@ const sendEmail = async (to, subject, html) => {
 
         // 2. ATTEMPT FALLBACK / SECONDARY (NODEMAILER / SMTP)
         console.log(`[EMAIL SERVICE] 🛡️  Transmitting via SMTP (${isGmail ? 'Gmail' : env.EMAIL.HOST}) to: ${to}`);
+        
+        // Ensure 'from' address is compatible with SMTP
+        const smtpFrom = isGmail ? env.EMAIL.USER : (env.EMAIL.FROM || env.EMAIL.USER);
+
         const info = await transporter.sendMail({
-            from: env.EMAIL.FROM || env.EMAIL.USER,
+            from: `"LeadMates" <${smtpFrom}>`,
             to,
             subject,
             html

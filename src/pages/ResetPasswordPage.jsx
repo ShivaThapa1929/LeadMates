@@ -16,7 +16,7 @@ export default function ResetPasswordPage() {
         password: "",
         confirmPassword: ""
     });
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);2
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState("");
@@ -24,10 +24,16 @@ export default function ResetPasswordPage() {
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const userIdParam = queryParams.get("userId");
+        const otpParam = queryParams.get("otp");
+        
         if (userIdParam) {
             setUserId(userIdParam);
         } else {
             setError("Invalid or missing reset session. Please go back and request a password reset again.");
+        }
+
+        if (otpParam) {
+            setOtp(otpParam);
         }
     }, [location]);
 

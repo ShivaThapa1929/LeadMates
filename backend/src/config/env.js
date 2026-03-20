@@ -32,5 +32,6 @@ module.exports = {
         PASS: process.env.EMAIL_PASS,
         FROM: process.env.EMAIL_FROM,
         RESEND_API_KEY: process.env.RESEND_API_KEY
-    }
+    },
+    CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:5173'
 };

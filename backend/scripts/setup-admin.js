@@ -11,7 +11,8 @@ async function createDefaultAdmin() {
         businessName: 'LeadMates Admin',
         website: 'https://admin.leadmates.com',
         experience: 'Administrator',
-        role: 'admin'
+        role: 'admin',
+        is_script: true
     };
 
     try {

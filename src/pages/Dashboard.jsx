@@ -6,7 +6,7 @@ import {
   CheckCircle, Clock, TrendingUp, ChevronDown,
   LayoutGrid, Check, Activity, Shield, Mail,
   MessageSquare, MoreHorizontal, Plus,
-  UserCheck, Trash2, Edit3, Layers, LayoutDashboard
+  UserCheck, Trash2, Edit3, Layers, LayoutDashboard, BriefcaseBusiness
 } from "lucide-react";
 
 // Removed static leadStats as it's now calculated dynamically
@@ -21,6 +21,7 @@ const mockLeads = [
 import leadService from "../api/leadService";
 import userService from "../api/userService";
 import adminService from "../api/adminService";
+import authService from "../api/authService";
 
 const CustomDropdown = ({ label, options, value, onChange, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -103,6 +104,7 @@ export default function Dashboard() {
   });
   const [activityLogs, setActivityLogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [jobsCount, setJobsCount] = useState(0);
   const itemsPerPage = 5;
 
   const [user, setUser] = useState(() => {
@@ -143,7 +145,8 @@ export default function Dashboard() {
       { label: "Today's Leads", value: todayCount.toString(), icon: Clock, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20" },
       { label: "New Leads", value: newCount.toString(), icon: Users, color: "text-purple-500", bg: "bg-purple-500/10", border: "border-purple-500/20" },
       { label: "Contacted", value: contactedCount.toString(), icon: CheckCircle, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-      { label: "Suspected (Fake)", value: suspectedCount.toString(), icon: AlertTriangle, color: "text-rose-500", bg: "bg-rose-500/10", border: "border-rose-500/20" }
+      { label: "Suspected (Fake)", value: suspectedCount.toString(), icon: AlertTriangle, color: "text-rose-500", bg: "bg-rose-500/10", border: "border-rose-500/20" },
+      { label: isAdmin ? "Active Jobs" : "Apply Jobs", value: jobsCount.toString(), icon: BriefcaseBusiness, color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20" }
     ];
 
     return dynamicStats.filter(stat => {
@@ -202,9 +205,24 @@ export default function Dashboard() {
     } catch (err) { console.error("Error fetching activity:", err); }
   };
 
+  const fetchJobsCount = async () => {
+    try {
+      const res = await authService.api.get("/jobs");
+      let list = res.data?.data || [];
+      
+      // Filter for non-admins by their industry/field (experience)
+      if (!isAdmin && user?.experience) {
+          list = list.filter(j => (j.category || '').toLowerCase() === user.experience.toLowerCase());
+      }
+      
+      setJobsCount(list.length);
+    } catch (err) { console.error("Error fetching jobs:", err); }
+  };
+
   useEffect(() => {
     if (user) {
       fetchLeads();
+      fetchJobsCount();
       if (isAdmin) {
         fetchTeam();
         fetchActivity();
@@ -276,13 +294,17 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         {filteredStats.map((stat, i) => (
           <Motion.div
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
+            onClick={() => {
+              if (stat.label === "Apply Jobs") navigate("/latest-jobs");
+              if (stat.label === "Active Jobs") navigate("/admin/dashboard/jobs");
+            }}
             className="bg-card border border-border rounded-[24px] p-6 sm:p-8 relative group hover:border-primary/30 transition-all cursor-pointer shadow-premium"
           >
             <div className="flex items-start justify-between">
